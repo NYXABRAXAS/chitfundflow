@@ -1,7 +1,7 @@
 /* LOS_DB — localStorage-backed data layer. Schema-versioned; seeds only when the version
    key is missing or stale so user-driven demo progress is never silently wiped. */
 (function (global) {
-  var SCHEMA_VERSION = 1;
+  var SCHEMA_VERSION = 2;
   var KEYS = {
     customers: 'los_customers',
     cases: 'los_cases',

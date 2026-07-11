@@ -109,7 +109,11 @@
       liveChits: int(0, 4),
       disbursement: { retryCount: 0 },
       statusHistory: [], deviations: [], approvals: [],
-      applied: '2024-01-' + pad(int(1, 28), 2)
+      applied: '2024-01-' + pad(int(1, 28), 2),
+      // The auction is the event that creates the prize-money entitlement (and the "draw" field
+      // above records which month's auction the subscriber won) - so every case has one.
+      auctionDate: '2024-' + pad(int(1, 6), 2) + '-' + pad(int(1, 28), 2),
+      employeeNo: 'EMP' + int(1000, 9999)
     };
   }
 

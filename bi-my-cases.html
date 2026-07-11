@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Cases — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+<script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Branch Initiator</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">My Cases</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Branch Initiator › My Cases</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div id="profileName" class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div id="profileRole" class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="grid grid-cols-4 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">📁</div><div><div class="text-slate-500 text-xs font-medium">My Active Cases</div><div id="kpiActive" class="text-slate-800 text-2xl font-bold mt-0.5">7</div><div class="text-slate-400 text-xs mt-0.5">Assigned to me</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">⚠️</div><div><div class="text-slate-500 text-xs font-medium">SLA Overdue</div><div id="kpiOverdue" class="text-slate-800 text-2xl font-bold mt-0.5">1</div><div class="text-slate-400 text-xs mt-0.5">Needs immediate action</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-purple-50 text-purple-600">📦</div><div><div class="text-slate-500 text-xs font-medium">Returned</div><div id="kpiReturned" class="text-slate-800 text-2xl font-bold mt-0.5">1</div><div class="text-slate-400 text-xs mt-0.5">Needs correction</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">✅</div><div><div class="text-slate-500 text-xs font-medium">Closed This Month</div><div id="kpiClosed" class="text-slate-800 text-2xl font-bold mt-0.5">3</div><div class="text-slate-400 text-xs mt-0.5">Successfully disbursed</div></div></div></div><div class="flex flex-wrap gap-2 mb-4"><a href="bi-create-application.html" class="btn-primary">+ New Application</a><div class="flex flex-wrap gap-2 mb-4"><input id="searchBox" type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="renderMyCases()"><select id="statusFilter" class="form-select text-xs w-36" onchange="renderMyCases()"><option value="">All Status</option><option value="BRANCH_WIP">BRANCH_WIP</option><option value="REVERTED">REVERTED</option><option value="ADDITIONAL_SECURITY_REQUIRED">ADDITIONAL_SECURITY_REQUIRED</option></select><select class="form-select text-xs w-36"><option>Month</option><option>Jan 2024</option><option>Dec 2023</option><option>Nov 2023</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Case ID</th><th>Applicant</th><th>Security</th><th>Loan Amount</th><th>Status</th><th>Branch</th><th>Applied On</th><th>SLA</th><th>Actions</th></tr></thead><tbody id="myCasesTable"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span id="myCasesCount" class="text-xs text-slate-400">Showing 0 of 0 records</span>
+  <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
+</div></div></main></div></div><script>
+var session = LOSApp.boot('BI');
+
+var MY_CASES_STATUSES = ['BRANCH_WIP','REVERTED','ADDITIONAL_SECURITY_REQUIRED'];
+
+function curr(n){return 'Rs. '+Number(n||0).toLocaleString('en-IN')}
+function fmtDate(d){return d?new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—'}
+function slaRemainingHours(c){
+  var st=LOS_CONFIG.workflowStates.states.find(s=>s.code===c.status);
+  if(!st||!st.sla) return null;
+  var since=(Date.now()-new Date(c.updatedAt||c.createdAt||c.applied).getTime())/36e5;
+  return Math.round(st.sla-since);
+}
+
+function actionCellFor(c){
+  if(c.status==='BRANCH_WIP'){
+    return `<button onclick="event.stopPropagation();submitForScrutiny('${c.id}')" class="btn-primary btn-sm">Submit</button>`;
+  }
+  if(c.status==='REVERTED'){
+    return `<button onclick="event.stopPropagation();resubmitCase('${c.id}')" class="btn-outline btn-sm text-xs">Resubmit for correction</button>`;
+  }
+  if(c.status==='ADDITIONAL_SECURITY_REQUIRED'){
+    return `<button onclick="event.stopPropagation();collateralProvided('${c.id}')" class="btn-outline btn-sm text-xs">Collateral Provided</button>`;
+  }
+  return '';
+}
+
+function renderMyCases(){
+  var q=(document.getElementById('searchBox')||{}).value||'';
+  var statusF=(document.getElementById('statusFilter')||{}).value||'';
+  var cases=LOS_DB.getCases().filter(c=>MY_CASES_STATUSES.indexOf(c.status)!==-1);
+  if(statusF) cases=cases.filter(c=>c.status===statusF);
+  if(q){
+    var ql=q.toLowerCase();
+    cases=cases.filter(c=>(c.id||'').toLowerCase().includes(ql)||(c.applicant||'').toLowerCase().includes(ql));
+  }
+  var tb=document.getElementById('myCasesTable');
+  tb.innerHTML=cases.map(c=>{
+    var rem=slaRemainingHours(c);
+    var slaTxt=rem==null?'—':(rem<=0?'Overdue':rem+'h left');
+    return `<tr onclick="location.href='case-details.html?caseId=${c.id}'" style="cursor:pointer">
+      <td class="font-mono text-xs text-blue-700">${c.id}</td>
+      <td class="font-semibold text-xs">${c.applicant||''}</td>
+      <td><span class="chip chip-purple">${c.security||''}</span></td>
+      <td class="font-semibold text-emerald-700 text-xs">${curr(c.amount)}</td>
+      <td><span class="chip ${c.status==='REVERTED'?'chip-red':c.status==='ADDITIONAL_SECURITY_REQUIRED'?'chip-orange':'chip-yellow'}">${c.status}</span></td>
+      <td class="text-xs">${c.branch||''}</td>
+      <td class="text-xs text-slate-500">${fmtDate(c.applied)}</td>
+      <td class="text-xs font-medium ${rem!=null&&rem<=12?'text-red-600':'text-orange-600'}">${slaTxt}</td>
+      <td class="flex gap-1" onclick="event.stopPropagation()"><a href="case-details.html?caseId=${c.id}" class="btn-outline btn-sm text-xs">View</a>${actionCellFor(c)}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="9" class="text-center text-xs text-slate-400 py-6">No cases found</td></tr>';
+  var countEl=document.getElementById('myCasesCount');
+  if(countEl) countEl.textContent='Showing '+cases.length+' of '+cases.length+' records';
+  renderMyCasesKpis();
+}
+
+function renderMyCasesKpis(){
+  var cases=LOS_DB.getCases().filter(c=>MY_CASES_STATUSES.indexOf(c.status)!==-1);
+  var allCases=LOS_DB.getCases();
+  var byId=(id,val)=>{var el=document.getElementById(id);if(el)el.textContent=val};
+  byId('kpiActive', cases.filter(c=>c.status==='BRANCH_WIP').length);
+  byId('kpiOverdue', cases.filter(c=>{var r=slaRemainingHours(c);return r!=null&&r<=0;}).length);
+  byId('kpiReturned', cases.filter(c=>c.status==='REVERTED'||c.status==='ADDITIONAL_SECURITY_REQUIRED').length);
+  byId('kpiClosed', allCases.filter(c=>c.status==='CLOSED').length);
+}
+
+function submitForScrutiny(caseId){
+  var r=WorkflowEngine.transition(caseId,'submitForScrutiny',{actorRole:'BI'});
+  if(!r.success){
+    alert(r.error+' — please complete document upload before submitting.');
+    return;
+  }
+  renderMyCases();
+}
+function resubmitCase(caseId){
+  var r=WorkflowEngine.transition(caseId,'resubmit',{actorRole:'BI'});
+  if(!r.success){ alert(r.error); return; }
+  renderMyCases();
+}
+function collateralProvided(caseId){
+  var r=WorkflowEngine.transition(caseId,'collateralProvided',{actorRole:'BI'});
+  if(!r.success){ alert(r.error); return; }
+  renderMyCases();
+}
+
+document.addEventListener('DOMContentLoaded', renderMyCases);
+</script></body></html>

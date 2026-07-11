@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Credit Hub Dashboard — MCF LOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<link rel="stylesheet" href="assets/css/common.css">
+<style>
+.chip{white-space:nowrap}
+</style></head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-60 flex-shrink-0 bg-slate-900 flex flex-col h-screen">
+  <div class="px-5 py-4 border-b border-slate-700">
+    <div class="font-black text-white text-base tracking-tight">MCF LOS</div>
+    <div class="text-slate-400 text-xs mt-0.5">Muthoot Pappachan Chits</div>
+  </div>
+  <div class="px-3 py-3 border-b border-slate-700">
+    <div class="px-3 py-1.5 bg-slate-800 rounded-lg">
+      <div class="text-slate-400 text-xs">Logged in as</div>
+      <div id="sidebarRoleLabel" class="text-white text-xs font-semibold mt-0.5">Credit Hub Controller</div>
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5"><a href="credit-hub-dashboard.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all bg-blue-600 text-white">📊 Dashboard</a><a href="ch-inward.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">📥 Inward Cases</a><a href="ch-doc-verification.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">🔍 Document Verify</a><a href="ch-security-assessment.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">💎 Security Assessment</a><a href="ch-fi-assignment.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">📍 FI Assignment</a><a href="deviation-authority.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">⚡ Deviation Queue</a><a href="reports.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">📈 Reports</a></nav>
+  <div class="px-4 py-3 border-t border-slate-700">
+    <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white text-xs transition">🔓 Logout</a>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-4 flex-shrink-0 sticky top-0 z-40">
+  <button id="sidebarToggle" class="lg:hidden p-1 rounded text-slate-500 hover:bg-slate-100">☰</button>
+  <div class="flex-1">
+    <div class="font-bold text-slate-800 text-base">Credit Hub Dashboard</div>
+    <div class="text-slate-400 text-xs mt-0.5">Home › Credit Hub › Dashboard</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="relative hidden md:block">
+      <input class="pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-slate-200 rounded-lg w-48 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search cases...">
+      <span class="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+    </div>
+    <button id="notifBell" class="relative p-2 rounded-lg hover:bg-slate-100">
+      <span class="text-lg">🔔</span>
+      <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+    </button>
+    <div id="notifPanel" class="hidden absolute top-14 right-4 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-3">
+      <div class="font-semibold text-slate-700 mb-2 text-sm">Notifications</div>
+      <div id="notifList" class="space-y-2 text-xs"></div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100">
+        <div id="profileInitials" class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">PR</div>
+        <span id="profileName" class="text-xs font-medium hidden md:block">Profile</span>
+      </button>
+      <div id="profileDrop" class="hidden absolute right-0 top-10 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-50 py-1">
+        <a href="admin-settings.html" class="block px-3 py-2 text-xs hover:bg-slate-50">⚙️ Settings</a>
+        <a href="index.html" class="block px-3 py-2 text-xs hover:bg-slate-50 text-red-600">🔓 Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+<div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-yellow-50 text-yellow-700">🚚</div><div><div class="text-slate-500 text-xs">Courier Pending</div><div class="text-slate-800 text-2xl font-bold mt-0.5">7</div><div class="text-slate-400 text-xs">Awaiting delivery</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">📥</div><div><div class="text-slate-500 text-xs">Docs Received</div><div class="text-slate-800 text-2xl font-bold mt-0.5">14</div><div class="text-slate-400 text-xs">This week</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-orange-50 text-orange-600">📍</div><div><div class="text-slate-500 text-xs">FI Pending Assign</div><div class="text-slate-800 text-2xl font-bold mt-0.5">11</div><div class="text-slate-400 text-xs">Not yet assigned</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-purple-50 text-purple-600">🔍</div><div><div class="text-slate-500 text-xs">FI In Progress</div><div class="text-slate-800 text-2xl font-bold mt-0.5">8</div><div class="text-slate-400 text-xs">FI agents on field</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">⚡</div><div><div class="text-slate-500 text-xs">Deviation Pending</div><div class="text-slate-800 text-2xl font-bold mt-0.5">5</div><div class="text-slate-400 text-xs">Awaiting authority</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">→</div><div><div class="text-slate-500 text-xs">Forwarded Today</div><div class="text-slate-800 text-2xl font-bold mt-0.5">9</div><div class="text-slate-400 text-xs">To Final Checker</div></div></div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+    <div class="lg:col-span-2">
+<div class="card">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+      <div><div class="font-semibold text-slate-800">Case Queue</div><div class="text-xs text-slate-400">Cases assigned to this role</div></div>
+      <div class="flex gap-2">
+        <select class="text-xs border border-slate-200 rounded-lg px-2 py-1.5"><option>All Cases</option><option>High Priority</option><option>SLA Breaching</option></select>
+        <button class="btn-outline text-xs px-3 py-1.5">Export</button>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="los-table w-full">
+        <thead><tr><th>Case ID</th><th>Customer</th><th>Branch</th><th>Security</th><th>FL Amount</th><th>CIBIL</th><th>Status</th><th>TAT</th><th>SLA</th><th>Action</th></tr></thead>
+        <tbody id="genericCaseTable"></tbody>
+      </table>
+    </div>
+    <div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between">
+      <span class="text-xs text-slate-400">Showing 10 of 47 cases</span>
+      <div class="flex gap-1">
+        <button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button>
+        <button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">2</button>
+        <button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">Next →</button>
+      </div>
+    </div>
+  </div>
+    </div>
+    <div class="space-y-4">
+      <div class="card p-5">
+        <div class="font-semibold text-slate-800 mb-3">FI Assignment</div>
+        <div class="space-y-3">
+          <div><label class="form-label">Case ID</label><input id="hubFiCaseId" class="form-input" value="MCF-2024-004523"></div>
+          <div><label class="form-label">Select FI Agent</label>
+            <select id="hubFiAgent" class="form-select"><option>Ramesh K — Chennai</option><option>Suresh P — Trichy</option><option>Dinesh V — Madurai</option></select>
+          </div>
+          <div><label class="form-label">FI Type</label>
+            <select class="form-select"><option>Personal Guarantee Verification</option><option>Mortgage Verification</option><option>Address Verification</option></select>
+          </div>
+          <div><label class="form-label">Priority</label>
+            <select class="form-select"><option>Normal</option><option>High</option><option>Urgent</option></select>
+          </div>
+          <div><label class="form-label">Remarks</label><textarea class="form-input" rows="2" placeholder="Instructions for FI Agent..."></textarea></div>
+          <button class="w-full btn-primary" onclick="assignFIFromDashboard()">📍 Assign FI Agent</button>
+        </div>
+      </div>
+      <div class="card p-5">
+        <div class="font-semibold text-slate-800 mb-3">AWB Inward Tracking</div>
+        <div class="space-y-2 text-xs">
+          <div class="p-2 bg-green-50 rounded-lg border border-green-100">
+            <div class="flex justify-between"><span class="font-semibold text-slate-700">AWB-94812345</span><span class="text-green-700 font-semibold">Received ✓</span></div>
+            <div class="text-slate-400 mt-0.5">MCF-2024-004522 · Babyshalini K</div>
+          </div>
+          <div class="p-2 bg-blue-50 rounded-lg border border-blue-100">
+            <div class="flex justify-between"><span class="font-semibold text-slate-700">AWB-94812346</span><span class="text-blue-700 font-semibold">In Transit</span></div>
+            <div class="text-slate-400 mt-0.5">MCF-2024-004524 · Rajendran V</div>
+          </div>
+          <div class="p-2 bg-yellow-50 rounded-lg border border-yellow-100">
+            <div class="flex justify-between"><span class="font-semibold text-slate-700">AWB-94812347</span><span class="text-yellow-700 font-semibold">Out for Delivery</span></div>
+            <div class="text-slate-400 mt-0.5">MCF-2024-004526 · Krishnamurthy T</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></main></div></div>
+<script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('HUB');
+
+function badge(st){const m={'BRANCH_WIP':'bg-yellow-100 text-yellow-800','SCRUTINY_PENDING':'bg-blue-100 text-blue-800','DISPATCHED':'bg-cyan-100 text-cyan-800','HUB_INWARD':'bg-indigo-100 text-indigo-800','FI_INITIATED':'bg-purple-100 text-purple-800','FI_COMPLETED':'bg-violet-100 text-violet-800','FINAL_CHECK':'bg-orange-100 text-orange-800','DEVIATION_PENDING':'bg-pink-100 text-pink-800','CREDIT_REVIEW':'bg-rose-100 text-rose-800','IN_PRINCIPAL_APPROVED':'bg-green-100 text-green-800','READY_DISBURSEMENT':'bg-teal-100 text-teal-800','BUSINESS_APPROVED':'bg-emerald-100 text-emerald-800','CLOSED':'bg-slate-100 text-slate-700','DECLINED':'bg-red-100 text-red-800'};return '<span class="px-2 py-0.5 rounded-full text-xs font-semibold '+(m[st]||'bg-slate-100 text-slate-700')+'">'+st+'</span>'}
+function curr(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
+function cibilColor(n){return n>=750?'text-green-600':n>=700?'text-yellow-600':'text-red-600'}
+
+var HUB_QUEUE_STATUSES = ['DISPATCHED','HUB_INWARD','FI_INITIATED'];
+
+function queueActionHtml(c){
+  if(c.status==='DISPATCHED') return '<a href="ch-inward.html" class="text-blue-600 text-xs font-semibold hover:underline">Accept Inward</a>';
+  if(c.status==='HUB_INWARD') return '<a href="ch-doc-verification.html" class="text-blue-600 text-xs font-semibold hover:underline">Verify / Assign</a>';
+  return '<a href="case-details.html?caseId='+c.id+'" class="text-blue-600 text-xs font-semibold hover:underline">View</a>';
+}
+
+function renderQueue(){
+  var cases = LOS_DB.getCases().filter(function(c){return HUB_QUEUE_STATUSES.indexOf(c.status)!==-1;});
+  var tb = document.getElementById('genericCaseTable');
+  if(!tb) return;
+  tb.innerHTML = cases.length ? cases.map(function(c){
+    return '<tr>'+
+      '<td><a href="case-details.html?caseId='+c.id+'" class="text-blue-600 font-semibold hover:underline text-xs">'+c.id+'</a></td>'+
+      '<td class="text-xs">'+c.applicant+'</td>'+
+      '<td class="text-xs">'+c.branch+'</td>'+
+      '<td class="text-xs">'+c.security+'</td>'+
+      '<td class="text-xs font-semibold">'+curr(c.fl||c.amount)+'</td>'+
+      '<td><span class="'+cibilColor(c.cibil)+'">'+c.cibil+'</span></td>'+
+      '<td>'+badge(c.status)+'</td>'+
+      '<td class="text-xs">'+(c.tenure||'')+'m</td>'+
+      '<td class="text-xs text-slate-500">Stage '+c.stage+'</td>'+
+      '<td>'+queueActionHtml(c)+'</td>'+
+    '</tr>';
+  }).join('') : '<tr><td colspan="10" class="text-center text-xs text-slate-400 py-6">No cases in queue</td></tr>';
+}
+renderQueue();
+
+(function(){
+  var hubInward = LOS_DB.getCases({status:'HUB_INWARD'});
+  var input = document.getElementById('hubFiCaseId');
+  if(input && hubInward.length) input.value = hubInward[0].id;
+})();
+
+function assignFIFromDashboard(){
+  var caseId = document.getElementById('hubFiCaseId').value.trim();
+  var agentSel = document.getElementById('hubFiAgent');
+  var agent = agentSel.options[agentSel.selectedIndex].text;
+  var result = WorkflowEngine.transition(caseId, 'assignFI', {actorRole: session.role, payload:{fiRequired:true, assignedTo: agent}});
+  if(result.success){
+    alert('FI Agent '+agent+' assigned to '+caseId);
+    renderQueue();
+    LOSApp.refreshChrome();
+  } else {
+    alert(result.error);
+  }
+}
+</script></body></html>

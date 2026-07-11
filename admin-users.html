@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>User Management — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">System Admin</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">User Management</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Admin › User Management</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="flex flex-wrap gap-2 mb-4"><button data-modal-open="userModal" onclick="openUserModal(null)" class="btn-primary">+ Create User</button><div class="flex flex-wrap gap-2 mb-4"><input type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="filterTable(this.value)"><select class="form-select text-xs w-36"><option>Filter Role</option><option>Branch Initiator</option><option>Scrutinizer</option><option>Hub Controller</option><option>FI</option><option>Final Checker</option><option>Credit Head</option><option>Business Approver</option></select><select class="form-select text-xs w-36"><option>Branch</option><option>HO Chennai</option><option>Trichy</option><option>Madurai</option><option>Coimbatore</option><option>Salem</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Emp ID</th><th>Name</th><th>Role</th><th>Branch</th><th>Email</th><th>Mobile</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span class="text-xs text-slate-400">Showing 10 of 247 records</span>
+  <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">2</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">3</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">4</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
+</div></div></main></div></div><div id="userModal" class="modal-overlay">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-y-auto">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="font-semibold text-slate-800 text-base">Create / Edit User</div>
+      <button data-modal-close="userModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button>
+    </div>
+    <div class="p-5"><div class="grid grid-cols-2 gap-3">
+  <div><label class="form-label">Employee ID</label><input class="form-input" id="mEmpId" value="EMP-1001"></div>
+  <div><label class="form-label">Full Name</label><input class="form-input" id="mName" value="Priya Ramachandran"></div>
+  <div><label class="form-label">Email</label><input class="form-input" id="mEmail" value="priya.r@mpc.in"></div>
+  <div><label class="form-label">Mobile</label><input class="form-input" id="mMobile" value="98401-11111"></div>
+  <div><label class="form-label">Role</label><select class="form-select" id="mRole"><option>Branch Initiator</option><option>Branch Scrutinizer</option><option>Credit Hub Controller</option><option>Field Investigator</option><option>Credit Final Checker</option><option>Deviation Authority</option><option>Recommending Authority</option><option>Credit Head</option><option>Business Approver</option><option>System Admin</option></select></div>
+  <div><label class="form-label">Branch / Hub</label><select class="form-select" id="mBranch"><option>HO Chennai</option><option>Trichy Main</option><option>Madurai Central</option><option>Coimbatore North</option><option>Salem Branch</option></select></div>
+  <div><label class="form-label">Status</label><select class="form-select" id="mStatus"><option>Active</option><option>Inactive</option></select></div>
+  <div><label class="form-label">Password (blank = keep)</label><input type="password" class="form-input" id="mPassword" placeholder="New password"></div>
+</div></div>
+    <div class="px-5 pb-5 flex gap-3"><button data-modal-close="userModal" class="btn-outline flex-1">Cancel</button><button id="saveUserBtn" class="btn-primary flex-1">Save User</button></div>
+  </div>
+</div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+
+function seedUsersIfEmpty(){
+  var users = LOS_DB.getConfigCollection('users');
+  if(users.length) return users;
+  users = [
+    {empId:'EMP-1001', name:'Priya Ramachandran', role:'Branch Initiator', branch:'HO Chennai', email:'priya.r@mpc.in', mobile:'98401-11111', status:'Active', lastLogin:'16 Jan 09:12'},
+    {empId:'EMP-1002', name:'Manoj Thangavel', role:'Branch Scrutinizer', branch:'Trichy Main', email:'manoj.t@mpc.in', mobile:'98401-22222', status:'Active', lastLogin:'16 Jan 08:45'},
+    {empId:'EMP-1010', name:'Dr. Suresh Babu', role:'Credit Head', branch:'HO Chennai', email:'suresh.b@mpc.in', mobile:'98402-11111', status:'Active', lastLogin:'16 Jan 10:30'}
+  ];
+  LOS_DB.saveConfigCollection('users', users);
+  return users;
+}
+
+var USERS = seedUsersIfEmpty();
+var editingEmpId = null;
+
+function chipForStatus(status){return status==='Active' ? 'chip-green' : 'chip-red'}
+
+function renderUsers(){
+  var tb = document.getElementById('usersTableBody');
+  tb.innerHTML = USERS.map(function(u){
+    return '<tr>'+
+      '<td class="font-mono text-xs text-blue-700">'+u.empId+'</td>'+
+      '<td class="font-medium text-xs">'+u.name+'</td>'+
+      '<td><span class="chip chip-blue">'+u.role+'</span></td>'+
+      '<td class="text-xs">'+u.branch+'</td>'+
+      '<td class="text-xs text-slate-500">'+u.email+'</td>'+
+      '<td class="text-xs">'+u.mobile+'</td>'+
+      '<td><span class="chip '+chipForStatus(u.status)+'">'+u.status+'</span></td>'+
+      '<td class="text-xs text-slate-500">'+(u.lastLogin||'--')+'</td>'+
+      '<td class="flex gap-1 flex-wrap"><button data-modal-open="userModal" onclick="openUserModal(\''+u.empId+'\')" class="btn-primary btn-sm">Edit</button><button onclick="alert(\'Reset sent!\')" class="btn-outline btn-sm text-xs">Reset PWD</button><button onclick="alert(\'Deactivated!\')" class="btn-danger btn-sm text-xs">Deactivate</button></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="9" class="text-center text-slate-400 py-6">No users yet</td></tr>';
+}
+
+function nextEmpId(){
+  var max = 1000;
+  USERS.forEach(function(u){ var n = parseInt((u.empId||'').split('-')[1], 10); if(!isNaN(n) && n > max) max = n; });
+  return 'EMP-' + (max + 1);
+}
+
+function openUserModal(empId){
+  editingEmpId = empId;
+  var u = empId ? USERS.find(function(x){return x.empId===empId}) : null;
+  document.getElementById('mEmpId').value = u ? u.empId : nextEmpId();
+  document.getElementById('mName').value = u ? u.name : '';
+  document.getElementById('mEmail').value = u ? u.email : '';
+  document.getElementById('mMobile').value = u ? u.mobile : '';
+  document.getElementById('mRole').value = u ? u.role : document.getElementById('mRole').options[0].value;
+  document.getElementById('mBranch').value = u ? u.branch : document.getElementById('mBranch').options[0].value;
+  document.getElementById('mStatus').value = u ? u.status : 'Active';
+  document.getElementById('mPassword').value = '';
+}
+
+document.getElementById('saveUserBtn').addEventListener('click', function(){
+  var empId = document.getElementById('mEmpId').value.trim();
+  var record = {
+    empId: empId,
+    name: document.getElementById('mName').value.trim(),
+    email: document.getElementById('mEmail').value.trim(),
+    mobile: document.getElementById('mMobile').value.trim(),
+    role: document.getElementById('mRole').value,
+    branch: document.getElementById('mBranch').value,
+    status: document.getElementById('mStatus').value,
+    lastLogin: (editingEmpId && USERS.find(function(x){return x.empId===editingEmpId})||{}).lastLogin || '--'
+  };
+  var idx = USERS.findIndex(function(x){return x.empId===empId});
+  if(idx >= 0) USERS[idx] = record; else USERS.push(record);
+  LOS_DB.saveConfigCollection('users', USERS);
+  renderUsers();
+  document.getElementById('userModal').classList.remove('open');
+});
+
+renderUsers();
+</script></body></html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Document Upload — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Branch Initiator</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Document Upload</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Branch Initiator › Document Upload</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6">
+<div class="grid grid-cols-1 gap-6">
+  <div class="card p-4"><div class="flex items-center gap-2 text-xs">
+    <span class="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center">✓</span><span class="text-slate-500">Applicant Info</span>
+    <span class="flex-1 h-0.5 bg-green-400"></span>
+    <span class="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center">✓</span><span class="text-slate-500">Security</span>
+    <span class="flex-1 h-0.5 bg-blue-400"></span>
+    <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">3</span><span class="font-semibold text-blue-700">Documents</span>
+    <span class="flex-1 h-0.5 bg-slate-200"></span>
+    <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">4</span><span class="text-slate-500">Guarantor</span>
+    <span class="flex-1 h-0.5 bg-slate-200"></span>
+    <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">5</span><span class="text-slate-500">CIBIL</span>
+  </div></div>
+  <!-- Drop zone -->
+  <div class="card p-6 border-2 border-dashed border-blue-300 bg-blue-50 text-center cursor-pointer" onclick="alert('File upload dialog opened')">
+    <div class="text-4xl mb-2">📤</div>
+    <div class="font-semibold text-blue-700">Drag & Drop Files Here</div>
+    <div class="text-sm text-slate-500 mt-1">PDF, JPG, PNG supported. Max 10 MB per file.</div>
+    <button class="btn-primary mt-3">Browse Files</button>
+  </div>
+  <!-- Document checklist --><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Doc Code</th><th>Document Name</th><th>Required</th><th>For</th><th>Status</th><th>Uploaded On</th><th>Size</th><th>Actions</th></tr></thead><tbody id="docChecklist"><tr><td class="font-mono text-xs text-blue-700">MD-1</td><td class="font-medium text-xs">Membership Application Form</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">All</td><td><span class="chip chip-green">Uploaded</span></td><td class="text-xs text-slate-500">16 Jan</td><td class="text-xs text-slate-500">3.2 MB</td><td class="flex gap-1"><button onclick="alert('Viewing doc')" class="btn-outline btn-sm text-xs">View</button><button onclick="setRowPending(this)" class="btn-danger btn-sm text-xs">Delete</button></td></tr><tr><td class="font-mono text-xs text-blue-700">MD-2</td><td class="font-medium text-xs">KYC — Aadhaar Card</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">All</td><td><span class="chip chip-green">Uploaded</span></td><td class="text-xs text-slate-500">16 Jan</td><td class="text-xs text-slate-500">1.1 MB</td><td class="flex gap-1"><button onclick="alert('Viewing doc')" class="btn-outline btn-sm text-xs">View</button><button onclick="setRowPending(this)" class="btn-danger btn-sm text-xs">Delete</button></td></tr><tr><td class="font-mono text-xs text-blue-700">MD-3</td><td class="font-medium text-xs">KYC — PAN Card</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">All</td><td><span class="chip chip-green">Uploaded</span></td><td class="text-xs text-slate-500">16 Jan</td><td class="text-xs text-slate-500">0.8 MB</td><td class="flex gap-1"><button onclick="alert('Viewing doc')" class="btn-outline btn-sm text-xs">View</button><button onclick="setRowPending(this)" class="btn-danger btn-sm text-xs">Delete</button></td></tr><tr><td class="font-mono text-xs text-blue-700">MD-4</td><td class="font-medium text-xs">Income Proof — Salary Slip</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">Salaried</td><td><span class="chip chip-green">Uploaded</span></td><td class="text-xs text-slate-500">16 Jan</td><td class="text-xs text-slate-500">2.3 MB</td><td class="flex gap-1"><button onclick="alert('Viewing doc')" class="btn-outline btn-sm text-xs">View</button><button onclick="setRowPending(this)" class="btn-danger btn-sm text-xs">Delete</button></td></tr><tr><td class="font-mono text-xs text-blue-700">MD-6</td><td class="font-medium text-xs">Gold Valuation Certificate</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">Gold</td><td><span class="chip chip-yellow">Pending</span></td><td class="text-xs text-slate-500">—</td><td class="text-xs text-slate-500">—</td><td class="flex gap-1"><button onclick="setRowUploaded(this)" class="btn-primary btn-sm text-xs">Upload</button></td></tr><tr><td class="font-mono text-xs text-blue-700">MD-7</td><td class="font-medium text-xs">Gold Net Weight Report</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">Gold</td><td><span class="chip chip-yellow">Pending</span></td><td class="text-xs text-slate-500">—</td><td class="text-xs text-slate-500">—</td><td class="flex gap-1"><button onclick="setRowUploaded(this)" class="btn-primary btn-sm text-xs">Upload</button></td></tr><tr><td class="font-mono text-xs text-blue-700">MD-8</td><td class="font-medium text-xs">Purity Certificate</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">Gold</td><td><span class="chip chip-yellow">Pending</span></td><td class="text-xs text-slate-500">—</td><td class="text-xs text-slate-500">—</td><td class="flex gap-1"><button onclick="setRowUploaded(this)" class="btn-primary btn-sm text-xs">Upload</button></td></tr><tr><td class="font-mono text-xs text-blue-700">PG-1</td><td class="font-medium text-xs">Passbook / Bank Statement</td><td><span class="chip chip-red">Mandatory</span></td><td class="text-xs">All</td><td><span class="chip chip-yellow">Pending</span></td><td class="text-xs text-slate-500">—</td><td class="text-xs text-slate-500">—</td><td class="flex gap-1"><button onclick="setRowUploaded(this)" class="btn-primary btn-sm text-xs">Upload</button></td></tr></tbody></table></div></div>
+  <div class="card p-4 bg-green-50">
+    <div class="font-semibold text-green-800 mb-2">Upload Progress</div>
+    <div class="flex items-center gap-3">
+      <div class="flex-1 bg-slate-200 rounded-full h-3"><div id="uploadProgressBar" class="h-3 rounded-full bg-green-500" style="width:50%"></div></div>
+      <span id="uploadProgressText" class="text-sm font-semibold text-green-700">4 / 8 documents uploaded</span>
+    </div>
+    <div id="uploadPendingWarning" class="text-xs text-orange-600 mt-2">⚠️ Gold Valuation Certificate, Net Weight Report, Purity Certificate, and Bank Statement are pending.</div>
+  </div>
+  <div class="flex gap-3">
+    <a href="bi-security-selection.html" class="btn-outline">← Back</a>
+    <button onclick="saveDraft()" class="btn-outline">Save Draft</button>
+    <a href="bi-guarantor.html" id="docsNextBtn" class="btn-primary">Next: Guarantor →</a>
+  </div>
+</div></main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('BI');
+
+/* ---- Case resolution (BI wizard convention) ---- */
+function resolveCase(){
+  var qId = new URLSearchParams(location.search).get('caseId');
+  var c = qId ? LOS_DB.getCase(qId) : null;
+  if(!c){
+    c = LOS_DB.getCases().filter(function(x){return x.status==='BRANCH_WIP'||x.status==='REVERTED';})
+      .sort(function(a,b){return new Date(b.updatedAt)-new Date(a.updatedAt);})[0] || null;
+  }
+  return c;
+}
+function showNoCaseNotice(disableEls){
+  var main = document.querySelector('main .grid') || document.querySelector('main');
+  if(main){
+    var notice = document.createElement('div');
+    notice.className = 'card p-4 bg-yellow-50 border border-yellow-200 text-sm text-yellow-800';
+    notice.textContent = 'No active application found to edit. Start a new application first.';
+    main.insertBefore(notice, main.firstChild);
+  }
+  (disableEls||[]).forEach(function(el){ if(el){ el.classList.add('opacity-50','pointer-events-none'); } });
+}
+
+var caseObj = resolveCase();
+
+function setRowUploaded(btn){
+  var row = btn.closest('tr');
+  row.children[4].innerHTML = '<span class="chip chip-green">Uploaded</span>';
+  row.children[5].textContent = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+  row.children[6].textContent = (Math.round((0.5 + Math.random()*2.5)*10)/10) + ' MB';
+  row.children[7].innerHTML = '<button onclick="alert(\'Viewing doc\')" class="btn-outline btn-sm text-xs">View</button><button onclick="setRowPending(this)" class="btn-danger btn-sm text-xs">Delete</button>';
+  recomputeDocs();
+}
+function setRowPending(btn){
+  var row = btn.closest('tr');
+  row.children[4].innerHTML = '<span class="chip chip-yellow">Pending</span>';
+  row.children[5].textContent = '—';
+  row.children[6].textContent = '—';
+  row.children[7].innerHTML = '<button onclick="setRowUploaded(this)" class="btn-primary btn-sm text-xs">Upload</button>';
+  recomputeDocs();
+}
+
+function recomputeDocs(){
+  var rows = document.querySelectorAll('#docChecklist tr');
+  var total = rows.length, uploaded = 0, pendingNames = [];
+  rows.forEach(function(r){
+    if(r.querySelector('.chip-green')) uploaded++;
+    else pendingNames.push(r.children[1].textContent.trim());
+  });
+  var pct = total ? Math.round((uploaded/total)*100) : 0;
+  var bar = document.getElementById('uploadProgressBar'); if(bar) bar.style.width = pct + '%';
+  var txt = document.getElementById('uploadProgressText'); if(txt) txt.textContent = uploaded + ' / ' + total + ' documents uploaded';
+  var warn = document.getElementById('uploadPendingWarning');
+  if(warn){
+    warn.style.display = pendingNames.length ? '' : 'none';
+    warn.textContent = pendingNames.length ? ('⚠️ ' + pendingNames.join(', ') + ' pending.') : '';
+  }
+  if(!caseObj) return;
+  caseObj.documentsComplete = (uploaded === total);
+  LOS_DB.saveCase(caseObj);
+}
+
+function saveDraft(){
+  if(caseObj) LOS_DB.saveCase(caseObj);
+  alert('Draft saved!');
+}
+
+if(!caseObj){
+  showNoCaseNotice([document.getElementById('docsNextBtn')]);
+} else {
+  recomputeDocs();
+}
+
+</script></body></html>

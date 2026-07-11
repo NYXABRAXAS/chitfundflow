@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Create Application — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+<script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Branch Initiator</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Create Application</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Branch Initiator › Create Application</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div id="profileName" class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div id="profileRole" class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6">
+<div class="grid grid-cols-1 gap-6">
+  <!-- Step indicator -->
+  <div class="card p-4">
+    <div class="flex items-center gap-2 text-xs">
+      <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">1</span>
+      <span class="font-semibold text-blue-700">Applicant Info</span>
+      <span class="flex-1 h-0.5 bg-slate-200"></span>
+      <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">2</span>
+      <span class="text-slate-500">Security</span>
+      <span class="flex-1 h-0.5 bg-slate-200"></span>
+      <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">3</span>
+      <span class="text-slate-500">Documents</span>
+      <span class="flex-1 h-0.5 bg-slate-200"></span>
+      <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">4</span>
+      <span class="text-slate-500">Guarantor</span>
+      <span class="flex-1 h-0.5 bg-slate-200"></span>
+      <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">5</span>
+      <span class="text-slate-500">CIBIL</span>
+      <span class="flex-1 h-0.5 bg-slate-200"></span>
+      <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">6</span>
+      <span class="text-slate-500">Submit</span>
+    </div>
+  </div>
+  <!-- Applicant Info -->
+  <div class="card p-5">
+    <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Step 1: Applicant Information</div>
+    <div class="grid grid-cols-3 gap-4">
+      <div><label class="form-label">Full Name (as per ID)</label><input id="fApplicant" class="form-input" placeholder="e.g. Ramesh Gopalakrishnan"></div>
+      <div><label class="form-label">Date of Birth</label><input id="fDob" class="form-input" type="date" value="1980-05-15"></div>
+      <div><label class="form-label">Gender</label><select id="fGender" class="form-select"><option>Male</option><option>Female</option><option>Other</option></select></div>
+      <div><label class="form-label">Aadhaar Number</label><input id="fAadhaar" class="form-input" placeholder="XXXX XXXX XXXX" maxlength="14"></div>
+      <div><label class="form-label">PAN Number</label><input id="fPan" class="form-input" placeholder="ABCDE1234F" maxlength="10"></div>
+      <div><label class="form-label">Mobile Number</label><input id="fMobile" class="form-input" placeholder="98XXXXXXXX" maxlength="10"></div>
+      <div><label class="form-label">Applicant Type</label><select id="fApplicantType" class="form-select"><option>Salaried</option><option>Business</option><option>Self-Employed</option><option>Agricultural</option></select></div>
+      <div><label class="form-label">Monthly Income (INR)</label><input id="fIncome" class="form-input" type="number" placeholder="35000" oninput="calcRC()"></div>
+      <div><label class="form-label">Existing Obligations (INR/month)</label><input id="fObligations" class="form-input" type="number" placeholder="5000" oninput="calcRC()"></div>
+      <div class="col-span-3"><label class="form-label">Residential Address</label><textarea id="fAddress" class="form-input" rows="2" placeholder="Door No., Street, City, Pincode"></textarea></div>
+      <div><label class="form-label">City</label><input id="fCity" class="form-input" placeholder="Chennai"></div>
+      <div><label class="form-label">State</label><select id="fState" class="form-select"><option>Tamil Nadu</option><option>Kerala</option><option>Karnataka</option><option>Puducherry</option></select></div>
+      <div><label class="form-label">Pincode</label><input id="fPincode" class="form-input" placeholder="600001" maxlength="6"></div>
+    </div>
+  </div>
+  <!-- Loan Details -->
+  <div class="card p-5">
+    <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Loan Request Details</div>
+    <div class="grid grid-cols-3 gap-4">
+      <div><label class="form-label">Loan Amount Requested (INR)</label><input id="fAmount" class="form-input" type="number" placeholder="850000" oninput="calcRC()"></div>
+      <div><label class="form-label">Loan Tenure (months)</label><input id="fTenure" class="form-input" type="number" placeholder="36" min="1" max="120"></div>
+      <div><label class="form-label">Purpose of Loan</label><select id="fPurpose" class="form-select"><option>Business Expansion</option><option>Working Capital</option><option>Personal</option><option>Education</option><option>Medical</option><option>Asset Purchase</option></select></div>
+      <div class="col-span-3 p-4 bg-blue-50 rounded-lg">
+        <div class="font-semibold text-blue-800 text-sm mb-2">Repayment Capacity Calculator</div>
+        <div class="grid grid-cols-4 gap-4 text-sm">
+          <div><div class="text-slate-500">Gross Income</div><div class="font-bold text-slate-800" id="gross">Rs. 35,000</div></div>
+          <div><div class="text-slate-500">70% Validated</div><div class="font-bold text-blue-700" id="validated">Rs. 24,500</div></div>
+          <div><div class="text-slate-500">Total Obligations</div><div class="font-bold text-orange-600" id="oblig">Rs. 5,000</div></div>
+          <div><div class="text-slate-500">Repayment Capacity</div><div class="font-bold text-green-700 text-base" id="repay">Rs. 19,500</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex gap-3">
+    <button onclick="saveDraft()" class="btn-outline">Save Draft</button>
+    <button onclick="submitApplication()" class="btn-primary">Next: Security Selection →</button>
+  </div>
+</div></main></div></div><script>
+var session = LOSApp.boot('BI');
+
+function calcRC(){
+  var g=parseFloat(document.getElementById('fIncome').value)||35000;
+  var o=parseFloat(document.getElementById('fObligations').value)||5000;
+  document.getElementById('gross').textContent='Rs. '+g.toLocaleString('en-IN');
+  document.getElementById('validated').textContent='Rs. '+Math.round(g*0.7).toLocaleString('en-IN');
+  document.getElementById('oblig').textContent='Rs. '+o.toLocaleString('en-IN');
+  document.getElementById('repay').textContent='Rs. '+Math.round(g*0.7-o).toLocaleString('en-IN');
+}
+
+function collectFormValues(){
+  return {
+    applicant: document.getElementById('fApplicant').value || 'New Applicant',
+    dob: document.getElementById('fDob').value,
+    aadhaar: document.getElementById('fAadhaar').value,
+    pan: document.getElementById('fPan').value,
+    mobile: document.getElementById('fMobile').value,
+    applicantType: document.getElementById('fApplicantType').value,
+    income: parseFloat(document.getElementById('fIncome').value) || 0,
+    obligations: parseFloat(document.getElementById('fObligations').value) || 0,
+    address: document.getElementById('fAddress').value,
+    city: document.getElementById('fCity').value,
+    state: document.getElementById('fState').value,
+    pincode: document.getElementById('fPincode').value,
+    amount: parseFloat(document.getElementById('fAmount').value) || 0,
+    tenure: parseInt(document.getElementById('fTenure').value, 10) || 36,
+    purpose: document.getElementById('fPurpose').value,
+    branch: (LOS_CONFIG.branches[0] || {}).name || 'Chennai HO'
+  };
+}
+
+var draftCaseId = null;
+
+function saveDraft(){
+  var v = collectFormValues();
+  var c = draftCaseId ? LOS_DB.getCase(draftCaseId) : null;
+  if(!c){
+    c = { id: LOS_DB.nextCaseId(), status: 'NEW' };
+    draftCaseId = c.id;
+  }
+  Object.assign(c, v);
+  LOS_DB.saveCase(c);
+  alert('Draft saved! Case ID: '+c.id);
+}
+
+function submitApplication(){
+  var v = collectFormValues();
+  if(!v.applicant || !v.amount){
+    alert('Please enter at least applicant name and loan amount before continuing.');
+    return;
+  }
+  var newCase = draftCaseId ? LOS_DB.getCase(draftCaseId) : null;
+  if(!newCase){
+    newCase = { id: LOS_DB.nextCaseId(), status: 'NEW' };
+  }
+  Object.assign(newCase, v);
+  LOS_DB.saveCase(newCase);
+
+  var r1 = WorkflowEngine.transition(newCase.id, 'assign', { actorRole: 'BI' });
+  if(!r1.success){ alert(r1.error); return; }
+  var r2 = WorkflowEngine.transition(newCase.id, 'startApplication', { actorRole: 'BI' });
+  if(!r2.success){ alert(r2.error); return; }
+
+  location.href = 'bi-security-selection.html?caseId=' + newCase.id;
+}
+</script></body></html>

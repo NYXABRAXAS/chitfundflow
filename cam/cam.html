@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Credit Appraisal Memo — MCF LOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../assets/css/common.css">
+<style>
+@media print { #camActions, #sidebar, header { display:none !important; } .cam-section{ break-inside: avoid; } }
+.cam-section{margin-bottom:16px}
+.cam-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.cam-field{background:#f8fafc;border-radius:8px;padding:8px 10px}
+.cam-field .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#94a3b8;font-weight:600}
+.cam-field .val{font-size:13px;color:#1e293b;font-weight:600;margin-top:2px}
+.grade-badge{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;font-size:22px;font-weight:800;color:#fff}
+</style>
+</head>
+<body class="bg-slate-100">
+<div class="max-w-5xl mx-auto p-6" id="camRoot">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <div class="text-xs text-slate-400"><a href="../case-details.html" class="hover:underline">Case Details</a> › Credit Appraisal Memo</div>
+      <h1 class="text-xl font-black text-slate-800 mt-1">Credit Appraisal Memo — <span id="camCaseId"></span></h1>
+    </div>
+    <div id="camActions" class="flex gap-2">
+      <button onclick="history.back()" class="btn-outline">← Back</button>
+      <button onclick="window.print()" class="btn-outline">🖨️ Print / Save PDF</button>
+      <button id="genCamBtn" class="btn-primary" style="display:none">Generate CAM</button>
+    </div>
+  </div>
+
+  <div id="camNotReady" class="card p-6 text-center text-slate-500" style="display:none">
+    This case has not reached Field Investigation completion yet, so a CAM cannot be generated.
+  </div>
+
+  <div id="camBody" style="display:none">
+    <div class="card p-5 mb-4 flex items-center gap-6">
+      <div id="gradeBadge" class="grade-badge">A</div>
+      <div>
+        <div class="text-slate-500 text-xs">Final Weighted Risk Score</div>
+        <div class="text-2xl font-black text-slate-800" id="finalScoreVal">--</div>
+        <div class="text-sm font-semibold" id="decisionText"></div>
+      </div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">A. Current Proposal</div>
+      <div class="text-xs font-semibold text-slate-500 mb-1">Subscriber Details</div>
+      <div class="cam-grid mb-3" id="secA_sub"></div>
+      <div class="text-xs font-semibold text-slate-500 mb-1">Chit Details</div>
+      <div class="cam-grid mb-3" id="secA_chit"></div>
+      <div class="text-xs font-semibold text-slate-500 mb-1">Prize & Liability</div>
+      <div class="cam-grid mb-3" id="secA_prize"></div>
+      <div class="text-xs font-semibold text-slate-500 mb-1">Sourcing Details</div>
+      <div class="cam-grid" id="secA_source"></div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">B. Customer One View Summary</div>
+      <div class="cam-grid" id="secB"></div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">C. Earlier Sanction / Deviation Conditions</div>
+      <textarea class="form-input" id="secC" rows="2"></textarea>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">D. Security Offered for Liability</div>
+      <div class="overflow-x-auto"><table class="los-table w-full">
+        <thead><tr><th>Sl.No</th><th>Security Type</th><th>Name</th><th>Loyalty/USN No.</th><th>Free Value</th><th>Value Loaded</th></tr></thead>
+        <tbody id="secD"></tbody>
+        <tfoot id="secD_total"></tfoot>
+      </table></div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">E. Subscriber / Surety Details</div>
+      <div id="secE"></div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">F. Risk Appraisal Scoring</div>
+      <div class="overflow-x-auto"><table class="los-table w-full">
+        <thead><tr><th>Person</th><th>Positive Score</th><th>Negative Score</th><th>Final Score</th></tr></thead>
+        <tbody id="secF"></tbody>
+      </table></div>
+      <div class="text-xs text-slate-500 mt-2">Final Weighted Risk Score = SB Score × 60% + Average Guarantor Score × 40%</div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">G. Final Risk Grade & Decision Outcome</div>
+      <div class="cam-grid" id="secG"></div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">H. Deviation Approval Assessment Matrix</div>
+      <div id="secH_list" class="mb-3"></div>
+      <div class="cam-grid" id="secH_recommendation"></div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">I. Recommendation</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><div class="form-label">Branch Manager — Name</div><input class="form-input mb-2" id="secI_bmName">
+          <div class="form-label">Comments / Justification</div><textarea class="form-input" id="secI_bmComments" rows="2"></textarea></div>
+        <div><div class="form-label">Regional Manager — Name</div><input class="form-input mb-2" id="secI_rmName">
+          <div class="form-label">Comments / Justification</div><textarea class="form-input" id="secI_rmComments" rows="2"></textarea></div>
+      </div>
+    </div>
+
+    <div class="card p-5 cam-section">
+      <div class="font-bold text-slate-700 mb-3">J. Approvals</div>
+      <div class="overflow-x-auto"><table class="los-table w-full">
+        <thead><tr><th>Level</th><th>Approver Name</th><th>Designation</th><th>Comments</th><th>Deviations Called</th></tr></thead>
+        <tbody id="secJ"></tbody>
+      </table></div>
+      <button id="saveCamBtn" class="btn-primary mt-3">💾 Save CAM Edits</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config-data.js"></script>
+<script src="../assets/js/seed-data.js"></script>
+<script src="../assets/js/data-store.js"></script>
+<script src="../assets/js/session.js"></script>
+<script src="../assets/js/permissions.js"></script>
+<script src="../assets/js/audit-notify.js"></script>
+<script src="../assets/js/cam-engine.js"></script>
+<script src="../assets/js/workflow-engine.js"></script>
+<script>
+LOS_DB.init();
+var session = Session.get() || Session.login('FC');
+var params = new URLSearchParams(location.search);
+var caseId = params.get('caseId');
+var c = caseId ? LOS_DB.getCase(caseId) : null;
+document.getElementById('camCaseId').textContent = caseId || '(no case selected)';
+
+function field(label, val) {
+  return '<div class="cam-field"><div class="lbl">' + label + '</div><div class="val">' + (val == null || val === '' ? '—' : val) + '</div></div>';
+}
+function currency(n) { return n == null ? '—' : '₹' + Number(n).toLocaleString('en-IN'); }
+
+function renderCam() {
+  if (!c) { document.getElementById('camNotReady').style.display = ''; document.getElementById('camNotReady').textContent = 'No case selected. Open a case from Case Details and use "View CAM".'; return; }
+
+  var stageOk = ['FI_COMPLETED','FINAL_CHECK','DEVIATION_PENDING','CREDIT_REVIEW','IN_PRINCIPAL_APPROVED','FINAL_APPROVAL','BUSINESS_APPROVED','READY_DISBURSEMENT','CLOSED'].indexOf(c.status) !== -1;
+  if (!c.cam && c.status === 'FI_COMPLETED' && Permissions.canPerform(session.role, 'camGenerate')) {
+    document.getElementById('genCamBtn').style.display = '';
+    document.getElementById('genCamBtn').onclick = function () {
+      var res = WorkflowEngine.transition(c.id, 'generateCAM', { actorRole: session.role });
+      if (res.success) { c = res.case; renderCam(); } else { alert(res.error); }
+    };
+  }
+  if (!c.cam) {
+    document.getElementById('camNotReady').style.display = '';
+    document.getElementById('camBody').style.display = 'none';
+    if (!stageOk) document.getElementById('camNotReady').textContent = 'This case has not reached Field Investigation completion yet, so a CAM cannot be generated.';
+    else document.getElementById('camNotReady').textContent = 'CAM not generated yet for this case. Click "Generate CAM" above.';
+    return;
+  }
+  document.getElementById('camNotReady').style.display = 'none';
+  document.getElementById('camBody').style.display = '';
+  var cam = c.cam;
+
+  var gradeColors = { A: '#16a34a', B: '#2563eb', C: '#d97706', D: '#dc2626' };
+  document.getElementById('gradeBadge').style.background = gradeColors[cam.sectionG.grade] || '#64748b';
+  document.getElementById('gradeBadge').textContent = cam.sectionG.grade;
+  document.getElementById('finalScoreVal').textContent = cam.sectionG.score + ' / 100';
+  document.getElementById('decisionText').textContent = cam.sectionG.label + ' — ' + cam.sectionG.decision;
+
+  var a = cam.sectionA;
+  document.getElementById('secA_sub').innerHTML = field('Name of Subscriber', a.subscriber.name) + field('Loyalty Number', a.subscriber.loyaltyNumber) + field('Auction Date', a.subscriber.auctionDate) + field('Bid Loss', currency(a.subscriber.bidLoss));
+  document.getElementById('secA_chit').innerHTML = field('Chit No.', a.chit.chitNo) + field('Chit Amount', currency(a.chit.chitAmount)) + field('Chit Period', a.chit.chitPeriod + ' months') + field('Monthly Instalment', currency(a.chit.monthlyInstalment)) + field('Enrolment Type', a.chit.enrolmentType);
+  document.getElementById('secA_prize').innerHTML = field('Prize Money', currency(a.prizeLiability.prizeMoney)) + field('Instalments Paid', a.prizeLiability.instalmentsPaid) + field('Instalments Remaining', a.prizeLiability.instalmentsRemaining) + field('Future Liability', currency(a.prizeLiability.futureLiability)) + field('Insurance Opted', a.prizeLiability.insuranceOpted);
+  document.getElementById('secA_source').innerHTML = field('Sourcing Channel', a.sourcing.channel) + field('Employee Name', a.sourcing.employeeName) + field('Branch Name', a.sourcing.branchName) + field('Enrollment Date', a.sourcing.enrollmentDate);
+
+  var b = cam.sectionB;
+  document.getElementById('secB').innerHTML = field('No. of Live Chits', b.liveChits) + field('Total Value of Chits Held', currency(b.totalChitValue)) + field('Monthly Chit Commitment', currency(b.monthlyChitCommitment)) + field('Overdue Instalments', b.overdueInstalments) + field('Total Amount Overdue', currency(b.totalOverdue)) + field('Terminated Chits', b.terminatedChits) + field('Suit Filed', b.suitFiled) + field('Suspense Balance', currency(b.suspenseBalance)) + field('USN Free Value', currency(b.usnFreeValue)) + field('Direct Exposure', currency(b.directExposure)) + field('Indirect Exposure', currency(b.indirectExposure)) + field('Security Coverage Ratio', b.securityCoverageRatio) + field('Guarantors Obtained', b.guarantorsObtained);
+
+  document.getElementById('secC').value = cam.sectionC.earlierSanctionNotes;
+
+  document.getElementById('secD').innerHTML = (cam.sectionD.securities || []).map(function (s) {
+    return '<tr><td>' + s.slNo + '</td><td>' + s.type + '</td><td>' + s.name + '</td><td>' + s.loyaltyUsn + '</td><td>' + currency(s.freeValue) + '</td><td>' + currency(s.valueLoaded) + '</td></tr>';
+  }).join('') || '<tr><td colspan="6" class="text-center text-slate-400">No securities on file</td></tr>';
+  document.getElementById('secD_total').innerHTML = '<tr><td colspan="5" class="text-right font-semibold">Total</td><td class="font-bold">' + currency(cam.sectionD.total) + '</td></tr>';
+
+  var people = [cam.sectionE.subscriber].concat(cam.sectionE.guarantors);
+  document.getElementById('secE').innerHTML = people.map(function (p) {
+    return '<div class="cam-field mb-2"><div class="lbl">' + p.role + ' — ' + p.name + '</div>' +
+      '<div class="cam-grid mt-2">' + field('Employment/Business Type', p.employmentType) + field('Credit Score', p.creditScore) + field('FOIR', (p.foir*100).toFixed(1)+'%') + field('Gross Income', currency(p.grossIncome)) + field('Net Income', currency(p.netIncome)) + field('Direct Exposure', currency(p.directExposure)) + field('Indirect Exposure', currency(p.indirectExposure)) + '</div></div>';
+  }).join('');
+
+  document.getElementById('secF').innerHTML =
+    '<tr><td>Subscriber (SB)</td><td>' + cam.sectionF.sb.positive + '</td><td>' + cam.sectionF.sb.negative + '</td><td class="font-bold">' + cam.sectionF.sb.final + '</td></tr>' +
+    cam.sectionF.guarantors.map(function (g, i) { return '<tr><td>Guarantor ' + (i+1) + '</td><td>' + g.positive + '</td><td>' + g.negative + '</td><td class="font-bold">' + g.final + '</td></tr>'; }).join('') +
+    '<tr class="bg-slate-50"><td colspan="3" class="text-right font-semibold">Final Weighted Risk Score</td><td class="font-black text-blue-700">' + cam.sectionF.finalWeightedScore + '</td></tr>';
+
+  document.getElementById('secG').innerHTML = field('Score', cam.sectionG.score) + field('Rating', cam.sectionG.grade + ' (' + cam.sectionG.label + ')') + field('Decision', cam.sectionG.decision);
+
+  document.getElementById('secH_list').innerHTML = (cam.sectionH.deviations || []).length
+    ? '<div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Code</th><th>Type</th><th>Status</th></tr></thead><tbody>' +
+      cam.sectionH.deviations.map(function (d) { return '<tr><td class="font-mono text-xs">' + d.code + '</td><td>' + d.type + '</td><td><span class="chip chip-yellow">' + d.status + '</span></td></tr>'; }).join('') + '</tbody></table></div>'
+    : '<div class="text-slate-400 text-sm">No policy deviations triggered for this case.</div>';
+  var rec = cam.sectionH.approvalRecommendation;
+  document.getElementById('secH_recommendation').innerHTML = field('Overall Deviation', rec.overallDeviation) + field('Key Risks Identified', rec.keyRisks || '—') + field('Risk Mitigants', rec.mitigants || '—') + field('Decision', rec.decision || 'Pending');
+
+  document.getElementById('secI_bmName').value = cam.sectionI.branchManager.name || '';
+  document.getElementById('secI_bmComments').value = cam.sectionI.branchManager.comments || '';
+  document.getElementById('secI_rmName').value = cam.sectionI.regionalManager.name || '';
+  document.getElementById('secI_rmComments').value = cam.sectionI.regionalManager.comments || '';
+
+  document.getElementById('secJ').innerHTML = cam.sectionJ.levels.map(function (lvl, i) {
+    return '<tr><td>Level ' + lvl.level + '</td>' +
+      '<td><input class="form-input" data-j="' + i + '" data-f="approverName" value="' + (lvl.approverName||'') + '"></td>' +
+      '<td><input class="form-input" data-j="' + i + '" data-f="designation" value="' + (lvl.designation||'') + '"></td>' +
+      '<td><input class="form-input" data-j="' + i + '" data-f="comments" value="' + (lvl.comments||'') + '"></td>' +
+      '<td><input class="form-input" data-j="' + i + '" data-f="deviationsCalled" value="' + (lvl.deviationsCalled||'') + '"></td></tr>';
+  }).join('');
+
+  var canEdit = Permissions.canPerform(session.role, 'camEdit');
+  document.getElementById('saveCamBtn').style.display = canEdit ? '' : 'none';
+  document.querySelectorAll('#secC, #secI_bmName, #secI_bmComments, #secI_rmName, #secI_rmComments, #secJ input').forEach(function (el) {
+    el.disabled = !canEdit;
+  });
+}
+
+document.getElementById('saveCamBtn') && document.getElementById('saveCamBtn').addEventListener('click', function () {
+  if (!c || !c.cam) return;
+  c.cam.sectionC.earlierSanctionNotes = document.getElementById('secC').value;
+  c.cam.sectionI.branchManager = { name: document.getElementById('secI_bmName').value, comments: document.getElementById('secI_bmComments').value };
+  c.cam.sectionI.regionalManager = { name: document.getElementById('secI_rmName').value, comments: document.getElementById('secI_rmComments').value };
+  document.querySelectorAll('#secJ input').forEach(function (el) {
+    var i = el.getAttribute('data-j'), f = el.getAttribute('data-f');
+    c.cam.sectionJ.levels[i][f] = el.value;
+  });
+  LOS_DB.saveCase(c);
+  AuditNotify.logAudit(c.id, session.role, 'saveCAM', 'CAM sections updated');
+  alert('CAM saved.');
+});
+
+renderCam();
+</script>
+</body></html>

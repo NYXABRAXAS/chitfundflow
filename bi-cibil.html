@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CIBIL Check — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Branch Initiator</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">CIBIL Check</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Branch Initiator › CIBIL Check</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6">
+<div class="grid grid-cols-1 gap-6">
+  <div class="card p-5">
+    <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Step 5: CIBIL / Credit Bureau Check — Case <span id="stepCaseIdLabel">--</span></div>
+    <!-- Applicant CIBIL -->
+    <div class="border border-slate-200 rounded-xl p-4 mb-4">
+      <div class="flex justify-between items-center mb-3">
+        <div class="font-semibold" id="cibilApplicantHeading">Primary Applicant — Mr. Ramesh G</div>
+        <span class="chip chip-green">Report Fetched</span>
+      </div>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="text-center p-4 bg-slate-50 rounded-xl">
+          <div class="text-4xl font-black text-green-600" id="cibilScoreNum">748</div>
+          <div class="text-xs text-slate-500 mt-1">CIBIL Score</div>
+          <div class="chip chip-green mt-2" id="cibilGradeChip">Good</div>
+        </div>
+        <div>
+          <div class="text-xs text-slate-500 mb-1">Active Loans</div>
+          <div class="font-bold text-lg">2</div>
+          <div class="text-xs text-slate-500 mt-2 mb-1">Total Outstanding</div>
+          <div class="font-bold text-orange-600">Rs. 4,85,000</div>
+        </div>
+        <div>
+          <div class="text-xs text-slate-500 mb-1">Overdue / DPD</div>
+          <div class="font-bold text-green-600">NIL</div>
+          <div class="text-xs text-slate-500 mt-2 mb-1">Enquiries (6 months)</div>
+          <div class="font-bold">3</div>
+        </div>
+        <div>
+          <div class="text-xs text-slate-500 mb-1">Report Date</div>
+          <div class="font-medium text-xs">16 Jan 2024 09:42</div>
+          <div class="text-xs text-slate-500 mt-2 mb-1">Bureau</div>
+          <div class="font-medium">TransUnion CIBIL</div>
+          <button onclick="alert('Downloading full report...')" class="btn-outline btn-sm text-xs mt-2">Download PDF</button>
+        </div>
+      </div>
+    </div>
+    <!-- Guarantor CIBIL -->
+    <div class="border border-slate-200 rounded-xl p-4 mb-4">
+      <div class="flex justify-between items-center mb-3">
+        <div class="font-semibold">Guarantor 1 — Mrs. Savithri Ramesh</div>
+        <button onclick="alert('Fetching CIBIL for guarantor...')" class="btn-primary btn-sm">Fetch Report</button>
+      </div>
+      <div class="p-4 bg-slate-50 rounded-lg text-sm text-slate-500">CIBIL report not yet fetched. Click Fetch Report to run bureau check.</div>
+    </div>
+    <!-- Scorecard preview -->
+    <div class="border border-blue-200 bg-blue-50 rounded-xl p-4">
+      <div class="font-semibold text-blue-800 mb-2">Credit Scorecard (Preliminary)</div>
+      <div class="grid grid-cols-3 gap-3 text-sm">
+        <div class="p-3 bg-white rounded-lg"><div class="text-slate-500 text-xs">CIBIL Score Factor</div><div class="font-bold text-green-700">+15 pts</div></div>
+        <div class="p-3 bg-white rounded-lg"><div class="text-slate-500 text-xs">DPD History</div><div class="font-bold text-green-700">+20 pts (Clean)</div></div>
+        <div class="p-3 bg-white rounded-lg"><div class="text-slate-500 text-xs">Enquiry Count</div><div class="font-bold text-yellow-600">-5 pts (3 enquiries)</div></div>
+        <div class="p-3 bg-white rounded-lg"><div class="text-slate-500 text-xs">Income / EMI Ratio</div><div class="font-bold text-green-700">+10 pts</div></div>
+        <div class="p-3 bg-white rounded-lg"><div class="text-slate-500 text-xs">Security LTV</div><div class="font-bold text-green-700">+15 pts</div></div>
+        <div class="p-3 bg-white rounded-lg border-2 border-blue-300"><div class="text-slate-500 text-xs">Total Score</div><div class="font-bold text-blue-700 text-lg">55 / 100</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="flex gap-3">
+    <a href="bi-guarantor.html" class="btn-outline">← Back</a>
+    <a href="bi-scorecard.html" id="cibilNextBtn" class="btn-primary">Next: Scorecard & Submit →</a>
+  </div>
+</div></main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('BI');
+
+/* ---- Case resolution (BI wizard convention) ---- */
+function resolveCase(){
+  var qId = new URLSearchParams(location.search).get('caseId');
+  var c = qId ? LOS_DB.getCase(qId) : null;
+  if(!c){
+    c = LOS_DB.getCases().filter(function(x){return x.status==='BRANCH_WIP'||x.status==='REVERTED';})
+      .sort(function(a,b){return new Date(b.updatedAt)-new Date(a.updatedAt);})[0] || null;
+  }
+  return c;
+}
+function showNoCaseNotice(disableEls){
+  var main = document.querySelector('main .grid') || document.querySelector('main');
+  if(main){
+    var notice = document.createElement('div');
+    notice.className = 'card p-4 bg-yellow-50 border border-yellow-200 text-sm text-yellow-800';
+    notice.textContent = 'No active application found to edit. Start a new application first.';
+    main.insertBefore(notice, main.firstChild);
+  }
+  (disableEls||[]).forEach(function(el){ if(el){ el.classList.add('opacity-50','pointer-events-none'); } });
+}
+
+var caseObj = resolveCase();
+
+function cibilGrade(score){
+  if(score >= 700) return { label: 'Good', chipClass: 'chip chip-green mt-2' };
+  if(score >= 650) return { label: 'Fair', chipClass: 'chip chip-yellow mt-2' };
+  return { label: 'Poor', chipClass: 'chip chip-red mt-2' };
+}
+
+function renderCibil(){
+  var idLabel = document.getElementById('stepCaseIdLabel');
+  if(idLabel) idLabel.textContent = caseObj ? caseObj.id : '(none)';
+  if(!caseObj) return;
+  // Use the case's existing seeded CIBIL value if not already fetched/stored; never invent a new random score.
+  if(caseObj.cibil == null) caseObj.cibil = 650;
+  var score = caseObj.cibil;
+  var grade = cibilGrade(score);
+
+  var heading = document.getElementById('cibilApplicantHeading');
+  if(heading) heading.textContent = 'Primary Applicant — ' + (caseObj.applicant || '');
+  var numEl = document.getElementById('cibilScoreNum');
+  if(numEl) numEl.textContent = score;
+  var chipEl = document.getElementById('cibilGradeChip');
+  if(chipEl){ chipEl.className = grade.chipClass; chipEl.textContent = grade.label; }
+
+  var existingSubscriber = caseObj.subscriber || {};
+  caseObj.subscriber = Object.assign({}, existingSubscriber, {
+    name: caseObj.applicant,
+    creditScore: caseObj.cibil,
+    foir: existingSubscriber.foir != null ? existingSubscriber.foir : 0.3,
+    kycTier: existingSubscriber.kycTier || 'moderate',
+    grossIncome: caseObj.income,
+    netIncome: Math.round((caseObj.income||0) * 0.85),
+    securityCoverageRatio: existingSubscriber.securityCoverageRatio != null ? existingSubscriber.securityCoverageRatio : 1
+  });
+
+  LOS_DB.saveCase(caseObj);
+}
+
+if(!caseObj){
+  showNoCaseNotice([document.getElementById('cibilNextBtn')]);
+} else {
+  renderCibil();
+}
+
+const CASES=[
+  {id:'MCF-2024-004521',customer:'Subrahmanyam C',loyalty:'MPC/CF/54657',branch:'HO Chennai',kurie:'A4/53/2020',draw:'3',prize:325000,fl:470000,security:'Gold + LIC',status:'BRANCH_WIP',statusLabel:'Branch WIP',sc:'blue',initiator:'Priya R',tat:3,sla:45,cibil:742,assigned:'2024-01-15',stage:2,pendingDays:1449},
+  {id:'MCF-2024-004522',customer:'Babyshalini K',loyalty:'MPC/CF/24452',branch:'Vallalar Nagar',kurie:'A4/61/2021',draw:'2',prize:195000,fl:282000,security:'FD + Personal Surety',status:'SCRUTINY_PENDING',statusLabel:'Scrutiny Pending',sc:'yellow',initiator:'Manoj T',tat:5,sla:12,cibil:698,assigned:'2024-01-13',stage:3,pendingDays:1414},
+  {id:'MCF-2024-004523',customer:'Porselvi M',loyalty:'MPC/CF/64084',branch:'HO Tirunelveli',kurie:'D3/13/2023',draw:'4',prize:350000,fl:425000,security:'Mortgage',status:'FI_INITIATED',statusLabel:'FI In Progress',sc:'purple',initiator:'Rekha S',tat:8,sla:6,cibil:715,assigned:'2024-01-10',stage:5,pendingDays:329},
+  {id:'MCF-2024-004524',customer:'Rajendran V',loyalty:'MPC/CF/38291',branch:'Madurai Central',kurie:'B2/08/2022',draw:'1',prize:500000,fl:680000,security:'Gold + Chit Passbook',status:'CREDIT_REVIEW',statusLabel:'Credit Review',sc:'indigo',initiator:'Sundar M',tat:12,sla:24,cibil:761,assigned:'2024-01-08',stage:7,pendingDays:210},
+  {id:'MCF-2024-004525',customer:'Meenakshi A',loyalty:'MPC/CF/91023',branch:'Coimbatore North',kurie:'C1/19/2023',draw:'6',prize:275000,fl:395000,security:'LIC Policy',status:'DEVIATION_PENDING',statusLabel:'Deviation Pending',sc:'orange',initiator:'Kavitha R',tat:9,sla:18,cibil:648,assigned:'2024-01-09',stage:6,pendingDays:445},
+  {id:'MCF-2024-004526',customer:'Krishnamurthy T',loyalty:'MPC/CF/55610',branch:'Trichy Main',kurie:'E5/02/2023',draw:'3',prize:420000,fl:570000,security:'Mortgage + FD',status:'READY_DISBURSEMENT',statusLabel:'Ready for Disbursement',sc:'green',initiator:'Anand K',tat:18,sla:48,cibil:789,assigned:'2024-01-05',stage:10,pendingDays:560},
+  {id:'MCF-2024-004527',customer:'Saraswathy N',loyalty:'MPC/CF/72341',branch:'Salem Branch',kurie:'F7/11/2022',draw:'2',prize:180000,fl:260000,security:'Sub-Debt',status:'DECLINED',statusLabel:'Declined',sc:'red',initiator:'Priya R',tat:14,sla:0,cibil:582,assigned:'2024-01-03',stage:0,pendingDays:302},
+  {id:'MCF-2024-004528',customer:'Venkatesan P',loyalty:'MPC/CF/43219',branch:'Erode Branch',kurie:'G3/07/2023',draw:'5',prize:460000,fl:620000,security:'Gold + Bank Guarantee',status:'BUSINESS_APPROVED',statusLabel:'Business Approved',sc:'teal',initiator:'Manoj T',tat:22,sla:0,cibil:812,assigned:'2023-12-28',stage:11,pendingDays:780},
+  {id:'MCF-2024-004529',customer:'Lakshmi Priya R',loyalty:'MPC/CF/68440',branch:'Madurai East',kurie:'H1/05/2022',draw:'1',prize:310000,fl:440000,security:'LIC + FD',status:'HUB_INWARD',statusLabel:'Hub Inward',sc:'cyan',initiator:'Rekha S',tat:6,sla:30,cibil:726,assigned:'2024-01-12',stage:4,pendingDays:190},
+  {id:'MCF-2024-004530',customer:'Balasubramanian K',loyalty:'MPC/CF/29874',branch:'Pondicherry',kurie:'I9/14/2023',draw:'3',prize:590000,fl:780000,security:'Demat NCD + Gold',status:'IN_PRINCIPAL_APPROVED',statusLabel:'In-Principal Approved',sc:'emerald',initiator:'Sundar M',tat:20,sla:36,cibil:798,assigned:'2024-01-04',stage:9,pendingDays:420},
+];
+const BADGE_MAP={blue:'bg-blue-100 text-blue-800',yellow:'bg-yellow-100 text-yellow-800',purple:'bg-purple-100 text-purple-800',indigo:'bg-indigo-100 text-indigo-800',orange:'bg-orange-100 text-orange-800',green:'bg-green-100 text-green-800',red:'bg-red-100 text-red-800',teal:'bg-teal-100 text-teal-800',cyan:'bg-cyan-100 text-cyan-800',emerald:'bg-emerald-100 text-emerald-800',gray:'bg-gray-100 text-gray-700'};
+function badge(label,color){return `<span class="px-2 py-0.5 rounded-full text-xs font-semibold ${BADGE_MAP[color]||BADGE_MAP.gray}">${label}</span>`}
+function slaColor(h){return h<=12?'text-red-600 font-bold':h<=24?'text-yellow-600 font-semibold':'text-green-600'}
+function cibilColor(s){return s>=700?'text-green-700 font-bold':s>=650?'text-yellow-600 font-semibold':'text-red-600 font-bold'}
+function curr(n){return '₹'+Number(n).toLocaleString('en-IN')}
+function renderCases(tbId,cases){
+  const tb=document.getElementById(tbId);if(!tb)return;
+  tb.innerHTML=(cases||CASES).map(c=>`<tr>
+    <td><a href="case-details.html" class="text-blue-600 font-semibold hover:underline text-xs">${c.id}</a></td>
+    <td><div class="font-medium text-xs">${c.customer}</div><div class="text-slate-400 text-xs">${c.loyalty}</div></td>
+    <td class="text-xs">${c.branch}</td>
+    <td class="text-xs">${c.security}</td>
+    <td class="text-xs font-semibold">${curr(c.fl)}</td>
+    <td><span class="${cibilColor(c.cibil)}">${c.cibil}</span></td>
+    <td>${badge(c.statusLabel,c.sc)}</td>
+    <td class="text-xs">${c.tat}d</td>
+    <td class="text-xs ${slaColor(c.sla)}">${c.sla>0?c.sla+'h':'—'}</td>
+    <td class="flex gap-1 flex-wrap"><a href="case-details.html" class="text-blue-600 text-xs font-medium hover:underline whitespace-nowrap">View →</a></td>
+  </tr>`).join('');
+}
+</script></body></html>

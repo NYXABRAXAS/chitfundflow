@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Credit Final Checker Dashboard — MCF LOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<link rel="stylesheet" href="assets/css/common.css"></head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-60 flex-shrink-0 bg-slate-900 flex flex-col h-screen">
+  <div class="px-5 py-4 border-b border-slate-700">
+    <div class="font-black text-white text-base tracking-tight">MCF LOS</div>
+    <div class="text-slate-400 text-xs mt-0.5">Muthoot Pappachan Chits</div>
+  </div>
+  <div class="px-3 py-3 border-b border-slate-700">
+    <div class="px-3 py-1.5 bg-slate-800 rounded-lg">
+      <div class="text-slate-400 text-xs">Logged in as</div>
+      <div id="sidebarRoleLabel" class="text-white text-xs font-semibold mt-0.5">Credit Final Checker</div>
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5"></nav>
+  <div class="px-4 py-3 border-t border-slate-700">
+    <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white text-xs transition">🔓 Logout</a>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-4 flex-shrink-0 sticky top-0 z-40">
+  <button id="sidebarToggle" class="lg:hidden p-1 rounded text-slate-500 hover:bg-slate-100">☰</button>
+  <div class="flex-1">
+    <div class="font-bold text-slate-800 text-base">Credit Final Checker Dashboard</div>
+    <div class="text-slate-400 text-xs mt-0.5">Home › Final Checker › Dashboard</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="relative hidden md:block">
+      <input class="pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-slate-200 rounded-lg w-48 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search cases...">
+      <span class="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+    </div>
+    <button id="notifBell" class="relative p-2 rounded-lg hover:bg-slate-100">
+      <span class="text-lg">🔔</span>
+      <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+    </button>
+    <div id="notifPanel" class="hidden absolute top-14 right-4 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-3">
+      <div class="font-semibold text-slate-700 mb-2 text-sm">Notifications</div>
+      <div id="notifList" class="space-y-2 text-xs"></div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100">
+        <div id="profileInitials" class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">PR</div>
+        <span id="profileName" class="text-xs font-medium hidden md:block">Profile</span>
+      </button>
+      <div id="profileDrop" class="hidden absolute right-0 top-10 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-50 py-1">
+        <a href="admin-settings.html" class="block px-3 py-2 text-xs hover:bg-slate-50">⚙️ Settings</a>
+        <a href="index.html" class="block px-3 py-2 text-xs hover:bg-slate-50 text-red-600">🔓 Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+<div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-yellow-50 text-yellow-700">📋</div><div><div class="text-slate-500 text-xs">Pending Verification</div><div class="text-slate-800 text-2xl font-bold mt-0.5">12</div><div class="text-slate-400 text-xs">Document review due</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-orange-50 text-orange-600">🔍</div><div><div class="text-slate-500 text-xs">FI Approval Pending</div><div class="text-slate-800 text-2xl font-bold mt-0.5">5</div><div class="text-slate-400 text-xs">FI reports to review</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">➡️</div><div><div class="text-slate-500 text-xs">Pending Recommendation</div><div class="text-slate-800 text-2xl font-bold mt-0.5">8</div><div class="text-slate-400 text-xs">Ready to forward</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">✅</div><div><div class="text-slate-500 text-xs">Completed Today</div><div class="text-slate-800 text-2xl font-bold mt-0.5">7</div><div class="text-slate-400 text-xs">Verified & forwarded</div></div></div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="lg:col-span-2 space-y-4">
+<div class="card"><div class="flex items-center justify-between px-5 py-4 border-b border-slate-100"><div><div class="font-semibold text-slate-800">Case Queue</div><div class="text-xs text-slate-400">Live queue</div></div><div class="flex gap-2"><select class="text-xs border border-slate-200 rounded-lg px-2 py-1.5"><option>All</option><option>High Priority</option></select><button class="btn-outline text-xs px-3 py-1.5">Export</button></div></div><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Case ID</th><th>Customer</th><th>Branch</th><th>Security</th><th>FL</th><th>CIBIL</th><th>Status</th><th>TAT</th><th>SLA</th><th>Action</th></tr></thead><tbody id="fcCaseTable"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between"><span class="text-xs text-slate-400">Showing 10 results</span><div class="flex gap-1"><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">2</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div></div></div>
+    </div>
+    <div class="space-y-4">
+      <div class="card p-5">
+        <div class="font-semibold text-slate-800 mb-3">Final Checklist</div>
+        <div class="space-y-2 text-xs">
+          <label class="flex items-center gap-2 p-2 bg-green-50 rounded-lg"><input type="checkbox" class="accent-green-600" checked>KYC Documents — All 4 parties</label>
+          <label class="flex items-center gap-2 p-2 bg-green-50 rounded-lg"><input type="checkbox" class="accent-green-600" checked>Income Proof — Bank Stmt 12m</label>
+          <label class="flex items-center gap-2 p-2 bg-green-50 rounded-lg"><input type="checkbox" class="accent-green-600" checked>Security Documents — Gold GP-1</label>
+          <label class="flex items-center gap-2 p-2 bg-green-50 rounded-lg"><input type="checkbox" class="accent-green-600" checked>Personal Guarantee — PG-1</label>
+          <label class="flex items-center gap-2 p-2 bg-yellow-50 rounded-lg border border-yellow-200"><input type="checkbox" class="accent-yellow-600">FI Report — Geo-tagged photos</label>
+          <label class="flex items-center gap-2 p-2 bg-red-50 rounded-lg border border-red-200"><input type="checkbox" class="accent-red-600">CIBIL Report — All parties</label>
+          <label class="flex items-center gap-2 p-2 bg-green-50 rounded-lg"><input type="checkbox" class="accent-green-600" checked>DPN — MD-1</label>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button class="flex-1 btn-success text-xs py-2" onclick="alert('Case forwarded to Recommending Authority!')">Forward →</button>
+          <button class="flex-1 btn-warning text-xs py-2" onclick="alert('Deviation raised!')">Raise Deviation</button>
+        </div>
+      </div>
+      <div class="card p-5">
+        <div class="font-semibold text-slate-800 mb-3">Compliance Alerts</div>
+        <div class="space-y-2">
+          <div class="flex items-start gap-2 p-2 bg-red-50 rounded-lg"><span class="text-red-500 text-sm flex-shrink-0">🚨</span><div class="text-xs"><div class="font-semibold text-red-700">CIBIL Below Threshold</div><div class="text-red-500">MCF-2024-004525 — Score 648</div></div></div>
+          <div class="flex items-start gap-2 p-2 bg-yellow-50 rounded-lg"><span class="text-yellow-500 text-sm flex-shrink-0">⚠️</span><div class="text-xs"><div class="font-semibold text-yellow-700">FI Pending</div><div class="text-yellow-500">MCF-2024-004523 — 6h SLA left</div></div></div>
+          <div class="flex items-start gap-2 p-2 bg-blue-50 rounded-lg"><span class="text-blue-500 text-sm flex-shrink-0">ℹ️</span><div class="text-xs"><div class="font-semibold text-blue-700">Income Gap</div><div class="text-blue-500">MCF-2024-004529 — BSA review needed</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div></main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('FC');
+
+function badge(st){const m={'BRANCH_WIP':'bg-yellow-100 text-yellow-800','SCRUTINY_PENDING':'bg-blue-100 text-blue-800','DISPATCHED':'bg-cyan-100 text-cyan-800','HUB_INWARD':'bg-indigo-100 text-indigo-800','FI_INITIATED':'bg-purple-100 text-purple-800','FI_COMPLETED':'bg-violet-100 text-violet-800','FINAL_CHECK':'bg-orange-100 text-orange-800','DEVIATION_PENDING':'bg-pink-100 text-pink-800','CREDIT_REVIEW':'bg-rose-100 text-rose-800','IN_PRINCIPAL_APPROVED':'bg-green-100 text-green-800','READY_DISBURSEMENT':'bg-teal-100 text-teal-800','BUSINESS_APPROVED':'bg-emerald-100 text-emerald-800','CLOSED':'bg-slate-100 text-slate-700','DECLINED':'bg-red-100 text-red-800'};return '<span class="px-2 py-0.5 rounded-full text-xs font-semibold '+(m[st]||'bg-slate-100 text-slate-700')+'">'+st+'</span>'}
+function curr(n){return n==null?'--':'₹'+Number(n).toLocaleString('en-IN')}
+function slaColor(s){return s&&s.includes('day')?'text-orange-600':'text-slate-500'}
+function cibilColor(n){return n>=750?'text-green-600':n>=700?'text-yellow-600':'text-red-600'}
+
+function doAction(caseId, action, payload){
+  var res = WorkflowEngine.transition(caseId, action, {actorRole: session.role, payload: payload||{}});
+  if(!res.success){ alert(res.error); return; }
+  renderQueues();
+}
+
+function fiCompletedRowActions(c){
+  var fresh = LOS_DB.getCase(c.id);
+  if(fresh && fresh.fiReport && fresh.fiReport.recommendation === 'NOT_RECOMMEND'){
+    return '<button onclick="doAction(\''+c.id+'\',\'negativeFI\')" class="btn-danger btn-sm text-xs">Decline (Negative FI)</button>';
+  }
+  return '<button onclick="doAction(\''+c.id+'\',\'generateCAM\')" class="btn-primary btn-sm text-xs">Generate CAM</button>';
+}
+
+function finalCheckRowActions(c){
+  var devs = WorkflowEngine.checkDeviations(c);
+  var primary = devs.length
+    ? '<button onclick="doAction(\''+c.id+'\',\'raiseDeviation\')" class="btn-warning btn-sm text-xs">Raise Deviation</button>'
+    : '<button onclick="doAction(\''+c.id+'\',\'forwardToCredit\')" class="btn-success btn-sm text-xs">Forward to Credit</button>';
+  return '<div class="flex flex-wrap gap-1">'+primary+
+    '<button onclick="doAction(\''+c.id+'\',\'creditReject\')" class="btn-danger btn-sm text-xs">Reject</button>'+
+    '<button onclick="doAction(\''+c.id+'\',\'docMissing\')" class="btn-outline btn-sm text-xs">Return - Doc Missing</button>'+
+    '<button onclick="doAction(\''+c.id+'\',\'requireCollateral\')" class="btn-outline btn-sm text-xs">Require Collateral</button>'+
+    '<a href="cam/cam.html?caseId='+c.id+'" target="_blank" class="btn-outline btn-sm text-xs">View CAM</a>'+
+  '</div>';
+}
+
+function renderQueues(){
+  var fiCompleted = LOS_DB.getCases({status:'FI_COMPLETED'});
+  var finalCheck = LOS_DB.getCases({status:'FINAL_CHECK'});
+  var all = fiCompleted.concat(finalCheck);
+  document.getElementById('fcCaseTable').innerHTML = all.map(function(c){
+    var actions = c.status==='FI_COMPLETED' ? fiCompletedRowActions(c) : finalCheckRowActions(c);
+    return '<tr>'+
+      '<td><a href="case-details.html?caseId='+c.id+'" class="text-blue-600 font-semibold hover:underline text-xs">'+c.id+'</a></td>'+
+      '<td class="font-semibold text-xs">'+c.applicant+'</td>'+
+      '<td class="text-xs">'+(c.branch||'--')+'</td>'+
+      '<td class="text-xs">'+(c.security||'--')+'</td>'+
+      '<td class="font-semibold text-xs text-emerald-700">'+curr(c.amount)+'</td>'+
+      '<td class="text-xs font-semibold '+cibilColor(c.cibil||0)+'">'+(c.cibil||'--')+'</td>'+
+      '<td>'+badge(c.status)+'</td>'+
+      '<td class="text-xs '+slaColor(c.sla||'')+'">'+(c.sla||'--')+'</td>'+
+      '<td class="text-xs">'+(c.sla||'--')+'</td>'+
+      '<td>'+actions+'</td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="10" class="text-center text-slate-400 py-6">No cases in queue</td></tr>';
+}
+
+document.querySelectorAll('[data-modal-close]').forEach(function(b){b.addEventListener('click',function(){var id=b.getAttribute('data-modal-close');var el=document.getElementById(id);if(el)el.classList.remove('open')})});
+  document.querySelectorAll('.modal-overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open')})});
+  // Sidebar toggle
+  var toggleBtn=document.getElementById('sidebarToggle');if(toggleBtn){toggleBtn.addEventListener('click',function(){document.getElementById('sidebar').classList.toggle('hidden')})}
+  // Tab system
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){var g=b.getAttribute('data-tab-group');var t=b.getAttribute('data-tab');document.querySelectorAll('[data-tab-group="'+g+'"].tab-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');document.querySelectorAll('[data-tab-group="'+g+'"][data-tab-content]').forEach(function(x){x.style.display=x.getAttribute('data-tab-content')===t?'':'none'})})});
+  // Activate first tab in each group
+  var groups={};document.querySelectorAll('.tab-btn').forEach(function(b){var g=b.getAttribute('data-tab-group');if(!groups[g]){groups[g]=true;b.click()}});
+  // Notification bell
+  var bell=document.getElementById('notifBell');var panel=document.getElementById('notifPanel');if(bell&&panel){bell.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('hidden')});document.addEventListener('click',function(){if(panel)panel.classList.add('hidden')})}
+  // Profile dropdown
+  var prof=document.getElementById('profileBtn');var pdrop=document.getElementById('profileDrop');if(prof&&pdrop){prof.addEventListener('click',function(e){e.stopPropagation();pdrop.classList.toggle('hidden')});document.addEventListener('click',function(){if(pdrop)pdrop.classList.add('hidden')})}
+
+renderQueues();
+</script></body></html>

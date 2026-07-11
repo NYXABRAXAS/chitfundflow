@@ -1,0 +1,12 @@
+[
+  {"code":"BR-001","name":"Chennai HO","state":"Tamil Nadu","category":"Metro South","zone":"South Zone","manager":"Smt. Leela Rajan","staff":54,"activeCases":18,"hub":"Chennai Hub","status":"Active"},
+  {"code":"BR-002","name":"Trichy Main","state":"Tamil Nadu","category":"Metro North","zone":"South Zone","manager":"Mr. Prabu Kumar","staff":41,"activeCases":12,"hub":"Trichy Hub","status":"Active"},
+  {"code":"BR-003","name":"Madurai Central","state":"Tamil Nadu","category":"Metro South","zone":"South Zone","manager":"Mr. Arjun Naidu","staff":38,"activeCases":10,"hub":"Madurai Hub","status":"Active"},
+  {"code":"BR-004","name":"Coimbatore North","state":"Tamil Nadu","category":"Metro North","zone":"West Zone","manager":"Ms. Deepa Srinivasan","staff":29,"activeCases":8,"hub":"Coimbatore Hub","status":"Active"},
+  {"code":"BR-005","name":"Salem Branch","state":"Tamil Nadu","category":"Semi-Urban","zone":"West Zone","manager":"Mr. Kumar Raja","staff":22,"activeCases":6,"hub":"Coimbatore Hub","status":"Active"},
+  {"code":"BR-006","name":"Erode Branch","state":"Tamil Nadu","category":"Semi-Urban","zone":"West Zone","manager":"Ms. Preethi M","staff":17,"activeCases":5,"hub":"Coimbatore Hub","status":"Active"},
+  {"code":"BR-007","name":"Tirunelveli","state":"Tamil Nadu","category":"Metro South","zone":"South Zone","manager":"Mr. Gopi Krishnan","staff":33,"activeCases":9,"hub":"Madurai Hub","status":"Active"},
+  {"code":"BR-008","name":"Vellore Branch","state":"Tamil Nadu","category":"Semi-Urban","zone":"North Zone","manager":"Ms. Rani Sundar","staff":14,"activeCases":4,"hub":"Chennai Hub","status":"Active"},
+  {"code":"BR-009","name":"Pondicherry","state":"Puducherry","category":"Urban","zone":"East Zone","manager":"Mr. Kannan R","staff":11,"activeCases":3,"hub":"Chennai Hub","status":"Active"},
+  {"code":"BR-010","name":"Kochi Hub","state":"Kerala","category":"Metro","zone":"West Zone","manager":"Mr. Suresh Nair","staff":19,"activeCases":6,"hub":"Chennai Hub","status":"Inactive"}
+]

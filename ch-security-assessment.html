@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Security Assessment — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Credit Hub Controller</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Security Assessment</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Credit Hub › Security Assessment</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBell" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div id="profileName" class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div id="profileRole" class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6">
+<div class="grid grid-cols-1 gap-6">
+  <div class="card p-4 flex items-center gap-4">
+    <div class="flex-1">
+      <div class="flex items-center gap-2 mb-1">
+        <label class="form-label" style="margin-bottom:0">Case</label>
+        <select id="caseSelect" class="form-select text-xs" style="width:auto" onchange="loadCase(this.value)"></select>
+      </div>
+      <div id="caseHeadline" class="font-semibold">--</div>
+      <div id="caseMeta" class="text-sm text-slate-500">--</div>
+    </div>
+    <span id="docVerifyChip" class="chip chip-slate">Doc Verification: --</span>
+  </div>
+  <!-- Gold assessment -->
+  <div class="card p-5">
+    <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Gold Security Assessment</div>
+    <div class="grid grid-cols-3 gap-4">
+      <div><label class="form-label">Gross Weight Verified (g)</label><input class="form-input" id="grossWeight" value="142"></div>
+      <div><label class="form-label">Net Weight Verified (g)</label><input class="form-input" id="netWeight" value="116" oninput="calcAssess()"></div>
+      <div><label class="form-label">Purity Tested</label><select class="form-select" id="purity" onchange="calcAssess()"><option>22K</option><option>18K</option><option>24K</option></select></div>
+      <div><label class="form-label">Market Rate Today (₹/g)</label><input class="form-input" id="marketRate" value="6250" oninput="calcAssess()"></div>
+      <div><label class="form-label">Market Value (Auto)</label><div class="form-input bg-slate-50 font-bold text-blue-700" id="mktVal">--</div></div>
+      <div><label class="form-label">LTV @ 75% (Auto)</label><div class="form-input bg-slate-50 font-bold text-green-700" id="ltvCalc">--</div></div>
+      <div><label class="form-label">Empanelled Valuer</label><input class="form-input" value="M/s. Sri Ganesh Jewellers, Chennai"></div>
+      <div><label class="form-label">Valuation Date</label><input class="form-input" type="date" value="2024-01-16"></div>
+      <div><label class="form-label">Hub Officer Sign-off</label><input class="form-input" id="hubSignoff" value=""></div>
+      <div class="col-span-3"><label class="form-label">Assessment Notes</label><textarea class="form-input" id="assessNotes" rows="2" placeholder="Notes on the security assessment..."></textarea></div>
+    </div>
+    <div class="mt-4 p-4 bg-green-50 rounded-xl border border-green-200">
+      <div class="font-semibold text-green-800 mb-2">Eligibility Summary</div>
+      <div class="grid grid-cols-4 gap-3 text-sm">
+        <div><div class="text-slate-500 text-xs">Branch Requested</div><div class="font-bold text-slate-800" id="sumRequested">--</div></div>
+        <div><div class="text-slate-500 text-xs">Hub Market Value</div><div class="font-bold text-blue-700" id="sumMarketValue">--</div></div>
+        <div><div class="text-slate-500 text-xs">Max Eligible (75% LTV)</div><div class="font-bold text-green-700" id="sumMaxEligible">--</div></div>
+        <div><div class="text-slate-500 text-xs">Variance</div><div class="font-bold text-red-600" id="sumVariance">--</div></div>
+      </div>
+      <div class="mt-2 text-xs text-orange-700 font-semibold" id="sumWarning"></div>
+    </div>
+  </div>
+  <div class="flex gap-3">
+    <button onclick="saveAssessment()" class="btn-primary">Save Assessment</button>
+    <button onclick="alert('Deviation flagged for review!')" class="btn-warning">Flag for Deviation</button>
+    <a href="ch-fi-assignment.html" class="btn-outline">Next: FI Assignment →</a>
+  </div>
+</div></main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('HUB');
+var currentCaseId = null;
+
+function curr(n){return n==null?'--':'₹'+Number(n).toLocaleString('en-IN')}
+
+function calcAssess(){
+  var c = currentCaseId ? LOS_DB.getCase(currentCaseId) : null;
+  var netWeight = Number(document.getElementById('netWeight').value)||0;
+  var rate = Number(document.getElementById('marketRate').value)||0;
+  var mktVal = Math.round(netWeight * rate);
+  var ltv = Math.round(mktVal * 0.75);
+  document.getElementById('mktVal').textContent = curr(mktVal);
+  document.getElementById('ltvCalc').textContent = curr(ltv);
+
+  var requested = c ? (c.amount||0) : 0;
+  document.getElementById('sumRequested').textContent = curr(requested);
+  document.getElementById('sumMarketValue').textContent = curr(mktVal);
+  document.getElementById('sumMaxEligible').textContent = curr(ltv);
+  var variance = requested - ltv;
+  var varianceEl = document.getElementById('sumVariance');
+  var warnEl = document.getElementById('sumWarning');
+  if(variance > 0){
+    varianceEl.textContent = 'Overshoot by ' + curr(variance);
+    varianceEl.className = 'font-bold text-red-600';
+    warnEl.textContent = '⚠️ Requested amount exceeds LTV cap. Deviation required or amount to be reduced.';
+  } else {
+    varianceEl.textContent = 'Within cap by ' + curr(-variance);
+    varianceEl.className = 'font-bold text-green-700';
+    warnEl.textContent = '✅ Requested amount is within the LTV cap.';
+  }
+}
+
+function loadCase(caseId){
+  var c = LOS_DB.getCase(caseId);
+  if(!c) return;
+  currentCaseId = caseId;
+  document.getElementById('caseHeadline').textContent = 'Case: '+c.id+' — '+(c.applicant||'--');
+  document.getElementById('caseMeta').textContent = 'Security Type: '+(c.security||'--')+' | Requested: '+curr(c.amount)+' | Status: '+(c.status||'--');
+  var verified = c.docVerification && c.docVerification.status==='VERIFIED';
+  var chip = document.getElementById('docVerifyChip');
+  chip.textContent = 'Doc Verification: ' + (verified ? 'PASS' : 'PENDING');
+  chip.className = 'chip ' + (verified ? 'chip-green' : 'chip-yellow');
+  document.getElementById('hubSignoff').value = session.employeeName + ' — ' + session.roleLabel;
+  var existing = c.securityAssessment;
+  document.getElementById('assessNotes').value = existing ? (existing.notes||'') : '';
+  calcAssess();
+}
+
+function renderCaseSelect(){
+  var cases = LOS_DB.getCases({status:'HUB_INWARD'});
+  var sel = document.getElementById('caseSelect');
+  sel.innerHTML = cases.map(function(c){return '<option value="'+c.id+'">'+c.id+' — '+(c.applicant||'--')+'</option>'}).join('') ||
+    '<option value="">No cases awaiting security assessment</option>';
+  if(cases.length) loadCase(cases[0].id);
+}
+
+function saveAssessment(){
+  if(!currentCaseId){alert('No case selected');return}
+  var c = LOS_DB.getCase(currentCaseId);
+  if(!c) return;
+  var notes = document.getElementById('assessNotes').value;
+  c.securityAssessment = {assessedBy: session.employeeName, notes: notes, ltvConfirmed: true};
+  LOS_DB.saveCase(c);
+  AuditNotify.logAudit(currentCaseId, 'HUB', 'securityAssess', 'Security assessment completed');
+  alert('Security assessment saved!');
+  renderCaseSelect();
+}
+
+renderCaseSelect();
+</script></body></html>

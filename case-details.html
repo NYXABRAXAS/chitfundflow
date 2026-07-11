@@ -1,0 +1,437 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Case Details — MCF LOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="assets/css/common.css">
+<style>
+.workflow-step{background:#e2e8f0;color:#64748b}
+.workflow-step.done{background:#16a34a;color:#fff}
+.workflow-step.active{background:#2563eb;color:#fff}
+.workflow-step.pending{background:#e2e8f0;color:#64748b}
+</style>
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-60 flex-shrink-0 bg-slate-900 flex flex-col h-screen">
+  <div class="px-5 py-4 border-b border-slate-700">
+    <div class="font-black text-white text-base tracking-tight">MCF LOS</div>
+    <div class="text-slate-400 text-xs mt-0.5">Muthoot Pappachan Chits</div>
+  </div>
+  <div class="px-3 py-3 border-b border-slate-700">
+    <div class="px-3 py-1.5 bg-slate-800 rounded-lg">
+      <div class="text-slate-400 text-xs">Logged in as</div>
+      <div id="sidebarRoleLabel" class="text-white text-xs font-semibold mt-0.5">System Admin</div>
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5"></nav>
+  <div class="px-4 py-3 border-t border-slate-700">
+    <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white text-xs transition">🔓 Logout</a>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-4 flex-shrink-0 sticky top-0 z-40">
+  <button id="sidebarToggle" class="lg:hidden p-1 rounded text-slate-500 hover:bg-slate-100">☰</button>
+  <div class="flex-1">
+    <div class="font-bold text-slate-800 text-base">Case Details</div>
+    <div class="text-slate-400 text-xs mt-0.5">Home › Cases › Case Details</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="relative hidden md:block">
+      <input class="pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-slate-200 rounded-lg w-48 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search cases...">
+      <span class="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+    </div>
+    <button id="notifBell" class="relative p-2 rounded-lg hover:bg-slate-100">
+      <span class="text-lg">🔔</span>
+      <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+    </button>
+    <div id="notifPanel" class="hidden absolute top-14 right-4 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-3">
+      <div class="font-semibold text-slate-700 mb-2 text-sm">Notifications</div>
+      <div id="notifList" class="space-y-2 text-xs"></div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100">
+        <div id="profileInitials" class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">PR</div>
+        <span id="profileName" class="text-xs font-medium hidden md:block">Profile</span>
+      </button>
+      <div id="profileDrop" class="hidden absolute right-0 top-10 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-50 py-1">
+        <a href="admin-settings.html" class="block px-3 py-2 text-xs hover:bg-slate-50">⚙️ Settings</a>
+        <a href="index.html" class="block px-3 py-2 text-xs hover:bg-slate-50 text-red-600">🔓 Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><!-- Workflow Tracker -->
+<div class="card p-4 mb-4">
+  <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Workflow Progress</div>
+  <div id="workflowTracker" class="flex items-start gap-1 overflow-x-auto pb-2"></div>
+</div>
+  <!-- Case Header -->
+  <div class="card p-5 mb-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div id="caseAvatar" class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-700 text-xl font-bold">--</div>
+        <div>
+          <div id="caseApplicantName" class="text-slate-800 font-bold text-lg">--</div>
+          <div id="caseSubline" class="text-slate-500 text-xs">--</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span id="caseStatusChip" class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2 py-0.5 rounded-full">--</span>
+            <span id="caseSlaText" class="text-xs text-yellow-600 font-semibold"></span>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="document.getElementById('auditModal').classList.remove('hidden')" class="btn-outline text-xs px-3 py-2">📜 Audit Trail</button>
+        <a id="downloadCamBtn" href="#" class="btn-outline text-xs px-3 py-2">📄 Download CAM</a>
+        <button onclick="window.print()" class="btn-outline text-xs px-3 py-2">🖨️ Print</button>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 mt-4 pt-4 border-t border-slate-100">
+      <div class="text-center"><div class="text-xs text-slate-400">Prize Money</div><div id="statPrize" class="font-bold text-slate-800">--</div></div>
+      <div class="text-center"><div class="text-xs text-slate-400">Future Liability</div><div id="statFL" class="font-bold text-red-700">--</div></div>
+      <div class="text-center"><div class="text-xs text-slate-400">CIBIL Score</div><div id="statCibil" class="font-bold text-green-700">--</div></div>
+      <div class="text-center"><div class="text-xs text-slate-400">TAT</div><div id="statTat" class="font-bold text-slate-800">--</div></div>
+      <div class="text-center"><div class="text-xs text-slate-400">Initiator</div><div id="statInitiator" class="font-bold text-slate-800">--</div></div>
+      <div class="text-center"><div class="text-xs text-slate-400">Assigned</div><div id="statAssigned" class="font-bold text-slate-800">--</div></div>
+    </div>
+  </div>
+
+  <!-- Main Tabs -->
+  <div class="card mb-4">
+    <div class="flex border-b border-slate-200 px-5 overflow-x-auto">
+      <button onclick="switchTab(this,'t1')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-blue-600 text-blue-600 whitespace-nowrap">Customer</button>
+      <button onclick="switchTab(this,'t2')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">Security</button>
+      <button onclick="switchTab(this,'t3')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">Documents</button>
+      <button onclick="switchTab(this,'t4')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">Guarantors</button>
+      <button onclick="switchTab(this,'t5')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">CIBIL</button>
+      <button onclick="switchTab(this,'t6')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">FI Report</button>
+      <button onclick="switchTab(this,'t7')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">Scorecard</button>
+      <button onclick="switchTab(this,'t8')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">CAM</button>
+      <button onclick="switchTab(this,'t9')" class="tab-btn text-xs font-semibold py-3 px-4 border-b-2 border-transparent text-slate-500 whitespace-nowrap">Dispatch</button>
+    </div>
+
+    <!-- Tab: Customer -->
+    <div id="t1" class="p-5 tab-content">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div><label class="form-label">Full Name</label><input class="form-input" value="Rajendran V" readonly></div>
+        <div><label class="form-label">Loyalty ID</label><input class="form-input" value="MPC/CF/38291" readonly></div>
+        <div><label class="form-label">Mobile</label><input class="form-input" value="94421 XXXXX" readonly></div>
+        <div><label class="form-label">Date of Birth</label><input class="form-input" value="15/06/1978" readonly></div>
+        <div><label class="form-label">PAN</label><input class="form-input" value="ABCDE1234F" readonly></div>
+        <div><label class="form-label">Aadhaar</label><input class="form-input" value="XXXX XXXX 5678" readonly></div>
+        <div><label class="form-label">Occupation</label><input class="form-input" value="Businessman" readonly></div>
+        <div><label class="form-label">Monthly Income</label><input class="form-input" value="₹1,45,000" readonly></div>
+        <div class="sm:col-span-2"><label class="form-label">Present Address</label><textarea class="form-input" rows="2" readonly>42, Race Course Road, Madurai — 625002, Tamil Nadu</textarea></div>
+        <div class="sm:col-span-2"><label class="form-label">Permanent Address</label><textarea class="form-input" rows="2" readonly>Same as Present Address</textarea></div>
+        <div><label class="form-label">Branch</label><input class="form-input" value="Madurai Central" readonly></div>
+        <div><label class="form-label">Kurie No</label><input class="form-input" value="B2/08/2022" readonly></div>
+        <div><label class="form-label">Draw No</label><input class="form-input" value="1" readonly></div>
+        <div><label class="form-label">Draw Date</label><input class="form-input" value="Jan 2024" readonly></div>
+        <div><label class="form-label">Prize Money</label><input class="form-input" value="₹5,00,000" readonly></div>
+        <div><label class="form-label">Future Liability</label><input class="form-input" value="₹6,80,000" readonly></div>
+        <div><label class="form-label">Pending Days</label><input class="form-input" value="210 days" readonly></div>
+        <div><label class="form-label">BidLoss</label><input class="form-input" value="—" readonly></div>
+      </div>
+    </div>
+
+    <!-- Tab: Security -->
+    <div id="t2" class="p-5 tab-content hidden">
+      <div id="securitySummary" class="mb-4 bg-slate-50 rounded-xl p-4 flex flex-wrap gap-4"></div>
+      <table class="los-table w-full">
+        <thead><tr><th>#</th><th>Security Type</th><th>Holder</th><th>USN / Ref</th><th>Free Value</th><th>Value Loaded</th></tr></thead>
+        <tbody id="securityRows"></tbody>
+      </table>
+    </div>
+
+    <!-- Tab: Documents -->
+    <div id="t3" class="p-5 tab-content hidden">
+      <div class="flex items-center justify-between mb-3">
+        <div class="text-sm font-semibold text-slate-700">Document Checklist — Auto-generated by CRM Document Linking Protocol</div>
+        <span class="text-xs text-green-700 font-semibold bg-green-50 px-2 py-1 rounded-lg">13/15 Verified</span>
+      </div>
+      <table class="los-table w-full text-xs">
+        <thead><tr><th>Form Code</th><th>Document</th><th>Party</th><th>Status</th><th>Uploaded By</th><th>Upload Date</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td class="font-mono text-blue-700">MD-1</td><td>Application Form</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>08 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-2</td><td>ID Proof — Aadhaar</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>08 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-3</td><td>Address Proof</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>08 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-5</td><td>Property Tax Receipt</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>08 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-7</td><td>PAN Card</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>08 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-13</td><td>Bank Statement 12m</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>09 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">GP-1</td><td>Gold Security Form</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>09 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">PB-1</td><td>Chit Passbook — Latest Entry</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>09 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">PB-2</td><td>Chit Pass Entry / Prize Cert</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>09 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">PB-3</td><td>Chit Group Statement</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>09 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-4</td><td>Income Proof — ITR 3yr</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>10 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-6</td><td>Passport Photographs (2)</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>10 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-8</td><td>Signature Verification</td><td>Subscriber</td><td><span class="text-green-700 font-semibold">Verified ✓</span></td><td>Sundar M</td><td>10 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">View</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-14</td><td>CIBIL Authorization</td><td>Subscriber</td><td><span class="text-yellow-700 font-semibold">Uploaded</span></td><td>Sundar M</td><td>11 Jan 2024</td><td><a href="admin-audit-logs.html" class="text-blue-600 hover:underline">Verify</a></td></tr>
+          <tr><td class="font-mono text-blue-700">MD-15</td><td>Additional Document</td><td>Subscriber</td><td><span class="text-slate-400 font-semibold">Pending</span></td><td>—</td><td>—</td><td><button onclick="alert('Upload document!')" class="text-blue-600 hover:underline">Upload</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab: Guarantors -->
+    <div id="t4" class="p-5 tab-content hidden">
+      <div class="flex items-center justify-between mb-3"><div class="font-semibold text-slate-700 text-sm">Guarantors & Third Parties</div></div>
+      <table class="los-table w-full text-xs">
+        <thead><tr><th>Type</th><th>Name</th><th>Employment/Business</th><th>Credit Score</th><th>Gross Income</th><th>Net Income</th><th>FOIR</th></tr></thead>
+        <tbody id="guarantorRows"></tbody>
+      </table>
+    </div>
+
+    <!-- Tab: CIBIL -->
+    <div id="t5" class="p-5 tab-content hidden">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl p-5 text-white">
+          <div class="text-green-100 text-xs font-semibold uppercase tracking-wider">CIBIL Score</div>
+          <div id="cibilScoreBig" class="text-6xl font-black mt-2">--</div>
+          <div id="cibilCategoryText" class="text-green-100 text-sm mt-1">--</div>
+          <div class="mt-3 bg-white/20 rounded-xl p-3 text-xs">
+            <div class="flex justify-between mb-1"><span>Score Range</span><span class="font-semibold">750–900</span></div>
+            <div class="flex justify-between"><span>Category</span><span class="font-semibold">Prime ★</span></div>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="stat-card p-3"><div class="text-xs text-slate-500">Total Active Accounts</div><div class="font-bold text-slate-800">4</div></div>
+          <div class="stat-card p-3"><div class="text-xs text-slate-500">Derogatory Marks</div><div class="font-bold text-green-700">None ✓</div></div>
+          <div class="stat-card p-3"><div class="text-xs text-slate-500">DPD > 30 (6 months)</div><div class="font-bold text-green-700">0 days ✓</div></div>
+          <div class="stat-card p-3"><div class="text-xs text-slate-500">Enquiries (6 months)</div><div class="font-bold text-green-700">1 (within limit) ✓</div></div>
+          <div class="stat-card p-3"><div class="text-xs text-slate-500">AML / PEP Status</div><div class="font-bold text-green-700">Clear ✓</div></div>
+        </div>
+      </div>
+      <table class="los-table w-full text-xs">
+        <thead><tr><th>Account Type</th><th>Lender</th><th>Outstanding</th><th>Limit</th><th>Status</th><th>DPD</th></tr></thead>
+        <tbody>
+          <tr><td>Home Loan</td><td>SBI</td><td>₹22,00,000</td><td>₹30,00,000</td><td><span class="text-green-700 font-semibold">Current</span></td><td>0</td></tr>
+          <tr><td>Business OD</td><td>HDFC</td><td>₹8,50,000</td><td>₹15,00,000</td><td><span class="text-green-700 font-semibold">Current</span></td><td>0</td></tr>
+          <tr><td>Credit Card</td><td>Axis Bank</td><td>₹32,000</td><td>₹5,00,000</td><td><span class="text-green-700 font-semibold">Current</span></td><td>0</td></tr>
+          <tr><td>Chit Finance</td><td>MPC</td><td>₹6,80,000</td><td>₹6,80,000</td><td><span class="text-green-700 font-semibold">Current</span></td><td>0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab: FI Report -->
+    <div id="t6" class="p-5 tab-content hidden">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-xs">
+        <div><div class="form-label">FI Agent</div><div class="font-semibold">Ramesh K</div></div>
+        <div><div class="form-label">Visit Date</div><div class="font-semibold">14 Jan 2024</div></div>
+        <div><div class="form-label">Visit Time</div><div class="font-semibold">10:30 AM</div></div>
+        <div><div class="form-label">GPS Coordinates</div><div class="font-semibold text-green-700">9.9252° N, 78.1198° E ✓</div></div>
+        <div><div class="form-label">Photos Uploaded</div><div class="font-semibold text-green-700">5 ✓</div></div>
+        <div><div class="form-label">KYC Video</div><div class="font-semibold text-green-700">Uploaded ✓</div></div>
+        <div><div class="form-label">Distance from Addr</div><div class="font-semibold">0.4 km ✓</div></div>
+        <div><div class="form-label">Overall Recommendation</div><div class="font-semibold text-green-700">POSITIVE ✓</div></div>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-4 mb-4">
+        <div class="font-semibold text-slate-700 text-xs mb-2">Questionnaire Results</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Applicant personally present at address</div>
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Address matches application</div>
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Residing > 2 years at address</div>
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Occupation matches observation</div>
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Income consistent with lifestyle</div>
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Property appears free of disputes</div>
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Neighbours confirmed details</div>
+          <div class="flex items-center gap-2 text-xs"><span class="text-green-600">✓</span>Applicant cooperative</div>
+        </div>
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-xs">
+        <div class="font-semibold text-green-800 mb-1">FI Agent Remarks:</div>
+        <div class="text-green-700">Property at Race Course Road, Madurai visited. 2-storey residential-cum-business property in excellent condition. Applicant (Rajendran V) was present and highly cooperative. Business operations verified — manufacturing unit observed on ground floor. Reputable neighbours confirmed residency > 8 years. Monthly turnover appears consistent with ₹1.4L income. No adverse observations. Strongly recommend.</div>
+      </div>
+    </div>
+
+    <!-- Tab: Scorecard -->
+    <div id="t7" class="p-5 tab-content hidden">
+      <div class="font-semibold text-slate-700 text-sm mb-4">Credit Risk Scorecard — MCF-2024-004524</div>
+      <table class="los-table w-full text-xs mb-4">
+        <thead><tr><th>Parameter</th><th>Weight</th><th>Score (1–5)</th><th>Weighted Score</th><th>Basis</th></tr></thead>
+        <tbody>
+          <tr><td class="font-medium">CIBIL Score</td><td>25%</td><td class="text-green-700 font-bold">5</td><td class="font-bold">1.25</td><td>761 — 750+</td></tr>
+          <tr><td class="font-medium">Repayment Capacity</td><td>20%</td><td class="text-green-700 font-bold">4</td><td class="font-bold">0.80</td><td>₹63,500 — High</td></tr>
+          <tr><td class="font-medium">Security Coverage Ratio</td><td>15%</td><td class="text-green-700 font-bold">5</td><td class="font-bold">0.75</td><td>100% — >130%</td></tr>
+          <tr><td class="font-medium">Income Stability</td><td>15%</td><td class="text-green-700 font-bold">3</td><td class="font-bold">0.45</td><td>Business > 3 years</td></tr>
+          <tr><td class="font-medium">Chit Track Record</td><td>10%</td><td class="text-green-700 font-bold">5</td><td class="font-bold">0.50</td><td>8+ years, no default</td></tr>
+          <tr><td class="font-medium">Property Ownership</td><td>5%</td><td class="text-green-700 font-bold">5</td><td class="font-bold">0.25</td><td>Own 2 properties</td></tr>
+          <tr><td class="font-medium">FI Recommendation</td><td>10%</td><td class="text-green-700 font-bold">5</td><td class="font-bold">0.50</td><td>Positive</td></tr>
+          <tr class="bg-green-50"><td colspan="2" class="font-bold text-slate-700">Composite Score</td><td class="font-bold text-green-700 text-base">4.7</td><td class="font-bold text-green-700">4.50</td><td><span class="bg-green-200 text-green-800 px-2 py-0.5 rounded-full font-semibold">PRIME — LOW RISK</span></td></tr>
+        </tbody>
+      </table>
+      <canvas id="scorecardChart" height="100"></canvas>
+    </div>
+
+    <!-- Tab: CAM -->
+    <div id="t8" class="p-5 tab-content hidden">
+      <div class="flex items-center justify-between mb-4">
+        <div class="font-semibold text-slate-700 text-sm">Credit Appraisal Memo — <span id="camTabCaseId"></span></div>
+        <a id="camTabLink" href="#" class="btn-primary text-xs px-3 py-1.5">📄 View Full CAM</a>
+      </div>
+      <div id="camTabSummary" class="space-y-3 text-xs"></div>
+    </div>
+
+    <!-- Tab: Dispatch -->
+    <div id="t9" class="p-5 tab-content hidden">
+      <div id="dispatchTabBody" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+    </div>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="card p-4 flex flex-wrap gap-3 items-center">
+    <div class="flex-1 text-sm text-slate-500">Current Stage: <span id="actionStageText" class="font-semibold text-indigo-700">--</span> &nbsp;·&nbsp; Pending Action by: <span id="actionOwnerText" class="font-semibold text-slate-700">--</span></div>
+    <div id="actionButtons" class="flex flex-wrap gap-2"></div>
+    <button onclick="document.getElementById('remarksModal').classList.add('open')" class="btn-outline text-sm">💬 Add Remarks</button>
+  </div>
+
+  <!-- Audit Trail Modal -->
+  <div id="auditModal" class="modal-overlay">
+    <div class="modal-box p-5">
+      <div class="flex items-center justify-between mb-3"><div class="font-semibold text-slate-800">Audit Trail</div><button data-modal-close="auditModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button></div>
+      <div id="auditModalBody" class="space-y-2 text-xs max-h-96 overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- Remarks Modal -->
+  <div id="remarksModal" class="modal-overlay">
+    <div class="modal-box p-5">
+      <div class="flex items-center justify-between mb-3"><div class="font-semibold text-slate-800">Add Remarks</div><button data-modal-close="remarksModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button></div>
+      <textarea id="remarksInput" class="form-input" rows="4" placeholder="Enter remarks / comments for this case..."></textarea>
+      <div class="flex gap-2 mt-3"><button data-modal-close="remarksModal" class="btn-outline flex-1">Cancel</button><button id="saveRemarkBtn" class="btn-primary flex-1">Save Remark</button></div>
+    </div>
+  </div>
+  </main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+var params = new URLSearchParams(location.search);
+var caseId = params.get('caseId');
+var c = caseId ? LOS_DB.getCase(caseId) : LOS_DB.getCases()[0];
+
+function curr(n){return n==null?'--':'₹'+Number(n).toLocaleString('en-IN')}
+function cibilColor(n){return n>=750?'text-green-600':n>=700?'text-yellow-600':'text-red-600'}
+function initialsOf(name){var p=(name||'').replace(/^(Mr\.|Mrs\.|Ms\.|Dr\.)\s*/,'').split(' ');return ((p[0]?p[0][0]:'')+(p[1]?p[1][0]:'')).toUpperCase()||'--'}
+
+function switchTab(btn, id){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('border-blue-600','text-blue-600');b.classList.add('border-transparent','text-slate-500')});
+  btn.classList.add('border-blue-600','text-blue-600');btn.classList.remove('border-transparent','text-slate-500');
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.add('hidden')});
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function renderWorkflowTracker(){
+  var mainStates = LOS_CONFIG.workflowStates.states.filter(function(s){return s.stage>=0}).sort(function(a,b){return a.stage-b.stage});
+  var curStage = c ? c.stage : 0;
+  var html = mainStates.map(function(s,i){
+    var cls = s.stage < curStage ? 'done' : (s.stage === curStage ? 'active' : 'pending');
+    var icon = cls==='done' ? '✓' : String(i+1);
+    var lineColor = cls==='pending' ? '#e2e8f0' : (cls==='active' ? '#2563eb' : '#16a34a');
+    var sep = i < mainStates.length-1 ? '<div class="flex-1 h-0.5 mt-4 rounded" style="background:'+lineColor+';min-width:4px"></div>' : '';
+    return '<div class="flex flex-col items-center gap-1 min-w-0"><div class="workflow-step '+cls+' w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">'+icon+'</div><div class="text-center"><div class="text-xs font-semibold text-slate-700 leading-none">'+s.code.replace(/_/g,' ')+'</div><div class="text-xs text-slate-400 mt-0.5">'+(LOS_CONFIG.workflowStates.roles[s.owner]?LOS_CONFIG.workflowStates.roles[s.owner].label:s.owner||'System')+'</div></div></div>'+sep;
+  }).join('');
+  document.getElementById('workflowTracker').innerHTML = html;
+}
+
+function renderActionButtons(){
+  var box = document.getElementById('actionButtons');
+  if(!c){box.innerHTML='';return}
+  var actions = WorkflowEngine.legalActions(c.status, session.role).filter(function(a){return !a.universal});
+  box.innerHTML = actions.map(function(a){
+    var cls = /reject|decline|revert/i.test(a.action) ? 'btn-danger' : /deviation|hold|collateral/i.test(a.action) ? 'btn-warning' : 'btn-success';
+    var label = a.action.replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase()});
+    return '<button onclick="doAction(\''+a.action+'\')" class="'+cls+' text-sm">'+label+'</button>';
+  }).join('') || '<span class="text-xs text-slate-400">No actions available for your role at this stage.</span>';
+}
+
+function doAction(action){
+  var res = WorkflowEngine.transition(c.id, action, {actorRole: session.role});
+  if(!res.success){alert(res.error);return}
+  c = res.case;
+  renderAll();
+}
+
+function renderAll(){
+  if(!c){document.getElementById('caseApplicantName').textContent='No case found';return}
+  document.getElementById('caseAvatar').textContent = initialsOf(c.applicant);
+  document.getElementById('caseApplicantName').textContent = c.applicant;
+  document.getElementById('caseSubline').textContent = (c.loyalty||'--')+'  ·  '+(c.branch||'--')+'  ·  '+c.id;
+  document.getElementById('caseStatusChip').textContent = (c.status||'').replace(/_/g,' ');
+  document.getElementById('caseSlaText').textContent = c.sla ? ('⏱ SLA: '+c.sla) : '';
+  document.getElementById('statPrize').textContent = curr(c.prize||c.amount);
+  document.getElementById('statFL').textContent = curr(c.fl);
+  document.getElementById('statCibil').textContent = c.cibil||'--';
+  document.getElementById('statTat').textContent = (c.statusHistory&&c.statusHistory.length ? c.statusHistory.length+' steps' : '--');
+  document.getElementById('statInitiator').textContent = c.initiator||'--';
+  document.getElementById('statAssigned').textContent = c.applied||'--';
+  document.getElementById('downloadCamBtn').href = 'cam/cam.html?caseId='+c.id;
+
+  renderWorkflowTracker();
+
+  // Security tab
+  var secs = c.securities||[];
+  var totalLoaded = secs.reduce(function(s,x){return s+(x.valueLoaded||0)},0);
+  document.getElementById('securitySummary').innerHTML =
+    '<div class="text-center"><div class="text-xs text-slate-500">Total Future Liability</div><div class="font-bold text-red-700">'+curr(c.fl)+'</div></div>'+
+    '<div class="text-center"><div class="text-xs text-slate-500">Total Accepted Value</div><div class="font-bold text-green-700">'+curr(totalLoaded)+'</div></div>'+
+    '<div class="text-center"><div class="text-xs text-slate-500">Coverage</div><div class="font-bold text-green-700">'+(c.fl?Math.round(totalLoaded/c.fl*100):100)+'%</div></div>';
+  document.getElementById('securityRows').innerHTML = secs.map(function(s){
+    return '<tr><td>'+s.slNo+'</td><td class="font-medium">'+s.type+'</td><td>'+c.applicant+'</td><td>'+s.loyaltyUsn+'</td><td class="font-bold text-green-700">'+curr(s.freeValue)+'</td><td class="font-bold text-green-700">'+curr(s.valueLoaded)+'</td></tr>';
+  }).join('') || '<tr><td colspan="6" class="text-center text-slate-400">No securities on file</td></tr>';
+
+  // Guarantors tab
+  var people = [Object.assign({role:'Subscriber'}, c.subscriber||{name:c.applicant})].concat((c.guarantors||[]).map(function(g){return Object.assign({role:'Guarantor'},g)}));
+  document.getElementById('guarantorRows').innerHTML = people.map(function(p){
+    return '<tr><td><span class="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-xs">'+p.role+'</span></td><td class="font-medium">'+(p.name||'--')+'</td><td>'+(p.employmentType||'--')+'</td><td>'+(p.creditScore||'--')+'</td><td>'+curr(p.grossIncome)+'</td><td>'+curr(p.netIncome)+'</td><td>'+(p.foir!=null?(p.foir*100).toFixed(0)+'%':'--')+'</td></tr>';
+  }).join('');
+
+  // CIBIL tab
+  document.getElementById('cibilScoreBig').textContent = c.cibil||'--';
+  document.getElementById('cibilCategoryText').textContent = c.cibil>=750?'PRIME — Excellent Credit Profile':c.cibil>=700?'NEAR-PRIME — Good Credit Profile':'SUB-PRIME — Review Required';
+
+  // CAM tab
+  document.getElementById('camTabCaseId').textContent = c.id;
+  document.getElementById('camTabLink').href = 'cam/cam.html?caseId='+c.id;
+  if(c.cam){
+    document.getElementById('camTabSummary').innerHTML =
+      '<div class="bg-slate-50 rounded-xl p-4"><div class="font-semibold text-slate-700 mb-2 text-sm">Case Summary</div><div class="grid grid-cols-2 sm:grid-cols-3 gap-2"><div><span class="text-slate-500">Applicant:</span> <span class="font-medium">'+c.applicant+'</span></div><div><span class="text-slate-500">Branch:</span> <span class="font-medium">'+(c.branch||'--')+'</span></div><div><span class="text-slate-500">Security:</span> <span class="font-medium">'+(c.security||'--')+'</span></div></div></div>'+
+      '<div class="bg-green-50 rounded-xl p-4 border border-green-100"><div class="font-semibold text-green-800 mb-1">Final Weighted Risk Score</div><div class="text-green-700">'+c.cam.sectionG.score+' / 100 — Grade '+c.cam.sectionG.grade+' ('+c.cam.sectionG.label+'). '+c.cam.sectionG.decision+'</div></div>';
+  } else {
+    document.getElementById('camTabSummary').innerHTML = '<div class="text-slate-400">CAM not generated yet for this case. Use Credit Final Checker to generate it once FI is complete, or click "View Full CAM" to check status.</div>';
+  }
+
+  // Dispatch tab
+  var d = c.courierTracking;
+  document.getElementById('dispatchTabBody').innerHTML = d
+    ? '<div class="bg-green-50 border border-green-200 rounded-xl p-4 text-xs"><div class="font-semibold text-green-800 mb-3 text-sm">Dispatch Record</div><div class="space-y-2">'+
+      '<div class="flex justify-between"><span class="text-slate-500">Courier</span><span class="font-semibold">'+(d.courier||'--')+'</span></div>'+
+      '<div class="flex justify-between"><span class="text-slate-500">AWB Number</span><span class="font-semibold font-mono">'+(d.awb||'--')+'</span></div>'+
+      '<div class="flex justify-between"><span class="text-slate-500">Dispatched Date</span><span class="font-semibold">'+(d.dispatchedDate||'--')+'</span></div></div></div>'
+    : '<div class="text-slate-400 text-xs">No dispatch record yet for this case.</div>';
+
+  // Action bar
+  document.getElementById('actionStageText').textContent = (c.status||'').replace(/_/g,' ');
+  var owner = LOS_CONFIG.workflowStates.states.find(function(s){return s.code===c.status});
+  document.getElementById('actionOwnerText').textContent = owner && owner.owner ? Permissions.roleLabel(owner.owner) : '--';
+  renderActionButtons();
+
+  // Audit modal
+  document.getElementById('auditModalBody').innerHTML = LOS_DB.getAudit({caseId:c.id}).map(function(a){
+    return '<div class="p-2 bg-slate-50 rounded-lg"><div class="font-semibold text-slate-700">'+a.action+' <span class="text-slate-400 font-normal">by '+(a.actorLabel||a.actorRole||'--')+'</span></div><div class="text-slate-500">'+(a.oldValue||'--')+' → '+(a.newValue||'--')+' &nbsp; <span class="text-slate-400">'+new Date(a.timestamp).toLocaleString()+'</span></div></div>';
+  }).join('') || '<div class="text-slate-400">No audit history yet for this case.</div>';
+}
+
+document.getElementById('saveRemarkBtn').addEventListener('click', function(){
+  if(!c) return;
+  var text = document.getElementById('remarksInput').value.trim();
+  if(!text) return;
+  AuditNotify.logAudit(c.id, session.role, 'addRemark', text);
+  document.getElementById('remarksInput').value='';
+  document.getElementById('remarksModal').classList.remove('open');
+  renderAll();
+});
+
+renderAll();
+</script></body></html>

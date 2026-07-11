@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Deviation Matrix — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">System Admin</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Deviation Matrix</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Admin › Deviation Matrix</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="flex flex-wrap gap-2 mb-4"><button onclick="openDeviationModal(null)" class="btn-primary">+ Add Deviation Type</button><div class="flex flex-wrap gap-2 mb-4"><input type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="filterTable(this.value)"><select class="form-select text-xs w-36"><option>Risk</option><option>All</option><option>Low</option><option>Medium</option><option>High</option></select><select class="form-select text-xs w-36"><option>Policy</option><option>All</option><option>Credit Policy</option><option>Security Policy</option><option>Income Policy</option><option>Document Policy</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="grid grid-cols-3 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">⚡</div><div><div class="text-slate-500 text-xs font-medium">Total Deviation Types</div><div class="text-slate-800 text-2xl font-bold mt-0.5">8</div><div class="text-slate-400 text-xs mt-0.5">Configured in system</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-yellow-50 text-yellow-700">⏳</div><div><div class="text-slate-500 text-xs font-medium">Pending Review</div><div class="text-slate-800 text-2xl font-bold mt-0.5">3</div><div class="text-slate-400 text-xs mt-0.5">Require authority decision</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">✅</div><div><div class="text-slate-500 text-xs font-medium">Approved This Month</div><div class="text-slate-800 text-2xl font-bold mt-0.5">4</div><div class="text-slate-400 text-xs mt-0.5">Deviation cases cleared</div></div></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Code</th><th>Deviation Type</th><th>Policy Category</th><th>Risk Level</th><th>Approval Authority</th><th>Conditions</th><th>Status</th><th>Managed By</th><th>Actions</th></tr></thead><tbody id="devTableBody"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span class="text-xs text-slate-400">Showing 8 of 8 records</span>
+  <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
+</div></div></main></div></div><div id="devModal" class="modal-overlay">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-y-auto">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="font-semibold text-slate-800 text-base">Create / Edit Deviation Type</div>
+      <button data-modal-close="devModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button>
+    </div>
+    <div class="p-5"><div class="grid grid-cols-2 gap-3">
+  <div><label class="form-label">Deviation Code</label><input id="devCode" class="form-input" value="DEV-001"></div>
+  <div><label class="form-label">Deviation Type</label><input id="devType" class="form-input" value="CIBIL Score Below Threshold"></div>
+  <div><label class="form-label">Policy Category</label><select id="devPolicyCategory" class="form-select"><option>Credit Policy</option><option>Security Policy</option><option>Income Policy</option><option>Document Policy</option><option>Product Policy</option><option>Process Policy</option></select></div>
+  <div><label class="form-label">Risk Level</label><select id="devRiskLevel" class="form-select"><option>Low</option><option>Medium</option><option>High</option></select></div>
+  <div><label class="form-label">Approval Authority</label><select id="devAuthority" class="form-select"><option>Hub Controller</option><option>Deviation Authority</option><option>Recommending Authority</option><option>Credit Head</option><option>Business Approver</option></select></div>
+  <div><label class="form-label">Status</label><select id="devEnabled" class="form-select"><option>Active</option><option>Inactive</option></select></div>
+  <div class="col-span-2"><label class="form-label">Conditions / Remarks Required</label><textarea id="devConditions" class="form-input" rows="2">Reason mandatory. Guarantor may be required for high-risk deviations.</textarea></div>
+</div></div>
+    <div class="px-5 pb-5 flex gap-3"><button data-modal-close="devModal" class="btn-outline flex-1">Cancel</button><button onclick="saveDeviationType()" class="btn-primary flex-1">Save</button></div>
+  </div>
+</div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+
+var DEVIATION_EXTRAS = {
+  'DEV-001': {status:'PENDING', managedBy:'EMP-1005'},
+  'DEV-002': {status:'APPROVED', managedBy:'EMP-1010'},
+  'DEV-003': {status:'APPROVED', managedBy:'EMP-1010'},
+  'DEV-004': {status:'PENDING', managedBy:'EMP-1001'},
+  'DEV-005': {status:'REJECTED', managedBy:'EMP-1010'},
+  'DEV-006': {status:'APPROVED', managedBy:'EMP-1008'},
+  'DEV-007': {status:'PENDING', managedBy:'EMP-1009'},
+  'DEV-008': {status:'APPROVED', managedBy:'EMP-1008'}
+};
+
+var DEVIATION_MATRIX = LOS_DB.getConfigCollection('deviationMatrix');
+var deviationExtrasApplied = false;
+DEVIATION_MATRIX.forEach(function(row){
+  if (row.status === undefined) {
+    var extra = DEVIATION_EXTRAS[row.code] || {status:'PENDING', managedBy:'EMP-1000'};
+    row.status = extra.status;
+    row.managedBy = extra.managedBy;
+    deviationExtrasApplied = true;
+  }
+  if (row.enabled === undefined) row.enabled = 'Active';
+});
+if (deviationExtrasApplied) LOS_DB.saveConfigCollection('deviationMatrix', DEVIATION_MATRIX);
+var editingDeviationIndex = null;
+
+function renderDeviationTable(){
+  var tb = document.getElementById('devTableBody');
+  if(!tb) return;
+  var statusChipClass = {PENDING:'chip-yellow', APPROVED:'chip-green', REJECTED:'chip-red'};
+  tb.innerHTML = DEVIATION_MATRIX.map(function(d, idx){
+    return '<tr>'+
+      '<td class="font-mono text-xs text-blue-700">'+(d.code||'')+'</td>'+
+      '<td class="font-medium text-xs">'+(d.type||'')+'</td>'+
+      '<td><span class="chip chip-blue">'+(d.policyCategory||'')+'</span></td>'+
+      '<td><span class="chip '+(d.riskLevel==='High'?'chip-red':d.riskLevel==='Medium'?'chip-yellow':'chip-green')+'">'+(d.riskLevel||'')+'</span></td>'+
+      '<td class="text-xs">'+(d.approvalAuthority||'')+'</td>'+
+      '<td class="text-xs text-slate-600 max-w-xs">'+(d.conditions||'')+'</td>'+
+      '<td><span class="chip '+(statusChipClass[d.status]||'chip-yellow')+'">'+(d.status||'')+'</span></td>'+
+      '<td class="text-xs">'+(d.managedBy||'')+'</td>'+
+      '<td class="flex gap-1"><button onclick="openDeviationModal('+idx+')" class="btn-primary btn-sm">Edit</button></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="9" class="text-center text-slate-400 py-6">No deviation types configured</td></tr>';
+}
+
+function openDeviationModal(idx){
+  editingDeviationIndex = idx;
+  var row = (idx != null) ? DEVIATION_MATRIX[idx] : {code:'', type:'', policyCategory:'Credit Policy', riskLevel:'Low', approvalAuthority:'Deviation Authority', conditions:'', enabled:'Active'};
+  document.getElementById('devCode').value = row.code || '';
+  document.getElementById('devType').value = row.type || '';
+  document.getElementById('devPolicyCategory').value = row.policyCategory || 'Credit Policy';
+  document.getElementById('devRiskLevel').value = row.riskLevel || 'Low';
+  document.getElementById('devAuthority').value = row.approvalAuthority || 'Deviation Authority';
+  document.getElementById('devEnabled').value = row.enabled || 'Active';
+  document.getElementById('devConditions').value = row.conditions || '';
+  document.getElementById('devModal').classList.add('open');
+}
+
+function saveDeviationType(){
+  var data = {
+    code: document.getElementById('devCode').value,
+    type: document.getElementById('devType').value,
+    policyCategory: document.getElementById('devPolicyCategory').value,
+    riskLevel: document.getElementById('devRiskLevel').value,
+    approvalAuthority: document.getElementById('devAuthority').value,
+    enabled: document.getElementById('devEnabled').value,
+    conditions: document.getElementById('devConditions').value
+  };
+  if(!data.code || !data.type){ alert('Deviation Code and Type are required'); return; }
+  if(editingDeviationIndex != null){
+    DEVIATION_MATRIX[editingDeviationIndex] = Object.assign({}, DEVIATION_MATRIX[editingDeviationIndex], data);
+  } else {
+    // Modal has no way to define a real trigger rule visually - use a harmless always-false placeholder.
+    data.trigger = {field:'none', op:'==', value:'__never__'};
+    data.status = 'PENDING';
+    data.managedBy = 'EMP-1000';
+    DEVIATION_MATRIX.push(data);
+  }
+  LOS_DB.saveConfigCollection('deviationMatrix', DEVIATION_MATRIX);
+  document.getElementById('devModal').classList.remove('open');
+  renderDeviationTable();
+}
+
+renderDeviationTable();
+</script></body></html>

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: mcf-los
+    runtime: static
+    staticPublishPath: .
+    buildCommand: ""
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /404
+        destination: /index.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache

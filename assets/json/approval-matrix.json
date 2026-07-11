@@ -1,0 +1,9 @@
+[
+  {"level":"L1","amountBand":{"min":0,"max":500000},"label":"Up to Rs. 5 Lakhs","authority":"Branch Manager","securityType":"Any security type","preCondition":"None","escalation":"-","specialConditions":"Standard Processing"},
+  {"level":"L2","amountBand":{"min":500000,"max":2500000},"label":"Rs. 5L - Rs. 25L","authority":"Hub Controller","securityType":"Any security type","preCondition":"None","escalation":"-","specialConditions":"Credit Final Check required"},
+  {"level":"L3","amountBand":{"min":2500000,"max":10000000},"label":"Rs. 25L - Rs. 1 Cr","authority":"Recommending Authority + Credit Head","securityType":"All types","preCondition":"L2 cleared","escalation":"Hub Controller","specialConditions":"CAM mandatory, dual sign-off"},
+  {"level":"L4","amountBand":{"min":10000000,"max":50000000},"label":"Rs. 1 Cr - Rs. 5 Cr","authority":"Credit Head + Business Approver","securityType":"Non-gold preferred","preCondition":"L3 cleared","escalation":"Credit Head","specialConditions":"Board sub-committee review for >2Cr"},
+  {"level":"L5","amountBand":{"min":50000000,"max":null},"label":"Rs. 5 Cr+","authority":"MD / Board Committee","securityType":"Mortgage / BG / FD only","preCondition":"L4 cleared","escalation":"Business Approver","specialConditions":"Board resolution required"},
+  {"level":"DEV-1","amountBand":{"min":null,"max":null},"label":"Any amount - policy deviation","authority":"Deviation Authority","securityType":"Case-specific","preCondition":"Deviation flagged","escalation":"Hub Controller","specialConditions":"Deviation remarks mandatory"},
+  {"level":"DEV-2","amountBand":{"min":null,"max":null},"label":"High-risk deviation","authority":"Credit Head","securityType":"Case-specific","preCondition":"DEV-1 cleared","escalation":"Deviation Authority","specialConditions":"Legal opinion required"}
+]

@@ -1,0 +1,141 @@
+{
+  "roles": {
+    "BI": {"label": "Branch Initiator", "dashboard": "branch-initiator-dashboard.html"},
+    "BS": {"label": "Branch Scrutinizer", "dashboard": "branch-scrutinizer-dashboard.html"},
+    "HUB": {"label": "Hub Controller", "dashboard": "credit-hub-dashboard.html"},
+    "FI": {"label": "Field Investigator", "dashboard": "field-investigator-mobile.html"},
+    "FC": {"label": "Credit Final Checker", "dashboard": "credit-final-checker.html"},
+    "DEV": {"label": "Deviation Authority", "dashboard": "deviation-authority.html"},
+    "RA": {"label": "Recommending Authority", "dashboard": "recommending-authority.html"},
+    "CH": {"label": "Credit Head", "dashboard": "credit-head.html"},
+    "FA": {"label": "Final Approval Authority", "dashboard": "final-approval.html"},
+    "BA": {"label": "Business Approver", "dashboard": "business-approval.html"},
+    "DISB": {"label": "Disbursement Team", "dashboard": "disbursement.html"},
+    "ADMIN": {"label": "System Admin", "dashboard": "admin-dashboard.html"}
+  },
+  "states": [
+    {"code":"NEW","stage":0,"owner":"BI","action":"Application received","screen":"bi-create-application.html","sla":null},
+    {"code":"ASSIGNED","stage":1,"owner":"BI","action":"Assign to BI staff","screen":"branch-initiator-dashboard.html","sla":null},
+    {"code":"BRANCH_WIP","stage":2,"owner":"BI","action":"Fill application, docs, CIBIL, scorecard","screen":"bi-my-cases.html","sla":72},
+    {"code":"SCRUTINY_PENDING","stage":3,"owner":"BS","action":"Verify documents","screen":"bs-verification-queue.html","sla":24},
+    {"code":"DISPATCHED","stage":4,"owner":"BS","action":"Physical dispatch to hub","screen":"bs-dispatch.html","sla":24},
+    {"code":"HUB_INWARD","stage":5,"owner":"HUB","action":"Inward scanning, acceptance","screen":"ch-inward.html","sla":8},
+    {"code":"FI_INITIATED","stage":6,"owner":"FI","action":"Field visit assigned","screen":"fi-assigned-cases.html","sla":72},
+    {"code":"FI_COMPLETED","stage":7,"owner":"FC","action":"FI report submitted, awaiting CAM","screen":"fc-verification-queue.html","sla":24},
+    {"code":"FINAL_CHECK","stage":8,"owner":"FC","action":"CAM generation, security verify","screen":"credit-final-checker.html","sla":24},
+    {"code":"DEVIATION_PENDING","stage":9,"owner":"DEV","action":"Deviation review","screen":"deviation-authority.html","sla":24},
+    {"code":"CREDIT_REVIEW","stage":10,"owner":"RA","action":"Review and recommend","screen":"recommending-authority.html","sla":24},
+    {"code":"IN_PRINCIPAL_APPROVED","stage":11,"owner":"CH","action":"Credit sanction decision","screen":"credit-head.html","sla":24},
+    {"code":"FINAL_APPROVAL","stage":12,"owner":"FA","action":"High-value / deviation final sign-off","screen":"final-approval.html","sla":24},
+    {"code":"BUSINESS_APPROVED","stage":13,"owner":"BA","action":"Final business sanction","screen":"business-approval.html","sla":24},
+    {"code":"READY_DISBURSEMENT","stage":14,"owner":"DISB","action":"UTR generation, fund transfer","screen":"disbursement.html","sla":24},
+    {"code":"CLOSED","stage":15,"owner":"SYSTEM","action":"Disbursement complete","screen":null,"sla":null,"terminal":true},
+    {"code":"DECLINED","stage":-1,"owner":null,"action":"Case declined","screen":null,"sla":null,"terminal":true},
+    {"code":"REVERTED","stage":-2,"owner":"BI","action":"Returned to Branch Initiator for correction","screen":"bi-my-cases.html","sla":48},
+    {"code":"ADDITIONAL_SECURITY_REQUIRED","stage":-3,"owner":"BI","action":"Additional collateral required","screen":"bi-security-selection.html","sla":72},
+    {"code":"ON_HOLD","stage":-4,"owner":null,"action":"Manually held, resume later","screen":null,"sla":null},
+    {"code":"CANCELLED","stage":-5,"owner":null,"action":"Case cancelled","screen":null,"sla":null,"terminal":true},
+    {"code":"EXPIRED","stage":-6,"owner":null,"action":"SLA expired, case auto-closed","screen":null,"sla":null,"terminal":true}
+  ],
+  "transitions": {
+    "NEW":            [{"action":"assign","target":"ASSIGNED","role":"BI"}],
+    "ASSIGNED":       [{"action":"startApplication","target":"BRANCH_WIP","role":"BI"}],
+    "BRANCH_WIP":     [{"action":"submitForScrutiny","target":"SCRUTINY_PENDING","role":"BI","guard":"documentsComplete"}],
+    "SCRUTINY_PENDING": [
+      {"action":"approveScrutiny","target":"DISPATCHED","role":"BS"},
+      {"action":"returnToBI","target":"REVERTED","role":"BS"}
+    ],
+    "REVERTED":       [{"action":"resubmit","target":"BRANCH_WIP","role":"BI"}],
+    "DISPATCHED":     [{"action":"inwardAtHub","target":"HUB_INWARD","role":"HUB"}],
+    "HUB_INWARD": [
+      {"action":"assignFI","target":"FI_INITIATED","role":"HUB","guard":"fiRequired"},
+      {"action":"skipFI","target":"FINAL_CHECK","role":"HUB","guard":"fiNotRequired"}
+    ],
+    "FI_INITIATED": [
+      {"action":"submitFIReport","target":"FI_COMPLETED","role":"FI"}
+    ],
+    "FI_COMPLETED": [
+      {"action":"generateCAM","target":"FINAL_CHECK","role":"FC"},
+      {"action":"rejectAfterFI","target":"REVERTED","role":"FC"},
+      {"action":"negativeFI","target":"DECLINED","role":"FC","guard":"fiNegative"}
+    ],
+    "FINAL_CHECK": [
+      {"action":"raiseDeviation","target":"DEVIATION_PENDING","role":"FC","guard":"deviationTriggered"},
+      {"action":"forwardToCredit","target":"CREDIT_REVIEW","role":"FC","guard":"noDeviation"},
+      {"action":"creditReject","target":"DECLINED","role":"FC"},
+      {"action":"docMissing","target":"REVERTED","role":"FC"},
+      {"action":"requireCollateral","target":"ADDITIONAL_SECURITY_REQUIRED","role":"FC"},
+      {"action":"modifyLoanAmount","target":"FINAL_CHECK","role":"FC","recompute":true},
+      {"action":"modifyROI","target":"FINAL_CHECK","role":"FC","recompute":true},
+      {"action":"modifyTenure","target":"FINAL_CHECK","role":"FC","recompute":true}
+    ],
+    "ADDITIONAL_SECURITY_REQUIRED": [
+      {"action":"collateralProvided","target":"FINAL_CHECK","role":"BI"}
+    ],
+    "DEVIATION_PENDING": [
+      {"action":"approveDeviation","target":"CREDIT_REVIEW","role":"DEV"},
+      {"action":"rejectDeviation","target":"FINAL_CHECK","role":"DEV"}
+    ],
+    "CREDIT_REVIEW": [
+      {"action":"recommend","target":"IN_PRINCIPAL_APPROVED","role":"RA"},
+      {"action":"recommendConditional","target":"IN_PRINCIPAL_APPROVED","role":"RA","conditional":true},
+      {"action":"reject","target":"DECLINED","role":"RA"},
+      {"action":"manualHold","target":"ON_HOLD","role":"RA"}
+    ],
+    "ON_HOLD": [
+      {"action":"resume","target":"CREDIT_REVIEW","role":"RA"},
+      {"action":"resumeBusiness","target":"BUSINESS_APPROVED","role":"BA"}
+    ],
+    "IN_PRINCIPAL_APPROVED": [
+      {"action":"creditHeadApprove","target":"BUSINESS_APPROVED","role":"CH","guard":"noFinalApprovalNeeded"},
+      {"action":"escalateFinal","target":"FINAL_APPROVAL","role":"CH","guard":"finalApprovalNeeded"},
+      {"action":"creditHeadReject","target":"DECLINED","role":"CH"},
+      {"action":"modifyLoanAmount","target":"IN_PRINCIPAL_APPROVED","role":"CH","recompute":true},
+      {"action":"modifyROI","target":"IN_PRINCIPAL_APPROVED","role":"CH","recompute":true},
+      {"action":"modifyTenure","target":"IN_PRINCIPAL_APPROVED","role":"CH","recompute":true}
+    ],
+    "FINAL_APPROVAL": [
+      {"action":"finalApprove","target":"BUSINESS_APPROVED","role":"FA"},
+      {"action":"finalReject","target":"DECLINED","role":"FA"}
+    ],
+    "BUSINESS_APPROVED": [
+      {"action":"businessApprove","target":"READY_DISBURSEMENT","role":"BA"},
+      {"action":"businessReject","target":"DECLINED","role":"BA"},
+      {"action":"businessHold","target":"ON_HOLD","role":"BA"}
+    ],
+    "READY_DISBURSEMENT": [
+      {"action":"disburse","target":"CLOSED","role":"DISB"},
+      {"action":"retryDisbursement","target":"READY_DISBURSEMENT","role":"DISB","retry":true}
+    ],
+    "CLOSED": [],
+    "DECLINED": [],
+    "CANCELLED": [],
+    "EXPIRED": []
+  },
+  "universalActions": [
+    {"action":"cancelCase","target":"CANCELLED","roles":["BI","ADMIN"]},
+    {"action":"expireCase","target":"EXPIRED","roles":["SYSTEM","ADMIN"]}
+  ],
+  "scenarioIndex": [
+    {"id":1,"name":"Normal Approval","path":"NEW>ASSIGNED>BRANCH_WIP>SCRUTINY_PENDING>DISPATCHED>HUB_INWARD>FI_INITIATED>FI_COMPLETED>FINAL_CHECK>CREDIT_REVIEW>IN_PRINCIPAL_APPROVED>BUSINESS_APPROVED>READY_DISBURSEMENT>CLOSED"},
+    {"id":2,"name":"Rejected by Branch Scrutinizer, returned to BI, edits, resubmits","path":"SCRUTINY_PENDING>REVERTED>BRANCH_WIP>SCRUTINY_PENDING"},
+    {"id":3,"name":"Rejected after FI, back to BI, revisit, submit","path":"FI_COMPLETED>REVERTED>BRANCH_WIP"},
+    {"id":4,"name":"Credit Reject, Case Closed","path":"FINAL_CHECK>DECLINED"},
+    {"id":5,"name":"Deviation Reject, back to Credit","path":"DEVIATION_PENDING>FINAL_CHECK"},
+    {"id":6,"name":"Credit Head Reject, Case Closed","path":"IN_PRINCIPAL_APPROVED>DECLINED"},
+    {"id":7,"name":"Business Reject, Case Closed","path":"BUSINESS_APPROVED>DECLINED"},
+    {"id":8,"name":"Final Reject, Case Closed","path":"FINAL_APPROVAL>DECLINED"},
+    {"id":9,"name":"Document Missing, back to BI, upload, submit","path":"FINAL_CHECK>REVERTED>BRANCH_WIP"},
+    {"id":10,"name":"Poor Bureau, Conditional Approval","path":"CREDIT_REVIEW>recommendConditional>IN_PRINCIPAL_APPROVED"},
+    {"id":11,"name":"Negative FI, Reject","path":"FI_COMPLETED>DECLINED"},
+    {"id":12,"name":"Income Mismatch, back to BI","path":"SCRUTINY_PENDING>REVERTED>BRANCH_WIP"},
+    {"id":13,"name":"Collateral Required, Pending","path":"FINAL_CHECK>ADDITIONAL_SECURITY_REQUIRED>FINAL_CHECK"},
+    {"id":14,"name":"Manual Hold, Resume Later","path":"CREDIT_REVIEW>ON_HOLD>CREDIT_REVIEW"},
+    {"id":15,"name":"Loan Modified, CAM Recalculate","path":"IN_PRINCIPAL_APPROVED>modifyLoanAmount>IN_PRINCIPAL_APPROVED"},
+    {"id":16,"name":"ROI Changed, EMI Recalculate","path":"IN_PRINCIPAL_APPROVED>modifyROI>IN_PRINCIPAL_APPROVED"},
+    {"id":17,"name":"Tenure Changed, FOIR Recalculate","path":"IN_PRINCIPAL_APPROVED>modifyTenure>IN_PRINCIPAL_APPROVED"},
+    {"id":18,"name":"Deviation Approved, Continue Flow","path":"DEVIATION_PENDING>CREDIT_REVIEW"},
+    {"id":19,"name":"Deviation Rejected, back to Credit Hub","path":"DEVIATION_PENDING>FINAL_CHECK"},
+    {"id":20,"name":"Disbursement Failed, Retry","path":"READY_DISBURSEMENT>retryDisbursement>READY_DISBURSEMENT>disburse>CLOSED"}
+  ]
+}

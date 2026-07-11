@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Verification Queue — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Branch Scrutinizer</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Verification Queue</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Scrutinizer › Verification Queue</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="grid grid-cols-4 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">✔️</div><div><div class="text-slate-500 text-xs font-medium">Pending Verification</div><div id="kpiPending" class="text-slate-800 text-2xl font-bold mt-0.5">--</div><div class="text-slate-400 text-xs mt-0.5">In scrutiny queue</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">🔴</div><div><div class="text-slate-500 text-xs font-medium">High Priority</div><div id="kpiHigh" class="text-slate-800 text-2xl font-bold mt-0.5">--</div><div class="text-slate-400 text-xs mt-0.5">Need immediate action</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">✅</div><div><div class="text-slate-500 text-xs font-medium">Dispatched</div><div id="kpiDispatched" class="text-slate-800 text-2xl font-bold mt-0.5">--</div><div class="text-slate-400 text-xs mt-0.5">Cleared for hub</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-orange-50 text-orange-600">⏰</div><div><div class="text-slate-500 text-xs font-medium">Returned</div><div id="kpiReturned" class="text-slate-800 text-2xl font-bold mt-0.5">--</div><div class="text-slate-400 text-xs mt-0.5">Sent back to BI</div></div></div></div><div class="flex flex-wrap gap-2 mb-4"><input type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="filterTable(this.value)"><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Case ID</th><th>Applicant</th><th>Security</th><th>Amount</th><th>Status</th><th>CIBIL</th><th>Initiator</th><th>Actions</th></tr></thead><tbody id="queueRows"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span id="rowCountText" class="text-xs text-slate-400">--</span>
+</div></div></main></div></div><div id="discrepModal" class="modal-overlay">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-y-auto">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="font-semibold text-slate-800 text-base">Flag Discrepancy</div>
+      <button data-modal-close="discrepModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button>
+    </div>
+    <div class="p-5"><div class="space-y-3">
+  <div><label class="form-label">Case ID</label><input class="form-input" id="discrepCaseId" readonly></div>
+  <div><label class="form-label">Discrepancy Type</label><select class="form-select" id="discrepType"><option>Missing Document</option><option>Incorrect Document</option><option>Signature Mismatch</option><option>Data Mismatch</option><option>Photo Mismatch</option><option>Incomplete Form</option></select></div>
+  <div><label class="form-label">Description</label><textarea class="form-input" id="discrepDesc" rows="3" placeholder="Describe the discrepancy in detail"></textarea></div>
+</div></div>
+    <div class="px-5 pb-5 flex gap-3"><button data-modal-close="discrepModal" class="btn-outline flex-1">Cancel</button><button id="flagDiscrepBtn" class="btn-warning flex-1">Flag Discrepancy</button></div>
+  </div>
+</div>
+<script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('BS');
+var discrepCaseId = null;
+
+function curr(n){return n==null?'--':'₹'+Number(n).toLocaleString('en-IN')}
+function cibilColor(s){return s>=700?'text-green-700 font-bold':s>=650?'text-yellow-600 font-semibold':'text-red-600 font-bold'}
+function statusChip(st){var m={SCRUTINY_PENDING:'chip-yellow',DISPATCHED:'chip-blue',REVERTED:'chip-red'};return '<span class="chip '+(m[st]||'chip-gray')+'">'+st.replace(/_/g,' ')+'</span>'}
+
+function renderQueue(){
+  var cases = LOS_DB.getCases({status:'SCRUTINY_PENDING'});
+  document.getElementById('kpiPending').textContent = cases.length;
+  document.getElementById('kpiHigh').textContent = cases.filter(function(c){return c.amount>=1000000}).length;
+  document.getElementById('kpiDispatched').textContent = LOS_DB.getCases({status:'DISPATCHED'}).length;
+  document.getElementById('kpiReturned').textContent = LOS_DB.getCases({status:'REVERTED'}).length;
+  document.getElementById('rowCountText').textContent = 'Showing '+cases.length+' of '+cases.length+' records';
+  document.getElementById('queueRows').innerHTML = cases.map(function(c){
+    return '<tr>'+
+      '<td><a href="case-details.html?caseId='+c.id+'" class="text-blue-600 font-semibold hover:underline text-xs">'+c.id+'</a></td>'+
+      '<td class="font-semibold text-xs">'+c.applicant+'</td>'+
+      '<td class="text-xs">'+(c.security||'--')+'</td>'+
+      '<td class="font-semibold text-xs text-emerald-700">'+curr(c.amount)+'</td>'+
+      '<td>'+statusChip(c.status)+'</td>'+
+      '<td><span class="'+cibilColor(c.cibil)+'">'+(c.cibil||'--')+'</span></td>'+
+      '<td class="text-xs">'+(c.initiator||'--')+'</td>'+
+      '<td class="flex gap-1"><button onclick="doApprove(\''+c.id+'\')" class="btn-primary btn-sm">Verify</button><button onclick="openDiscrepModal(\''+c.id+'\')" class="btn-warning btn-sm text-xs">Flag</button></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="8" class="text-center text-slate-400 py-6">No cases pending scrutiny</td></tr>';
+}
+
+function doApprove(caseId){
+  var res = WorkflowEngine.transition(caseId, 'approveScrutiny', {actorRole: session.role});
+  if(!res.success){alert(res.error);return}
+  renderQueue();
+}
+
+function openDiscrepModal(caseId){
+  discrepCaseId = caseId;
+  document.getElementById('discrepCaseId').value = caseId;
+  document.getElementById('discrepModal').classList.add('open');
+}
+
+document.getElementById('flagDiscrepBtn').addEventListener('click', function(){
+  if(!discrepCaseId) return;
+  var reason = document.getElementById('discrepType').value + ' — ' + document.getElementById('discrepDesc').value;
+  var res = WorkflowEngine.transition(discrepCaseId, 'returnToBI', {actorRole: session.role, payload:{comment: reason}});
+  if(!res.success){alert(res.error);return}
+  document.getElementById('discrepModal').classList.remove('open');
+  document.getElementById('discrepDesc').value='';
+  renderQueue();
+});
+
+renderQueue();
+</script></body></html>

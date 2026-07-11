@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Security Master — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">System Admin</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Security Master</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Admin › Security Master</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="flex flex-wrap gap-2 mb-4"><button onclick="openSecurityModal(null)" class="btn-primary">+ Add Security Type</button><div class="flex flex-wrap gap-2 mb-4"><input type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="filterTable(this.value)"><select class="form-select text-xs w-36"><option>Class</option><option>Primary</option><option>Collateral</option><option>Subordinate</option></select><select class="form-select text-xs w-36"><option>Status</option><option>Active</option><option>Inactive</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="grid grid-cols-3 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">💎</div><div><div class="text-slate-500 text-xs font-medium">Security Types</div><div class="text-slate-800 text-2xl font-bold mt-0.5">9</div><div class="text-slate-400 text-xs mt-0.5">All active</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-purple-50 text-purple-600">📋</div><div><div class="text-slate-500 text-xs font-medium">Total Doc Codes</div><div class="text-slate-800 text-2xl font-bold mt-0.5">40+</div><div class="text-slate-400 text-xs mt-0.5">MD, PG, LI, BG, FD, MP, PB, SD, SP</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">📊</div><div><div class="text-slate-500 text-xs font-medium">Avg LTV Cap</div><div class="text-slate-800 text-2xl font-bold mt-0.5">72%</div><div class="text-slate-400 text-xs mt-0.5">Across all security types</div></div></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Security Type</th><th>Category</th><th>Class</th><th>Eligibility Criteria</th><th>Doc Codes</th><th>Loan Range</th><th>Approval Authority</th><th>Status</th><th>Actions</th></tr></thead><tbody id="secTableBody"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span class="text-xs text-slate-400">Showing 9 of 9 records</span>
+  <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
+</div></div></main></div></div><div id="secModal" class="modal-overlay">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-y-auto">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="font-semibold text-slate-800 text-base">Create / Edit Security Type</div>
+      <button data-modal-close="secModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button>
+    </div>
+    <div class="p-5"><div class="grid grid-cols-2 gap-3">
+  <div><label class="form-label">Security Type Name</label><input id="secTypeName" class="form-input" value="Gold Ornaments"></div>
+  <div><label class="form-label">Category</label><select id="secCode" class="form-select"><option>Gold</option><option>LIC</option><option>Bank Guarantee</option><option>FD</option><option>Mortgage</option><option>Chit</option><option>Sub-Debt</option><option>NCD</option><option>Equity</option></select></div>
+  <div><label class="form-label">Security Class</label><select id="secClass" class="form-select"><option>Primary</option><option>Collateral</option><option>Subordinate</option></select></div>
+  <div><label class="form-label">LTV % (Max)</label><input id="secLtv" class="form-input" value="75" type="number"></div>
+  <div><label class="form-label">Min Loan Amount (INR)</label><input id="secMinAmt" class="form-input" value="50000" type="number"></div>
+  <div><label class="form-label">Max Loan Amount (INR)</label><input id="secMaxAmt" class="form-input" value="5000000" type="number"></div>
+  <div><label class="form-label">Approval Authority</label><select id="secAuthority" class="form-select"><option>Branch Manager</option><option>Hub Controller</option><option>Credit Head</option><option>Recommending Authority</option></select></div>
+  <div><label class="form-label">Document Codes</label><input id="secDocCodes" class="form-input" value="MD-6 to MD-15" placeholder="e.g. MD-1, MD-2"></div>
+  <div class="col-span-2"><label class="form-label">Eligibility Criteria</label><textarea id="secEligibility" class="form-input" rows="3">LTV up to 75% of market value. Purity minimum 18K. Certified weighing required from empanelled valuer.</textarea></div>
+  <div><label class="form-label">Valuation Validity (days)</label><input id="secValidity" class="form-input" value="30" type="number"></div>
+  <div><label class="form-label">OCR Enabled</label><select id="secOcr" class="form-select"><option>Yes</option><option>No</option></select></div>
+</div></div>
+    <div class="px-5 pb-5 flex gap-3"><button data-modal-close="secModal" class="btn-outline flex-1">Cancel</button><button onclick="saveSecurityType()" class="btn-primary flex-1">Save</button></div>
+  </div>
+</div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+
+var SECURITY_EXTRAS = {
+  'Gold': {eligibilityCriteria:'LTV up to 75% of market value. Purity ≥ 18K. Certified weighing required.', docCodes:'MD-6 to MD-15'},
+  'LIC': {eligibilityCriteria:'Surrender value ≥ 85%. Policy active, premiums paid up to date.', docCodes:'LI-1 to LI-5'},
+  'BG': {eligibilityCriteria:'From scheduled commercial bank. Validity ≥ loan tenure + 3 months.', docCodes:'BG-1'},
+  'FD': {eligibilityCriteria:'From scheduled bank/NBFC. FD ≥ 110% of loan amount. Lien marked.', docCodes:'FD-1 to FD-5'},
+  'Mortgage': {eligibilityCriteria:'MODT registered. Clear title. Market value certified by empanelled valuer.', docCodes:'MP-1 to MP-2'},
+  'Chit': {eligibilityCriteria:'MPC own chit. Minimum 6 months active. Prized or running status.', docCodes:'PB-1 to PB-3'},
+  'Sub-Debt': {eligibilityCriteria:'Approved by regional credit head. Board approved instrument.', docCodes:'SD-2 to SD-6'},
+  'NCD': {eligibilityCriteria:'Listed NCD. Market value ≥ 120% of loan. Lien marked in depository.', docCodes:'SP-1 to SP-2'},
+  'Equity': {eligibilityCriteria:'NSE/BSE listed. Not pledged elsewhere. Haircut 40%. Lien in CDSL/NSDL.', docCodes:'SP-3 to SP-4'},
+  'Surety': {eligibilityCriteria:'Personal guarantee of a creditworthy surety. KYC and income proof mandatory.', docCodes:'SP-5'}
+};
+
+var SECURITY_TYPES = LOS_DB.getConfigCollection('securityTypes');
+var securityExtrasApplied = false;
+SECURITY_TYPES.forEach(function(row){
+  if (row.eligibilityCriteria === undefined) {
+    var extra = SECURITY_EXTRAS[row.code] || {eligibilityCriteria:'', docCodes:''};
+    row.eligibilityCriteria = extra.eligibilityCriteria;
+    row.docCodes = extra.docCodes;
+    securityExtrasApplied = true;
+  }
+});
+if (securityExtrasApplied) LOS_DB.saveConfigCollection('securityTypes', SECURITY_TYPES);
+var editingSecurityIndex = null;
+
+function fmtAmt(n){
+  n = Number(n) || 0;
+  if (n >= 10000000) return (n/10000000).toFixed(n % 10000000 ? 1 : 0)+'Cr';
+  if (n >= 100000) return (n/100000).toFixed(n % 100000 ? 1 : 0)+'L';
+  if (n >= 1000) return (n/1000).toFixed(n % 1000 ? 1 : 0)+'K';
+  return String(n);
+}
+function parseAmt(str){
+  if (!str) return 0;
+  str = String(str).trim();
+  var m = str.match(/([\d.]+)\s*(Cr|L|K)?/i);
+  if (!m) return 0;
+  var num = parseFloat(m[1]) || 0;
+  var unit = (m[2]||'').toUpperCase();
+  if (unit === 'CR') return num*10000000;
+  if (unit === 'L') return num*100000;
+  if (unit === 'K') return num*1000;
+  return num;
+}
+function parseBand(band){
+  var parts = String(band||'').split(/[-–]/);
+  return {
+    min: parseAmt((parts[0]||'').replace(/Rs\.?/i,'')),
+    max: parseAmt((parts[1]||'').replace(/Rs\.?/i,''))
+  };
+}
+
+function renderSecurityTable(){
+  var tb = document.getElementById('secTableBody');
+  if(!tb) return;
+  tb.innerHTML = SECURITY_TYPES.map(function(s, idx){
+    var classChip = s.category === 'Collateral' ? 'chip-purple' : (s.category === 'Subordinate' ? 'chip-purple' : (s.category === 'Guarantee' ? 'chip-yellow' : 'chip-green'));
+    var statusChip = s.status === 'Active' ? 'chip-green' : 'chip-red';
+    return '<tr>'+
+      '<td class="font-semibold text-xs text-slate-800">'+(s.type||'')+'</td>'+
+      '<td><span class="chip chip-blue">'+(s.code||'')+'</span></td>'+
+      '<td><span class="chip '+classChip+'">'+(s.category||'')+'</span></td>'+
+      '<td class="text-xs text-slate-600 max-w-xs">'+(s.eligibilityCriteria||'--')+'</td>'+
+      '<td class="font-mono text-xs text-purple-700">'+(s.docCodes||'--')+'</td>'+
+      '<td class="text-xs font-semibold text-emerald-700">'+(s.valueBand||'--')+'</td>'+
+      '<td class="text-xs">'+(s.approvalAuthority||'')+'</td>'+
+      '<td><span class="chip '+statusChip+'">'+(s.status||'')+'</span></td>'+
+      '<td class="flex gap-1"><button onclick="openSecurityModal('+idx+')" class="btn-primary btn-sm">Edit</button><button onclick="alert(\'Docs exported!\')" class="btn-outline btn-sm text-xs">Docs</button></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="9" class="text-center text-slate-400 py-6">No security types configured</td></tr>';
+}
+
+function openSecurityModal(idx){
+  editingSecurityIndex = idx;
+  var band = idx != null ? parseBand(SECURITY_TYPES[idx].valueBand) : {min:50000, max:5000000};
+  var row = (idx != null) ? SECURITY_TYPES[idx] : {type:'', code:'Gold', category:'Primary', ltvCap:0.75, approvalAuthority:'Branch Manager', docCodes:'', eligibilityCriteria:'', status:'Active'};
+  document.getElementById('secTypeName').value = row.type || '';
+  document.getElementById('secCode').value = row.code || 'Gold';
+  document.getElementById('secClass').value = row.category || 'Primary';
+  document.getElementById('secLtv').value = row.ltvCap != null ? Math.round(row.ltvCap*100) : '';
+  document.getElementById('secMinAmt').value = band.min || 0;
+  document.getElementById('secMaxAmt').value = band.max || 0;
+  document.getElementById('secAuthority').value = row.approvalAuthority || 'Branch Manager';
+  document.getElementById('secDocCodes').value = row.docCodes || '';
+  document.getElementById('secEligibility').value = row.eligibilityCriteria || '';
+  document.getElementById('secValidity').value = row.validityDays != null ? row.validityDays : 30;
+  document.getElementById('secOcr').value = row.ocrEnabled || 'No';
+  document.getElementById('secModal').classList.add('open');
+}
+
+function saveSecurityType(){
+  var min = Number(document.getElementById('secMinAmt').value) || 0;
+  var max = Number(document.getElementById('secMaxAmt').value) || 0;
+  var data = {
+    type: document.getElementById('secTypeName').value,
+    code: document.getElementById('secCode').value,
+    category: document.getElementById('secClass').value,
+    ltvCap: (Number(document.getElementById('secLtv').value) || 0) / 100,
+    valueBand: 'Rs. '+fmtAmt(min)+' – Rs. '+fmtAmt(max),
+    approvalAuthority: document.getElementById('secAuthority').value,
+    docCodes: document.getElementById('secDocCodes').value,
+    eligibilityCriteria: document.getElementById('secEligibility').value,
+    validityDays: Number(document.getElementById('secValidity').value) || 0,
+    ocrEnabled: document.getElementById('secOcr').value,
+    status: (editingSecurityIndex != null && SECURITY_TYPES[editingSecurityIndex].status) || 'Active'
+  };
+  if(!data.type){ alert('Security Type Name is required'); return; }
+  if(editingSecurityIndex != null){
+    SECURITY_TYPES[editingSecurityIndex] = Object.assign({}, SECURITY_TYPES[editingSecurityIndex], data);
+  } else {
+    SECURITY_TYPES.push(data);
+  }
+  LOS_DB.saveConfigCollection('securityTypes', SECURITY_TYPES);
+  document.getElementById('secModal').classList.remove('open');
+  renderSecurityTable();
+}
+
+renderSecurityTable();
+</script></body></html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Discrepancy Cases — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <div id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
+    <div class="text-slate-600 text-xs font-semibold uppercase tracking-wider px-4 py-2">Branch Scrutinizer</div>
+    <a href="branch-scrutinizer-dashboard.html" class="flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200"><span class="text-base w-5 text-center">📊</span><span>Dashboard</span></a>
+<a href="bs-verification-queue.html" class="flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200"><span class="text-base w-5 text-center">✔️</span><span>Verification Queue</span></a>
+<a href="bs-discrepancy.html" class="flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all nav-active"><span class="text-base w-5 text-center">⚠️</span><span>Discrepancy Cases</span></a>
+<a href="bs-dispatch.html" class="flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200"><span class="text-base w-5 text-center">📦</span><span>Dispatch Management</span></a>
+<a href="bs-courier-tracking.html" class="flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200"><span class="text-base w-5 text-center">🚚</span><span>Courier Tracking</span></a>
+<a href="reports.html" class="flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200"><span class="text-base w-5 text-center">📈</span><span>Reports</span></a>
+
+  </div>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Branch Scrutinizer</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Discrepancy Cases</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Scrutinizer › Discrepancy Cases</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="grid grid-cols-3 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">⚠️</div><div><div class="text-slate-500 text-xs font-medium">Open Discrepancies</div><div id="kpiOpenDiscrepancies" class="text-slate-800 text-2xl font-bold mt-0.5">--</div><div class="text-slate-400 text-xs mt-0.5">Pending resolution</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">🔴</div><div><div class="text-slate-500 text-xs font-medium">Critical</div><div id="kpiCritical" class="text-slate-800 text-2xl font-bold mt-0.5">--</div><div class="text-slate-400 text-xs mt-0.5">Immediate action</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">📊</div><div><div class="text-slate-500 text-xs font-medium">Avg Resolution Time</div><div class="text-slate-800 text-2xl font-bold mt-0.5">3.2 days</div><div class="text-slate-400 text-xs mt-0.5">This month</div></div></div></div><div class="flex flex-wrap gap-2 mb-4"><div class="flex flex-wrap gap-2 mb-4"><input type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="filterTable(this.value)"><select class="form-select text-xs w-36"><option>Severity</option><option>All</option><option>Critical</option><option>Major</option><option>Minor</option></select><select class="form-select text-xs w-36"><option>Status</option><option>All</option><option>Pending</option><option>Escalated</option><option>Rectifying</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Case ID</th><th>Applicant</th><th>Discrepancy</th><th>Affected Doc</th><th>Severity</th><th>Open Since</th><th>Current Status</th><th>Actions</th></tr></thead><tbody id="discrepRows"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span id="rowCountText" class="text-xs text-slate-400">--</span>
+  <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
+</div></div></main></div></div>
+<script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('BS');
+
+function curr(n){return n==null?'--':'₹'+Number(n).toLocaleString('en-IN')}
+function cibilColor(s){return s>=700?'text-green-700 font-bold':s>=650?'text-yellow-600 font-semibold':'text-red-600 font-bold'}
+function statusChip(st){var m={SCRUTINY_PENDING:'chip-yellow',DISPATCHED:'chip-blue',REVERTED:'chip-red'};return '<span class="chip '+(m[st]||'chip-gray')+'">'+st.replace(/_/g,' ')+'</span>'}
+function daysOpen(c){
+  var t = c.updatedAt || c.createdAt;
+  if(!t) return '--';
+  var d = Math.floor((Date.now() - new Date(t).getTime())/86400000);
+  return d<=0 ? '<1 day' : d+(d===1?' day':' days');
+}
+function discrepancyInfo(c){
+  if(c.documentsComplete===false) return {label:'Missing Document', doc:'Pending document set'};
+  if(c.cibil!=null && c.cibil<650) return {label:'Data Mismatch', doc:'CIBIL / income data'};
+  return {label:'Under Review', doc:c.security||'--'};
+}
+function severityInfo(c){
+  if((c.amount||0)>=1000000) return 'Critical';
+  if(c.cibil!=null && c.cibil<650) return 'Major';
+  return 'Minor';
+}
+
+function renderDiscrepancies(){
+  var cases = LOS_DB.getCases({status:'SCRUTINY_PENDING'});
+  document.getElementById('kpiOpenDiscrepancies').textContent = cases.length;
+  document.getElementById('kpiCritical').textContent = cases.filter(function(c){return severityInfo(c)==='Critical'}).length;
+  document.getElementById('rowCountText').textContent = 'Showing '+cases.length+' of '+cases.length+' records';
+  document.getElementById('discrepRows').innerHTML = cases.map(function(c){
+    var di = discrepancyInfo(c);
+    return '<tr>'+
+      '<td class="font-mono text-xs text-blue-700"><a href="case-details.html?caseId='+c.id+'" class="hover:underline">'+c.id+'</a></td>'+
+      '<td class="font-semibold text-xs">'+c.applicant+'</td>'+
+      '<td><span class="chip chip-red">'+di.label+'</span></td>'+
+      '<td class="text-xs text-slate-600">'+di.doc+'</td>'+
+      '<td><span class="chip chip-gray">'+severityInfo(c)+'</span></td>'+
+      '<td class="text-xs">'+daysOpen(c)+'</td>'+
+      '<td class="text-xs font-medium text-orange-600">'+statusChip(c.status)+'</td>'+
+      '<td class="flex gap-1"><a href="case-details.html?caseId='+c.id+'" class="btn-primary btn-sm">View</a><button onclick="escalateCase(\''+c.id+'\')" class="btn-danger btn-sm text-xs">Escalate</button></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="8" class="text-center text-slate-400 py-6">No discrepancy cases pending</td></tr>';
+}
+
+function escalateCase(caseId){
+  var reason = prompt('Escalation / discrepancy reason for '+caseId+':', 'Escalated to Branch Manager for review');
+  if(reason===null) return;
+  var res = WorkflowEngine.transition(caseId, 'returnToBI', {actorRole: session.role, payload:{comment: reason}});
+  if(!res.success){alert(res.error);return}
+  alert('Escalated to Branch Manager!');
+  renderDiscrepancies();
+}
+
+renderDiscrepancies();
+</script></body></html>

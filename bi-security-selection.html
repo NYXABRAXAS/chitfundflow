@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Security Selection — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">Branch Initiator</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Security Selection</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Branch Initiator › Security Selection</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6">
+<div class="grid grid-cols-1 gap-6">
+  <div class="card p-4">
+    <div class="flex items-center gap-2 text-xs">
+      <span class="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center">✓</span>
+      <span class="text-slate-500">Applicant Info</span>
+      <span class="flex-1 h-0.5 bg-blue-400"></span>
+      <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">2</span>
+      <span class="font-semibold text-blue-700">Security</span>
+      <span class="flex-1 h-0.5 bg-slate-200"></span>
+      <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">3</span>
+      <span class="text-slate-500">Documents</span>
+      <span class="flex-1 h-0.5 bg-slate-200"></span>
+      <span class="w-6 h-6 rounded-full bg-slate-300 text-slate-600 flex items-center justify-center font-bold">4</span>
+      <span class="text-slate-500">Guarantor</span>
+    </div>
+  </div>
+  <div class="card p-5">
+    <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Step 2: Security Type Selection — Case <span id="stepCaseIdLabel">--</span></div>
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      <div onclick="selectSecurity(this,'Gold')" class="p-4 border-2 border-yellow-400 rounded-xl cursor-pointer bg-yellow-50 selected-security">
+        <div class="text-2xl mb-2">💎</div>
+        <div class="font-semibold text-yellow-800">Gold Ornaments</div>
+        <div class="text-xs text-slate-600 mt-1">LTV: up to 75% | Purity ≥ 18K</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: MD-6 to MD-15</div>
+      </div>
+      <div onclick="selectSecurity(this,'LIC')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">📋</div>
+        <div class="font-semibold text-slate-800">LIC Policy</div>
+        <div class="text-xs text-slate-600 mt-1">Surrender value ≥ 85%</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: LI-1 to LI-5</div>
+      </div>
+      <div onclick="selectSecurity(this,'BG')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">🏦</div>
+        <div class="font-semibold text-slate-800">Bank Guarantee</div>
+        <div class="text-xs text-slate-600 mt-1">Scheduled bank only</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: BG-1</div>
+      </div>
+      <div onclick="selectSecurity(this,'FD')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">🏛️</div>
+        <div class="font-semibold text-slate-800">Fixed Deposit</div>
+        <div class="text-xs text-slate-600 mt-1">FD ≥ 110% of loan amount</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: FD-1 to FD-5</div>
+      </div>
+      <div onclick="selectSecurity(this,'Mortgage')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">🏠</div>
+        <div class="font-semibold text-slate-800">Mortgage (Property)</div>
+        <div class="text-xs text-slate-600 mt-1">MODT registered. Clear title.</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: MP-1, MP-2</div>
+      </div>
+      <div onclick="selectSecurity(this,'Chit')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">📘</div>
+        <div class="font-semibold text-slate-800">Chit Passbook</div>
+        <div class="text-xs text-slate-600 mt-1">MPC own chit. Min 6 months.</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: PB-1 to PB-3</div>
+      </div>
+      <div onclick="selectSecurity(this,'Sub-Debt')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">📈</div>
+        <div class="font-semibold text-slate-800">Sub-Debt Instrument</div>
+        <div class="text-xs text-slate-600 mt-1">Board approved instrument</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: SD-2 to SD-6</div>
+      </div>
+      <div onclick="selectSecurity(this,'NCD')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">📊</div>
+        <div class="font-semibold text-slate-800">Demat NCD</div>
+        <div class="text-xs text-slate-600 mt-1">Listed NCD. Market value ≥ 120%.</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: SP-1, SP-2</div>
+      </div>
+      <div onclick="selectSecurity(this,'Equity')" class="p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50">
+        <div class="text-2xl mb-2">📉</div>
+        <div class="font-semibold text-slate-800">Demat Shares</div>
+        <div class="text-xs text-slate-600 mt-1">NSE/BSE listed. Haircut 40%.</div>
+        <div class="text-xs text-emerald-600 font-semibold mt-1">Docs: SP-3, SP-4</div>
+      </div>
+    </div>
+    <!-- Gold details panel -->
+    <div id="goldPanel" class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl mb-4">
+      <div class="font-semibold text-yellow-800 mb-3">Gold Ornament Details</div>
+      <div class="grid grid-cols-4 gap-3">
+        <div><label class="form-label">Gross Weight (g)</label><input class="form-input" id="goldGrossWt" value="120" oninput="calcLTV()"></div>
+        <div><label class="form-label">Net Weight (g)</label><input class="form-input" id="goldNetWt" value="98" oninput="calcLTV()"></div>
+        <div><label class="form-label">Purity (Karat)</label><select class="form-select" id="goldPurity" onchange="calcLTV()"><option>22K</option><option>18K</option><option>24K</option></select></div>
+        <div><label class="form-label">Market Rate (₹/g)</label><input class="form-input" id="goldRate" value="6200" oninput="calcLTV()"></div>
+        <div><label class="form-label">Market Value</label><div class="form-input bg-slate-50 font-bold text-blue-700" id="mktVal">Rs. 6,07,600</div></div>
+        <div><label class="form-label">LTV @ <span id="ltvPct">75</span>%</label><div class="form-input bg-slate-50 font-bold text-green-700" id="ltvVal">Rs. 4,55,700</div></div>
+        <div><label class="form-label">Valuation Cert.</label><select class="form-select"><option>From empanelled valuer</option></select></div>
+        <div><label class="form-label">Valuer Name</label><input class="form-input" id="goldValuerName" value="M/s. Sundaram Jewellers"></div>
+      </div>
+    </div>
+  </div>
+  <div class="flex gap-3">
+    <a href="bi-create-application.html" class="btn-outline">← Back</a>
+    <a href="bi-document-upload.html" id="securityNextBtn" class="btn-primary" onclick="saveSecurity()">Next: Document Upload →</a>
+  </div>
+</div></main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('BI');
+
+/* ---- Case resolution (BI wizard convention) ---- */
+function resolveCase(){
+  var qId = new URLSearchParams(location.search).get('caseId');
+  var c = qId ? LOS_DB.getCase(qId) : null;
+  if(!c){
+    c = LOS_DB.getCases().filter(function(x){return x.status==='BRANCH_WIP'||x.status==='REVERTED';})
+      .sort(function(a,b){return new Date(b.updatedAt)-new Date(a.updatedAt);})[0] || null;
+  }
+  return c;
+}
+function showNoCaseNotice(disableEls){
+  var main = document.querySelector('main .grid') || document.querySelector('main');
+  if(main){
+    var notice = document.createElement('div');
+    notice.className = 'card p-4 bg-yellow-50 border border-yellow-200 text-sm text-yellow-800';
+    notice.textContent = 'No active application found to edit. Start a new application first.';
+    main.insertBefore(notice, main.firstChild);
+  }
+  (disableEls||[]).forEach(function(el){ if(el){ el.classList.add('opacity-50','pointer-events-none'); } });
+}
+
+var caseObj = resolveCase();
+
+var SECURITY_LABELS = {
+  Gold:'Gold Ornaments', LIC:'LIC Policy', BG:'Bank Guarantee', FD:'Fixed Deposit',
+  Mortgage:'Mortgage (Property)', Chit:'Chit Passbook', 'Sub-Debt':'Sub-Debt',
+  NCD:'Demat NCD', Equity:'Demat Shares'
+};
+var TYPE_TO_CODE = {};
+Object.keys(SECURITY_LABELS).forEach(function(k){ TYPE_TO_CODE[SECURITY_LABELS[k]] = k; });
+
+var selectedCodes = [];
+if(caseObj && caseObj.securities && caseObj.securities.length){
+  selectedCodes = caseObj.securities.map(function(s){ return TYPE_TO_CODE[s.type]; }).filter(Boolean);
+}
+
+function cardClass(code, selected){
+  if(selected){
+    return code==='Gold'
+      ? 'p-4 border-2 border-yellow-400 rounded-xl cursor-pointer bg-yellow-50 selected-security'
+      : 'p-4 border-2 border-blue-400 rounded-xl cursor-pointer bg-blue-50 selected-security';
+  }
+  return 'p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50';
+}
+
+function refreshCardStyles(){
+  document.querySelectorAll('[onclick^="selectSecurity"]').forEach(function(card){
+    var m = (card.getAttribute('onclick')||'').match(/'([^']+)'/);
+    var code = m ? m[1] : null;
+    if(!code) return;
+    card.className = cardClass(code, selectedCodes.indexOf(code) >= 0);
+  });
+  var goldPanel = document.getElementById('goldPanel');
+  if(goldPanel) goldPanel.style.display = selectedCodes.indexOf('Gold') >= 0 ? '' : 'none';
+}
+
+function calcLTV(){
+  var netWt = parseFloat((document.getElementById('goldNetWt')||{}).value) || 0;
+  var rate = parseFloat((document.getElementById('goldRate')||{}).value) || 0;
+  var goldCfg = (LOS_CONFIG.securityTypes||[]).find(function(s){ return s.type === 'Gold Ornaments'; });
+  var ltvCap = goldCfg && goldCfg.ltvCap != null ? goldCfg.ltvCap : 0.75;
+  var mktVal = Math.round(netWt * rate);
+  var ltvVal = Math.round(mktVal * ltvCap);
+  var mktEl = document.getElementById('mktVal'); if(mktEl) mktEl.textContent = 'Rs. ' + mktVal.toLocaleString('en-IN');
+  var ltvEl = document.getElementById('ltvVal'); if(ltvEl) ltvEl.textContent = 'Rs. ' + ltvVal.toLocaleString('en-IN');
+  var pctEl = document.getElementById('ltvPct'); if(pctEl) pctEl.textContent = Math.round(ltvCap*100);
+  saveSecurity();
+  return { mktVal: mktVal, ltvVal: ltvVal };
+}
+
+function selectSecurity(el, code){
+  var idx = selectedCodes.indexOf(code);
+  if(idx >= 0) selectedCodes.splice(idx, 1); else selectedCodes.push(code);
+  refreshCardStyles();
+  saveSecurity();
+}
+
+function buildSecuritiesList(){
+  var ltv = calcLTVValuesOnly();
+  return selectedCodes.map(function(code, i){
+    var type = SECURITY_LABELS[code];
+    if(code === 'Gold'){
+      return {
+        slNo: i+1, type: type,
+        name: (document.getElementById('goldValuerName')||{}).value || (caseObj ? caseObj.applicant : ''),
+        loyaltyUsn: (caseObj && caseObj.loyalty) || '',
+        freeValue: ltv.mktVal, valueLoaded: ltv.ltvVal
+      };
+    }
+    return {
+      slNo: i+1, type: type,
+      name: caseObj ? caseObj.applicant : '',
+      loyaltyUsn: (caseObj && caseObj.loyalty) || '',
+      freeValue: caseObj ? (caseObj.amount||0) : 0,
+      valueLoaded: caseObj ? (caseObj.amount||0) : 0
+    };
+  });
+}
+
+function calcLTVValuesOnly(){
+  var netWt = parseFloat((document.getElementById('goldNetWt')||{}).value) || 0;
+  var rate = parseFloat((document.getElementById('goldRate')||{}).value) || 0;
+  var goldCfg = (LOS_CONFIG.securityTypes||[]).find(function(s){ return s.type === 'Gold Ornaments'; });
+  var ltvCap = goldCfg && goldCfg.ltvCap != null ? goldCfg.ltvCap : 0.75;
+  var mktVal = Math.round(netWt * rate);
+  var ltvVal = Math.round(mktVal * ltvCap);
+  return { mktVal: mktVal, ltvVal: ltvVal };
+}
+
+function saveSecurity(){
+  if(!caseObj) return;
+  var securities = buildSecuritiesList();
+  caseObj.securities = securities;
+  if(securities.length) caseObj.security = securities.map(function(s){ return s.type; }).join(' + ');
+  LOS_DB.saveCase(caseObj);
+}
+
+if(!caseObj){
+  showNoCaseNotice([document.getElementById('securityNextBtn')]);
+} else {
+  refreshCardStyles();
+  calcLTV();
+}
+
+var stepLabelEl = document.getElementById('stepCaseIdLabel');
+if(stepLabelEl) stepLabelEl.textContent = caseObj ? caseObj.id : '(none)';
+</script></body></html>

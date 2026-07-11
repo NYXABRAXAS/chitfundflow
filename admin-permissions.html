@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Permission Matrix — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">System Admin</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Permission Matrix</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Admin › Permission Matrix</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="card p-5 mb-4 flex items-start gap-4"><div class="flex-1 text-sm text-slate-600">Role-based access control matrix. Check/uncheck permissions per module. Changes take effect on Save.</div><button id="savePermissionsBtn" class="btn-primary">Save Changes</button><button onclick="alert('Exported!')" class="btn-outline">Export</button></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th class="sticky left-0 bg-slate-50 z-20 min-w-48">Module / Feature</th><th class="text-center" style="min-width:60px">Br.Init</th><th class="text-center" style="min-width:60px">Br.Scrut</th><th class="text-center" style="min-width:60px">Hub Ctrl</th><th class="text-center" style="min-width:60px">FI Agent</th><th class="text-center" style="min-width:60px">Fin.Check</th><th class="text-center" style="min-width:60px">Dev.Auth</th><th class="text-center" style="min-width:60px">Rec.Auth</th><th class="text-center" style="min-width:60px">Cr.Head</th><th class="text-center" style="min-width:60px">Fin.Auth</th><th class="text-center" style="min-width:60px">Biz.Appr</th><th class="text-center" style="min-width:60px">Disb</th><th class="text-center" style="min-width:60px">Admin</th></tr></thead><tbody id="permMatrixBody"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex gap-4 text-xs text-slate-500"><span>Checked = Access Granted</span><span id="permLastUpdated" class="ml-auto text-blue-600 font-medium">Last updated: 16 Jan 2024 — Dr. Suresh Babu (Admin)</span></div></div></main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+
+var rolesPermissions = LOS_DB.getConfigCollection('rolesPermissions');
+var permRoles = Permissions.allRoles(); // ['BI','BS','HUB','FI','FC','DEV','RA','CH','FA','BA','DISB','ADMIN'] - matches header column order
+
+function labelize(key){
+  return key.replace(/([A-Z])/g,' $1').replace(/^./,function(c){return c.toUpperCase()}).trim();
+}
+
+function renderPermMatrix(){
+  var tb = document.getElementById('permMatrixBody');
+  tb.innerHTML = (rolesPermissions.features||[]).map(function(feature, i){
+    var cells = permRoles.map(function(role){
+      var checked = rolesPermissions.matrix[role] && rolesPermissions.matrix[role].indexOf(feature) !== -1;
+      return '<td class="text-center"><input type="checkbox" class="accent-blue-600 w-4 h-4" data-role="'+role+'" data-feature="'+feature+'" '+(checked?'checked':'')+'></td>';
+    }).join('');
+    return '<tr'+(i%2===0?' class="bg-blue-50"':' ')+'><td class="font-medium text-xs text-slate-700 sticky left-0 bg-white z-10 pr-4 min-w-48">'+labelize(feature)+'</td>'+cells+'</tr>';
+  }).join('');
+
+  tb.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+    cb.addEventListener('change', function(){
+      var role = cb.getAttribute('data-role');
+      var feature = cb.getAttribute('data-feature');
+      if(!rolesPermissions.matrix[role]) rolesPermissions.matrix[role] = [];
+      var idx = rolesPermissions.matrix[role].indexOf(feature);
+      if(cb.checked){ if(idx===-1) rolesPermissions.matrix[role].push(feature); }
+      else { if(idx!==-1) rolesPermissions.matrix[role].splice(idx,1); }
+    });
+  });
+}
+
+document.getElementById('savePermissionsBtn').addEventListener('click', function(){
+  LOS_DB.saveConfigCollection('rolesPermissions', rolesPermissions);
+  var stamp = document.getElementById('permLastUpdated');
+  if(stamp) stamp.textContent = 'Last updated: ' + new Date().toLocaleString() + ' — ' + (session.employeeName||'Admin');
+  alert('Permissions saved!');
+});
+
+renderPermMatrix();
+</script></body></html>

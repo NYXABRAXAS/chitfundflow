@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field Investigator Dashboard — MCF LOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="assets/css/common.css">
+<script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-60 flex-shrink-0 bg-slate-900 flex flex-col h-screen">
+  <div class="px-5 py-4 border-b border-slate-700">
+    <div class="font-black text-white text-base tracking-tight">MCF LOS</div>
+    <div class="text-slate-400 text-xs mt-0.5">Muthoot Pappachan Chits</div>
+  </div>
+  <div class="px-3 py-3 border-b border-slate-700">
+    <div class="px-3 py-1.5 bg-slate-800 rounded-lg">
+      <div class="text-slate-400 text-xs">Logged in as</div>
+      <div id="sidebarRoleLabel" class="text-white text-xs font-semibold mt-0.5">Field Investigator</div>
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5"><a href="field-investigator-mobile.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all bg-blue-600 text-white">📊 Dashboard</a><a href="fi-assigned-cases.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">📋 Assigned Cases</a><a href="fi-assigned-cases.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">📝 FI Report</a><a href="reports.html" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-300 hover:bg-slate-700 hover:text-white">📈 Reports</a></nav>
+  <div class="px-4 py-3 border-t border-slate-700">
+    <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white text-xs transition">🔓 Logout</a>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-4 flex-shrink-0 sticky top-0 z-40">
+  <button id="sidebarToggle" class="lg:hidden p-1 rounded text-slate-500 hover:bg-slate-100">☰</button>
+  <div class="flex-1">
+    <div class="font-bold text-slate-800 text-base">Field Investigator Dashboard</div>
+    <div class="text-slate-400 text-xs mt-0.5">Home › Field Investigator › Dashboard</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="relative hidden md:block">
+      <input class="pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-slate-200 rounded-lg w-48 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search cases...">
+      <span class="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+    </div>
+    <button id="notifBell" class="relative p-2 rounded-lg hover:bg-slate-100">
+      <span class="text-lg">🔔</span>
+      <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+    </button>
+    <div id="notifPanel" class="hidden absolute top-14 right-4 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-3">
+      <div class="font-semibold text-slate-700 mb-2 text-sm">Notifications</div>
+      <div id="notifList" class="space-y-2 text-xs"></div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100">
+        <div id="profileInitials" class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">PR</div>
+        <span id="profileName" class="text-xs font-medium hidden md:block">Profile</span>
+      </button>
+      <div id="profileDrop" class="hidden absolute right-0 top-10 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-50 py-1">
+        <a href="admin-settings.html" class="block px-3 py-2 text-xs hover:bg-slate-50">⚙️ Settings</a>
+        <a href="index.html" class="block px-3 py-2 text-xs hover:bg-slate-50 text-red-600">🔓 Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6">
+
+<div id="noCaseState" class="card text-center text-slate-400 text-sm" style="display:none">No pending field investigation cases assigned to you right now.</div>
+
+<div id="fiCaseView">
+  <div class="card mb-4">
+    <div class="flex items-start justify-between">
+      <div>
+        <div id="fvCaseId" class="font-mono text-xs text-blue-700">MCF-2024-000000</div>
+        <div id="fvApplicant" class="font-bold text-slate-800 text-base mt-1">—</div>
+        <div id="fvAddress" class="text-xs text-slate-500 mt-0.5">—</div>
+      </div>
+      <span class="chip chip-purple">FI Assigned</span>
+    </div>
+    <div class="grid grid-cols-3 gap-3 mt-4">
+      <div><div class="text-slate-400 text-xs">Amount</div><div id="fvAmount" class="font-semibold text-xs text-emerald-700 mt-0.5">—</div></div>
+      <div><div class="text-slate-400 text-xs">Security</div><div id="fvSecurity" class="font-semibold text-xs mt-0.5">—</div></div>
+      <div><div class="text-slate-400 text-xs">Branch</div><div id="fvBranch" class="font-semibold text-xs mt-0.5">—</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="font-semibold text-slate-700 mb-3">Submit FI Report</div>
+    <div class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="form-label">Case ID</label><input id="fiModalCaseId" class="form-input" value="" readonly></div>
+        <div><label class="form-label">Visit Date & Time</label><input class="form-input" type="datetime-local" value="2024-01-16T14:30"></div>
+        <div><label class="form-label">Visit Type</label><select class="form-select"><option>Residential Verification</option><option>Business Verification</option><option>Security Verification</option><option>Combined</option></select></div>
+        <div><label class="form-label">Person Met</label><input id="fiModalPersonMet" class="form-input" value=""></div>
+        <div><label class="form-label">Applicant Present</label><select class="form-select"><option>Yes</option><option>No</option></select></div>
+        <div><label class="form-label">Address Verified</label><select class="form-select"><option>Confirmed Match</option><option>Minor Variation</option><option>Mismatch</option></select></div>
+      </div>
+      <div><label class="form-label">Residence Status</label>
+        <div class="grid grid-cols-3 gap-2 mt-1 text-xs">
+          <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="radio" name="res" class="accent-blue-600" checked> Own Property</label>
+          <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="radio" name="res" class="accent-blue-600"> Rented</label>
+          <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="radio" name="res" class="accent-blue-600"> Family Property</label>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="form-label">Neighbourhood Assessment</label><select class="form-select"><option>Excellent</option><option>Good</option><option>Average</option><option>Poor</option></select></div>
+        <div><label class="form-label">Business Activity (if applicable)</label><select class="form-select"><option>Active — Good Volume</option><option>Active — Low Volume</option><option>Seasonal</option><option>Not Applicable</option></select></div>
+      </div>
+      <div><label class="form-label">Field Observation / Remarks</label><textarea class="form-input" rows="3" placeholder="Describe visit findings, observations, and any red flags"></textarea></div>
+      <div><label class="form-label">FI Recommendation</label>
+        <div class="grid grid-cols-3 gap-2 mt-1">
+          <button onclick="this.classList.add('bg-green-600','text-white');event.preventDefault();setRec('RECOMMEND')" class="p-2 border border-green-300 rounded-lg text-xs font-semibold text-green-700 hover:bg-green-50">✅ Recommend</button>
+          <button onclick="this.classList.add('bg-yellow-500','text-white');event.preventDefault();setRec('CONDITIONAL')" class="p-2 border border-yellow-300 rounded-lg text-xs font-semibold text-yellow-700 hover:bg-yellow-50">⚠️ Conditional</button>
+          <button onclick="this.classList.add('bg-red-600','text-white');event.preventDefault();setRec('NOT_RECOMMEND')" class="p-2 border border-red-300 rounded-lg text-xs font-semibold text-red-700 hover:bg-red-50">❌ Not Recommend</button>
+        </div>
+      </div>
+      <div class="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+        📍 Geo-tag required. Location will be captured automatically on submit.
+        <div id="fiModalGeoTag" class="mt-1 font-mono">GPS: 13.0827° N, 80.2707° E — Chennai</div>
+      </div>
+      <div><label class="form-label">Photo Evidence</label>
+        <div class="grid grid-cols-4 gap-2">
+          <div onclick="alert('Photo captured!')" class="h-16 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-400 text-slate-400 text-xs text-center">📷<br>Front of house</div>
+          <div onclick="alert('Photo captured!')" class="h-16 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-400 text-slate-400 text-xs text-center">📷<br>Interior</div>
+          <div onclick="alert('Photo captured!')" class="h-16 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-400 text-slate-400 text-xs text-center">📷<br>Nameplate</div>
+          <div onclick="alert('Photo captured!')" class="h-16 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-400 text-slate-400 text-xs text-center">📷<br>Street View</div>
+        </div>
+      </div>
+      <div class="flex gap-3"><a href="fi-assigned-cases.html" class="btn-outline flex-1 text-center">Back to Queue</a><button onclick="submitFIReportPage()" class="btn-success flex-1">Submit FI Report</button></div>
+    </div>
+  </div>
+</div>
+
+</main></div></div><script>
+var session = LOSApp.boot('FI');
+
+var BRANCH_GEO = {
+  'Chennai HO':['13.0827° N','80.2707° E'],
+  'Trichy Main':['10.7905° N','78.7047° E'],
+  'Coimbatore North':['11.0168° N','76.9558° E'],
+  'Madurai Central':['9.9252° N','78.1198° E'],
+  'Salem Branch':['11.6643° N','78.1460° E'],
+  'Erode Branch':['11.3410° N','77.7172° E']
+};
+
+var currentCaseId = null;
+var recommendationMap = {};
+
+function curr(n){return '₹'+(n||0).toLocaleString('en-IN')}
+
+function securityLabel(c){
+  var type = (c.securities && c.securities[0] && c.securities[0].type) || c.security || 'N/A';
+  return type;
+}
+
+function getParam(name){
+  var m = new RegExp('[?&]'+name+'=([^&]+)').exec(location.search);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function loadCase(){
+  var qId = getParam('caseId');
+  var c = null;
+  if (qId) c = LOS_DB.getCase(qId);
+  if (!c) {
+    var list = LOS_DB.getCases({status:'FI_INITIATED'});
+    c = list[0] || null;
+  }
+  if (!c || c.status !== 'FI_INITIATED') {
+    document.getElementById('fiCaseView').style.display = 'none';
+    document.getElementById('noCaseState').style.display = '';
+    return;
+  }
+  currentCaseId = c.id;
+  document.getElementById('fvCaseId').textContent = c.id;
+  document.getElementById('fvApplicant').textContent = c.applicant;
+  document.getElementById('fvAddress').textContent = c.address || '';
+  document.getElementById('fvAmount').textContent = curr(c.amount);
+  document.getElementById('fvSecurity').textContent = securityLabel(c);
+  document.getElementById('fvBranch').textContent = c.branch;
+  document.getElementById('fiModalCaseId').value = c.id;
+  document.getElementById('fiModalPersonMet').value = c.applicant + ' (Applicant)';
+  var geo = BRANCH_GEO[c.branch] || BRANCH_GEO['Chennai HO'];
+  document.getElementById('fiModalGeoTag').textContent = 'GPS: '+geo[0]+', '+geo[1]+' — '+c.branch;
+}
+
+function setRec(val){
+  if (currentCaseId) recommendationMap[currentCaseId] = val;
+}
+
+function submitFIReportPage(){
+  if (!currentCaseId) { alert('No case selected'); return; }
+  var geoText = document.getElementById('fiModalGeoTag').textContent;
+  var rec = recommendationMap[currentCaseId] || 'RECOMMEND';
+  var result = WorkflowEngine.transition(currentCaseId, 'submitFIReport', {
+    actorRole: session.role,
+    payload: {
+      fiReport: {
+        recommendation: rec,
+        geoTag: geoText,
+        submittedDate: new Date().toISOString(),
+        photos: []
+      }
+    }
+  });
+  if (result.success) {
+    delete recommendationMap[currentCaseId];
+    currentCaseId = null;
+    LOSApp.refreshChrome();
+    loadCase();
+  } else {
+    alert(result.error);
+  }
+}
+
+loadCase();
+</script></body></html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Approval Matrix — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">System Admin</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Approval Matrix</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Admin › Approval Matrix</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="flex flex-wrap gap-2 mb-4"><button onclick="openApprovalModal(null)" class="btn-primary">+ Add Level</button><button onclick="alert('Exported!')" class="btn-outline">Export PDF</button></div><div class="card mb-4 p-4"><div class="text-sm font-semibold text-slate-700 mb-3">Approval Hierarchy Snapshot</div><div class="flex items-center gap-2 flex-wrap text-xs"><span class="chip chip-blue">L1 — Branch Mgr → ₹5L</span><span class="text-slate-400">→</span><span class="chip chip-blue">L2 — Hub Controller → ₹25L</span><span class="text-slate-400">→</span><span class="chip chip-purple">L3 — Rec.Auth + Credit Head → ₹1Cr</span><span class="text-slate-400">→</span><span class="chip chip-purple">L4 — Credit Head + Biz.Appr → ₹5Cr</span><span class="text-slate-400">→</span><span class="chip chip-red">L5 — Board → ₹5Cr+</span></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Level</th><th>Amount Band</th><th>Approval Authority</th><th>Security Type</th><th>Pre-condition</th><th>Escalation</th><th>Special Conditions</th><th>Actions</th></tr></thead><tbody id="apprTableBody"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span class="text-xs text-slate-400">Showing 7 of 7 records</span>
+  <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
+</div></div></main></div></div><div id="apprModal" class="modal-overlay">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-y-auto">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="font-semibold text-slate-800 text-base">Create / Edit Approval Level</div>
+      <button data-modal-close="apprModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button>
+    </div>
+    <div class="p-5"><div class="grid grid-cols-2 gap-3">
+  <div><label class="form-label">Level Code</label><input id="apprLevel" class="form-input" value="L1"></div>
+  <div><label class="form-label">Amount Range (INR)</label><input id="apprLabel" class="form-input" value="Up to Rs. 5 Lakhs"></div>
+  <div><label class="form-label">Authority / Role</label><select id="apprAuthority" class="form-select"><option>Branch Manager</option><option>Hub Controller</option><option>Recommending Authority</option><option>Credit Head</option><option>Business Approver</option><option>MD / Board Committee</option></select></div>
+  <div><label class="form-label">Security Restriction</label><input id="apprSecurityType" class="form-input" value="Any security type"></div>
+  <div><label class="form-label">Pre-condition</label><input id="apprPreCondition" class="form-input" value="None"></div>
+  <div><label class="form-label">Escalation To</label><select id="apprEscalation" class="form-select"><option>-</option><option>Hub Controller</option><option>Credit Head</option><option>Business Approver</option><option>MD Office</option></select></div>
+  <div class="col-span-2"><label class="form-label">Special Conditions / Notes</label><textarea id="apprSpecialConditions" class="form-input" rows="2">Standard processing. FI report not mandatory for amounts below Rs. 2L.</textarea></div>
+</div></div>
+    <div class="px-5 pb-5 flex gap-3"><button data-modal-close="apprModal" class="btn-outline flex-1">Cancel</button><button onclick="saveApprovalLevel()" class="btn-primary flex-1">Save Level</button></div>
+  </div>
+</div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+
+var APPROVAL_EXTRAS = {
+  'L1':   {securityType:'Any security type', preCondition:'None', escalation:'-', specialConditions:'Standard Processing'},
+  'L2':   {securityType:'Any security type', preCondition:'None', escalation:'-', specialConditions:'Credit Final Check required'},
+  'L3':   {securityType:'All types', preCondition:'L2 cleared', escalation:'Hub Controller', specialConditions:'CAM mandatory, dual sign-off'},
+  'L4':   {securityType:'Non-gold preferred', preCondition:'L3 cleared', escalation:'Credit Head', specialConditions:'Board sub-committee review for >2Cr'},
+  'L5':   {securityType:'Mortgage / BG / FD only', preCondition:'L4 cleared', escalation:'Business Approver', specialConditions:'Board resolution required'},
+  'DEV-1':{securityType:'Case-specific', preCondition:'Deviation flagged', escalation:'Hub Controller', specialConditions:'Deviation remarks mandatory'},
+  'DEV-2':{securityType:'Case-specific', preCondition:'DEV-1 cleared', escalation:'Deviation Authority', specialConditions:'Legal opinion required'}
+};
+
+var APPROVAL_MATRIX = LOS_DB.getConfigCollection('approvalMatrix');
+var approvalExtrasApplied = false;
+APPROVAL_MATRIX.forEach(function(row){
+  if (row.securityType === undefined) {
+    var extra = APPROVAL_EXTRAS[row.level] || {securityType:'Any security type', preCondition:'None', escalation:'-', specialConditions:''};
+    row.securityType = extra.securityType;
+    row.preCondition = extra.preCondition;
+    row.escalation = extra.escalation;
+    row.specialConditions = extra.specialConditions;
+    approvalExtrasApplied = true;
+  }
+});
+if (approvalExtrasApplied) LOS_DB.saveConfigCollection('approvalMatrix', APPROVAL_MATRIX);
+var editingApprovalIndex = null;
+
+function renderApprovalTable(){
+  var tb = document.getElementById('apprTableBody');
+  if(!tb) return;
+  tb.innerHTML = APPROVAL_MATRIX.map(function(a, idx){
+    return '<tr>'+
+      '<td><span class="chip chip-blue">'+(a.level||'')+'</span></td>'+
+      '<td class="font-semibold text-xs text-emerald-700">'+(a.label||'')+'</td>'+
+      '<td class="text-xs font-medium">'+(a.authority||'')+'</td>'+
+      '<td class="text-xs">'+(a.securityType||'')+'</td>'+
+      '<td class="text-xs text-slate-600">'+(a.preCondition||'')+'</td>'+
+      '<td class="text-xs">'+(a.escalation||'')+'</td>'+
+      '<td class="text-xs text-slate-600">'+(a.specialConditions||'')+'</td>'+
+      '<td class="flex gap-1"><button onclick="openApprovalModal('+idx+')" class="btn-primary btn-sm">Edit</button></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="8" class="text-center text-slate-400 py-6">No approval levels configured</td></tr>';
+}
+
+function openApprovalModal(idx){
+  editingApprovalIndex = idx;
+  var row = (idx != null) ? APPROVAL_MATRIX[idx] : {level:'', label:'', authority:'Branch Manager', securityType:'Any security type', preCondition:'None', escalation:'-', specialConditions:''};
+  document.getElementById('apprLevel').value = row.level || '';
+  document.getElementById('apprLabel').value = row.label || '';
+  document.getElementById('apprAuthority').value = row.authority || 'Branch Manager';
+  document.getElementById('apprSecurityType').value = row.securityType || '';
+  document.getElementById('apprPreCondition').value = row.preCondition || '';
+  document.getElementById('apprEscalation').value = row.escalation || '-';
+  document.getElementById('apprSpecialConditions').value = row.specialConditions || '';
+  document.getElementById('apprModal').classList.add('open');
+}
+
+function saveApprovalLevel(){
+  var data = {
+    level: document.getElementById('apprLevel').value,
+    label: document.getElementById('apprLabel').value,
+    authority: document.getElementById('apprAuthority').value,
+    securityType: document.getElementById('apprSecurityType').value,
+    preCondition: document.getElementById('apprPreCondition').value,
+    escalation: document.getElementById('apprEscalation').value,
+    specialConditions: document.getElementById('apprSpecialConditions').value
+  };
+  if(!data.level){ alert('Level Code is required'); return; }
+  if(editingApprovalIndex != null){
+    APPROVAL_MATRIX[editingApprovalIndex] = Object.assign({}, APPROVAL_MATRIX[editingApprovalIndex], data);
+  } else {
+    APPROVAL_MATRIX.push(Object.assign({amountBand:{min:null,max:null}}, data));
+  }
+  LOS_DB.saveConfigCollection('approvalMatrix', APPROVAL_MATRIX);
+  document.getElementById('apprModal').classList.remove('open');
+  renderApprovalTable();
+}
+
+renderApprovalTable();
+</script></body></html>

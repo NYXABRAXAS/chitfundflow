@@ -1,0 +1,27 @@
+{
+  "features": [
+    "caseCreate","caseEdit","caseSubmit","caseViewOwn","caseViewAll",
+    "docUpload","docVerify","docRequest",
+    "caseApprove","caseReject","caseReturn","caseHold",
+    "fiAssign","fiAccept","fiVisit","fiSubmitReport",
+    "camView","camGenerate","camEdit","financialAnalysis","riskAnalysis",
+    "deviationApprove","deviationReject",
+    "loanModify","roiModify","tenureModify",
+    "sanctionLetter","agreementGenerate","nachUpload","loanAccountGenerate","disburse",
+    "adminUserManage","adminConfig","auditView","reportsView"
+  ],
+  "matrix": {
+    "BI":   ["caseCreate","caseEdit","caseSubmit","caseViewOwn","docUpload","reportsView"],
+    "BS":   ["caseViewAll","caseApprove","caseReject","caseReturn","docVerify","docRequest","reportsView"],
+    "HUB":  ["caseViewAll","docVerify","fiAssign","reportsView"],
+    "FI":   ["fiAccept","fiVisit","fiSubmitReport","caseViewOwn","reportsView"],
+    "FC":   ["caseViewAll","camView","camGenerate","camEdit","financialAnalysis","riskAnalysis","caseApprove","caseReject","caseReturn","reportsView"],
+    "DEV":  ["caseViewAll","camView","deviationApprove","deviationReject","reportsView"],
+    "RA":   ["caseViewAll","camView","camEdit","caseApprove","caseReject","caseHold","reportsView"],
+    "CH":   ["caseViewAll","camView","camEdit","caseApprove","caseReject","loanModify","roiModify","tenureModify","reportsView"],
+    "FA":   ["caseViewAll","camView","caseApprove","caseReject","reportsView"],
+    "BA":   ["caseViewAll","camView","caseApprove","caseReject","caseHold","reportsView"],
+    "DISB": ["caseViewAll","sanctionLetter","agreementGenerate","nachUpload","loanAccountGenerate","disburse","reportsView"],
+    "ADMIN":["caseViewAll","camView","adminUserManage","adminConfig","auditView","reportsView"]
+  }
+}

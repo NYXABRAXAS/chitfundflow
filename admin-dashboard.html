@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard — MCF LOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<link rel="stylesheet" href="assets/css/common.css"></head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-60 flex-shrink-0 bg-slate-900 flex flex-col h-screen">
+  <div class="px-5 py-4 border-b border-slate-700">
+    <div class="font-black text-white text-base tracking-tight">MCF LOS</div>
+    <div class="text-slate-400 text-xs mt-0.5">Muthoot Pappachan Chits</div>
+  </div>
+  <div class="px-3 py-3 border-b border-slate-700">
+    <div class="px-3 py-1.5 bg-slate-800 rounded-lg">
+      <div class="text-slate-400 text-xs">Logged in as</div>
+      <div id="sidebarRoleLabel" class="text-white text-xs font-semibold mt-0.5">System Admin</div>
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5"></nav>
+  <div class="px-4 py-3 border-t border-slate-700">
+    <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white text-xs transition">🔓 Logout</a>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-4 flex-shrink-0 sticky top-0 z-40">
+  <button id="sidebarToggle" class="lg:hidden p-1 rounded text-slate-500 hover:bg-slate-100">☰</button>
+  <div class="flex-1">
+    <div class="font-bold text-slate-800 text-base">Admin Dashboard</div>
+    <div class="text-slate-400 text-xs mt-0.5">Home › Admin › Dashboard</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="relative hidden md:block">
+      <input class="pl-8 pr-3 py-1.5 text-xs bg-slate-100 border border-slate-200 rounded-lg w-48 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search cases...">
+      <span class="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+    </div>
+    <button id="notifBell" class="relative p-2 rounded-lg hover:bg-slate-100">
+      <span class="text-lg">🔔</span>
+      <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+    </button>
+    <div id="notifPanel" class="hidden absolute top-14 right-4 w-80 bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-3">
+      <div class="font-semibold text-slate-700 mb-2 text-sm">Notifications</div>
+      <div id="notifList" class="space-y-2 text-xs"></div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-100">
+        <div id="profileInitials" class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">PR</div>
+        <span id="profileName" class="text-xs font-medium hidden md:block">Profile</span>
+      </button>
+      <div id="profileDrop" class="hidden absolute right-0 top-10 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-50 py-1">
+        <a href="admin-settings.html" class="block px-3 py-2 text-xs hover:bg-slate-50">⚙️ Settings</a>
+        <a href="index.html" class="block px-3 py-2 text-xs hover:bg-slate-50 text-red-600">🔓 Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><!-- KPI Grid Row 1 -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-4">
+<div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-blue-50 text-blue-600">👥</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Total Users</div>
+    <div id="kpiTotalUsers" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Across all branches</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-green-50 text-green-600">🟢</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Active Today</div>
+    <div id="kpiActiveUsers" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Currently logged in</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-indigo-50 text-indigo-600">🏢</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Total Branches</div>
+    <div id="kpiTotalBranches" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Pan India</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-purple-50 text-purple-600">🏦</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Credit Hubs</div>
+    <div id="kpiCreditHubs" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Active hubs</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-blue-50 text-blue-600">📁</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Total Cases</div>
+    <div id="kpiTotalCases" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Created today: <span id="kpiCasesToday">0</span></div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-yellow-50 text-yellow-600">⏳</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Cases In Progress</div>
+    <div id="kpiInProgress" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Across all stages</div>
+  </div>
+</div>
+  </div>
+  <!-- KPI Grid Row 2 -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-6">
+<div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-green-50 text-green-600">✅</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Approved Cases</div>
+    <div id="kpiApproved" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Cumulative</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-red-50 text-red-600">❌</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Rejected Cases</div>
+    <div id="kpiRejected" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Cumulative</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-teal-50 text-teal-600">💸</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Disbursed</div>
+    <div id="kpiDisbursed" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">FY 2024-25</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-orange-50 text-orange-600">🔍</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Pending FI</div>
+    <div id="kpiPendingFI" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Assigned, not submitted</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-indigo-50 text-indigo-600">⚖️</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">Credit Approval</div>
+    <div id="kpiCreditApproval" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Awaiting decision</div>
+  </div>
+</div><div class="stat-card p-4 flex items-start gap-3">
+  <div class="kpi-icon bg-red-50 text-red-600">🚨</div>
+  <div class="min-w-0">
+    <div class="text-slate-500 text-xs font-medium">SLA Breaches</div>
+    <div id="kpiSlaBreaches" class="text-slate-800 text-xl font-bold mt-0.5">--</div>
+    <div class="text-slate-400 text-xs mt-0.5">Live count</div>
+  </div>
+</div>
+  </div>
+  <!-- Charts Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+    <div class="lg:col-span-2 card p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div><div class="font-semibold text-slate-800">Branch-wise Case Volume</div><div class="text-slate-400 text-xs">Monthly sanction — top 10 branches</div></div>
+        <select class="text-xs border border-slate-200 rounded-lg px-2 py-1.5 text-slate-600"><option>Jan 2024</option><option>Dec 2023</option></select>
+      </div>
+      <canvas id="branchChart" height="200"></canvas>
+    </div>
+    <div class="card p-5">
+      <div class="font-semibold text-slate-800 mb-1">Security Type Distribution</div>
+      <div class="text-slate-400 text-xs mb-4">Current portfolio mix</div>
+      <canvas id="securityChart" height="220"></canvas>
+    </div>
+  </div>
+  <!-- Row 2 Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+    <div class="card p-5">
+      <div class="font-semibold text-slate-800 mb-1">Approval Trend</div>
+      <div class="text-slate-400 text-xs mb-4">Monthly: Approved vs Rejected</div>
+      <canvas id="approvalChart" height="200"></canvas>
+    </div>
+    <div class="card p-5">
+      <div class="font-semibold text-slate-800 mb-1">TAT Monitoring</div>
+      <div class="text-slate-400 text-xs mb-3">Average days per stage</div>
+      <div class="space-y-2">
+        <div class="flex items-center gap-2"><span class="text-xs text-slate-600 w-28">Branch Init</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width:65%"></div></div><span class="text-xs text-slate-500 w-10 text-right">1.8d</span></div>
+        <div class="flex items-center gap-2"><span class="text-xs text-slate-600 w-28">Scrutiny</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width:45%"></div></div><span class="text-xs text-slate-500 w-10 text-right">1.2d</span></div>
+        <div class="flex items-center gap-2"><span class="text-xs text-slate-600 w-28">FI</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-yellow-500 h-2 rounded-full" style="width:80%"></div></div><span class="text-xs text-slate-500 w-10 text-right">2.2d</span></div>
+        <div class="flex items-center gap-2"><span class="text-xs text-slate-600 w-28">Credit Review</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-orange-500 h-2 rounded-full" style="width:70%"></div></div><span class="text-xs text-slate-500 w-10 text-right">1.9d</span></div>
+        <div class="flex items-center gap-2"><span class="text-xs text-slate-600 w-28">Final Appr</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-red-500 h-2 rounded-full" style="width:90%"></div></div><span class="text-xs text-slate-500 w-10 text-right">2.5d</span></div>
+        <div class="flex items-center gap-2"><span class="text-xs text-slate-600 w-28">Disbursement</span><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width:30%"></div></div><span class="text-xs text-slate-500 w-10 text-right">0.8d</span></div>
+      </div>
+    </div>
+    <div class="card p-5">
+      <div class="font-semibold text-slate-800 mb-1">Recent Login Activity</div>
+      <div class="text-slate-400 text-xs mb-3">Last 5 sessions</div>
+      <div class="space-y-2">
+        <div class="flex items-center gap-2 text-xs"><div class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">PR</div><div class="flex-1 min-w-0"><div class="font-medium text-slate-700 truncate">Priya R</div><div class="text-slate-400">Branch Init · Chennai</div></div><span class="text-green-500 font-semibold">●</span></div>
+        <div class="flex items-center gap-2 text-xs"><div class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">MT</div><div class="flex-1 min-w-0"><div class="font-medium text-slate-700 truncate">Manoj T</div><div class="text-slate-400">Scrutinizer · Trichy</div></div><span class="text-green-500 font-semibold">●</span></div>
+        <div class="flex items-center gap-2 text-xs"><div class="w-7 h-7 rounded-full bg-green-100 text-green-700 flex items-center justify-center font-bold text-xs">RK</div><div class="flex-1 min-w-0"><div class="font-medium text-slate-700 truncate">Ramesh K</div><div class="text-slate-400">FI Agent · Madurai</div></div><span class="text-yellow-500 font-semibold">●</span></div>
+        <div class="flex items-center gap-2 text-xs"><div class="w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs">VN</div><div class="flex-1 min-w-0"><div class="font-medium text-slate-700 truncate">Vijay N</div><div class="text-slate-400">Credit Mgr · Chennai Hub</div></div><span class="text-slate-300 font-semibold">●</span></div>
+        <div class="flex items-center gap-2 text-xs"><div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">KP</div><div class="flex-1 min-w-0"><div class="font-medium text-slate-700 truncate">Kavitha P</div><div class="text-slate-400">Final Checker · Coimbatore</div></div><span class="text-green-500 font-semibold">●</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Recent Cases Table -->
+  <div class="card">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+      <div><div class="font-semibold text-slate-800">All Active Cases</div><div class="text-slate-400 text-xs">System-wide case register — live view</div></div>
+      <div class="flex items-center gap-2">
+        <select class="text-xs border border-slate-200 rounded-lg px-2 py-1.5 text-slate-600"><option>All Statuses</option><option>Branch WIP</option><option>FI In Progress</option><option>Credit Review</option></select>
+        <button class="btn-primary text-xs px-3 py-1.5">Export</button>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="los-table w-full">
+        <thead><tr><th>Case ID</th><th>Customer</th><th>Branch</th><th>Security</th><th>Prize Money</th><th>FL</th><th>CIBIL</th><th>Status</th><th>TAT</th><th>SLA Left</th><th>Action</th></tr></thead>
+        <tbody id="adminCaseTable"></tbody>
+      </table>
+    </div>
+    <div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between">
+      <span class="text-xs text-slate-400">Showing 10 of 312 active cases</span>
+      <div class="flex gap-1">
+        <button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">← Prev</button>
+        <button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button>
+        <button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">2</button>
+        <button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">3</button>
+        <button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">Next →</button>
+      </div>
+    </div>
+  </div></main></div></div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+const CASES = LOS_DB.getCases();
+const TERMINAL_STATUSES = ['CLOSED','DECLINED','CANCELLED','EXPIRED'];
+const APPROVED_STATUSES = ['IN_PRINCIPAL_APPROVED','FINAL_APPROVAL','BUSINESS_APPROVED','READY_DISBURSEMENT','CLOSED'];
+
+function badge(st){const m={'BRANCH_WIP':'bg-yellow-100 text-yellow-800','SCRUTINY_PENDING':'bg-blue-100 text-blue-800','DISPATCHED':'bg-cyan-100 text-cyan-800','HUB_INWARD':'bg-indigo-100 text-indigo-800','FI_INITIATED':'bg-purple-100 text-purple-800','FI_COMPLETED':'bg-violet-100 text-violet-800','FINAL_CHECK':'bg-orange-100 text-orange-800','DEVIATION_PENDING':'bg-pink-100 text-pink-800','CREDIT_REVIEW':'bg-rose-100 text-rose-800','IN_PRINCIPAL_APPROVED':'bg-green-100 text-green-800','READY_DISBURSEMENT':'bg-teal-100 text-teal-800','BUSINESS_APPROVED':'bg-emerald-100 text-emerald-800','CLOSED':'bg-slate-100 text-slate-700','DECLINED':'bg-red-100 text-red-800'};return '<span class="px-2 py-0.5 rounded-full text-xs font-semibold '+(m[st]||'bg-slate-100 text-slate-700')+'">'+(st||'--')+'</span>'}
+function curr(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
+function slaColor(overdue){return overdue?'text-orange-600 font-semibold':'text-slate-500'}
+function cibilColor(n){return n>=750?'text-green-600':n>=700?'text-yellow-600':'text-red-600'}
+function stateOf(code){return (LOS_CONFIG.workflowStates.states||[]).find(function(s){return s.code===code})}
+
+function renderKpis(){
+  var total = CASES.length;
+  var today = new Date().toISOString().slice(0,10);
+  var casesToday = CASES.filter(function(c){return c.createdAt && String(c.createdAt).indexOf(today)===0}).length;
+  var inProgress = CASES.filter(function(c){return TERMINAL_STATUSES.indexOf(c.status)===-1}).length;
+  var approved = CASES.filter(function(c){return APPROVED_STATUSES.indexOf(c.status)!==-1}).length;
+  var rejected = CASES.filter(function(c){return c.status==='DECLINED'}).length;
+  var disbursed = CASES.filter(function(c){return c.status==='CLOSED'}).length;
+  var pendingFI = CASES.filter(function(c){return c.status==='FI_INITIATED'}).length;
+  var creditApproval = CASES.filter(function(c){return c.status==='CREDIT_REVIEW'}).length;
+  var slaBreaches = CASES.filter(function(c){
+    var st = stateOf(c.status);
+    if(!st || !st.sla) return false;
+    var ts = c.updatedAt || c.createdAt || c.applied || null;
+    if(!ts) return false;
+    var hrs = (Date.now() - new Date(ts).getTime())/3600000;
+    return hrs > st.sla;
+  }).length;
+
+  var users = LOS_DB.getConfigCollection('users');
+  var branches = LOS_DB.getConfigCollection('branches');
+  var activeUsers = users.filter(function(u){return u.status==='Active'}).length;
+  var hubs = {}; branches.forEach(function(b){if(b.hub) hubs[b.hub]=true});
+
+  document.getElementById('kpiTotalUsers').textContent = users.length;
+  document.getElementById('kpiActiveUsers').textContent = activeUsers;
+  document.getElementById('kpiTotalBranches').textContent = branches.length;
+  document.getElementById('kpiCreditHubs').textContent = Object.keys(hubs).length;
+  document.getElementById('kpiTotalCases').textContent = total;
+  document.getElementById('kpiCasesToday').textContent = casesToday;
+  document.getElementById('kpiInProgress').textContent = inProgress;
+  document.getElementById('kpiApproved').textContent = approved;
+  document.getElementById('kpiRejected').textContent = rejected;
+  document.getElementById('kpiDisbursed').textContent = disbursed;
+  document.getElementById('kpiPendingFI').textContent = pendingFI;
+  document.getElementById('kpiCreditApproval').textContent = creditApproval;
+  document.getElementById('kpiSlaBreaches').textContent = slaBreaches;
+}
+
+function renderCharts(){
+  if(typeof Chart === 'undefined') return;
+  var byBranch = {};
+  CASES.forEach(function(c){ if(c.branch) byBranch[c.branch]=(byBranch[c.branch]||0)+1 });
+  var topBranches = Object.keys(byBranch).map(function(k){return {branch:k,count:byBranch[k]}}).sort(function(a,b){return b.count-a.count}).slice(0,10);
+  var branchCanvas = document.getElementById('branchChart');
+  if(branchCanvas) new Chart(branchCanvas, {
+    type:'bar',
+    data:{labels:topBranches.map(function(b){return b.branch}), datasets:[{label:'Cases',data:topBranches.map(function(b){return b.count}),backgroundColor:'#2563eb'}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
+  });
+
+  var bySecurity = {};
+  CASES.forEach(function(c){
+    var primary = (c.security||'Other').split(' + ')[0];
+    bySecurity[primary]=(bySecurity[primary]||0)+1;
+  });
+  var secCanvas = document.getElementById('securityChart');
+  if(secCanvas) new Chart(secCanvas, {
+    type:'doughnut',
+    data:{labels:Object.keys(bySecurity), datasets:[{data:Object.values(bySecurity),backgroundColor:['#2563eb','#059669','#d97706','#dc2626','#7c3aed','#0891b2','#65a30d','#db2777','#4b5563','#ea580c']}]},
+    options:{plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}}}
+  });
+
+  var approvedCount = CASES.filter(function(c){return APPROVED_STATUSES.indexOf(c.status)!==-1}).length;
+  var rejectedCount = CASES.filter(function(c){return c.status==='DECLINED'}).length;
+  var apprCanvas = document.getElementById('approvalChart');
+  if(apprCanvas) new Chart(apprCanvas, {
+    type:'bar',
+    data:{labels:['Approved','Rejected'], datasets:[{label:'Cases',data:[approvedCount,rejectedCount],backgroundColor:['#059669','#dc2626']}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
+  });
+}
+
+function renderCaseTable(){
+  var active = CASES.filter(function(c){return TERMINAL_STATUSES.indexOf(c.status)===-1}).slice(0,10);
+  var tb = document.getElementById('adminCaseTable');
+  tb.innerHTML = active.map(function(c){
+    var st = stateOf(c.status);
+    var appliedDate = c.applied ? new Date(c.applied) : (c.createdAt ? new Date(c.createdAt) : null);
+    var tatDays = appliedDate ? Math.max(0, Math.floor((Date.now()-appliedDate.getTime())/86400000)) : 0;
+    var slaHoursLeft = (st && st.sla && appliedDate) ? Math.round(st.sla - (Date.now()-appliedDate.getTime())/3600000) : null;
+    var slaText = slaHoursLeft===null ? '—' : (slaHoursLeft>=0 ? slaHoursLeft+'h left' : 'Overdue '+Math.abs(slaHoursLeft)+'h');
+    return '<tr>'+
+      '<td><a href="case-details.html?caseId='+c.id+'" class="text-blue-600 font-semibold hover:underline text-xs">'+c.id+'</a></td>'+
+      '<td class="text-xs">'+(c.applicant||'--')+'</td>'+
+      '<td class="text-xs">'+(c.branch||'--')+'</td>'+
+      '<td class="text-xs">'+(c.security||'--')+'</td>'+
+      '<td class="text-xs font-semibold">'+curr(c.prize||c.amount)+'</td>'+
+      '<td class="text-xs font-semibold">'+curr(c.fl)+'</td>'+
+      '<td><span class="'+cibilColor(c.cibil)+'">'+(c.cibil||'--')+'</span></td>'+
+      '<td>'+badge(c.status)+'</td>'+
+      '<td class="text-xs">'+tatDays+'d</td>'+
+      '<td class="text-xs '+slaColor(slaHoursLeft!==null && slaHoursLeft<0)+'">'+slaText+'</td>'+
+      '<td class="flex gap-1 flex-wrap"><a href="case-details.html?caseId='+c.id+'" class="text-blue-600 text-xs font-medium hover:underline whitespace-nowrap">View →</a></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="11" class="text-center text-slate-400 py-6">No active cases</td></tr>';
+}
+
+renderKpis();
+renderCharts();
+renderCaseTable();
+</script></body></html>

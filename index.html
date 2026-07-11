@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MCF LOS — Login — MCF LOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="assets/css/common.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
+<div class="w-full max-w-4xl">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 text-3xl">🏦</div>
+    <h1 class="text-white font-black text-3xl tracking-tight">MCF Loan Origination System</h1>
+    <p class="text-slate-400 mt-2">Muthoot Pappachan Chits (India) Pvt Ltd</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Login form -->
+    <div class="bg-white rounded-2xl p-8 shadow-2xl">
+      <h2 class="font-bold text-slate-800 text-lg mb-6">Sign In to LOS Portal</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="form-label">Employee ID / Username</label>
+          <input class="form-input" id="loginUser" value="EMP-1001" placeholder="Employee ID">
+        </div>
+        <div>
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" value="••••••••" placeholder="Password">
+        </div>
+        <div>
+          <label class="form-label">Login As</label>
+          <select class="form-select" id="roleSelect" onchange="updateLoginHint()">
+            <option value="admin-dashboard.html">System Admin</option>
+            <option value="branch-initiator-dashboard.html">Branch Initiator</option>
+            <option value="branch-scrutinizer-dashboard.html">Branch Scrutinizer</option>
+            <option value="credit-hub-dashboard.html">Credit Hub Controller</option>
+            <option value="field-investigator-mobile.html">Field Investigator</option>
+            <option value="credit-final-checker.html">Credit Final Checker</option>
+            <option value="deviation-authority.html">Deviation Authority</option>
+            <option value="recommending-authority.html">Recommending Authority</option>
+            <option value="credit-head.html">Credit Head</option>
+            <option value="final-approval.html">Final Approval Authority</option>
+            <option value="business-approval.html">Business Approver</option>
+            <option value="disbursement.html">Disbursement Team</option>
+          </select>
+        </div>
+        <div id="loginHint" class="p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+          <b>Admin Portal:</b> Full system access — user management, configuration, audit logs, all reports.
+        </div>
+        <button onclick="doLogin()" class="btn-primary w-full justify-center py-3 text-sm mt-2">
+          Sign In →
+        </button>
+        <div class="text-center text-xs text-slate-400 mt-2">
+          Forgot password? Contact System Admin.
+        </div>
+      </div>
+    </div>
+
+    <!-- Role quick access -->
+    <div class="space-y-3">
+      <div class="text-white font-semibold text-sm mb-1 opacity-70">Quick Demo Access by Role</div>
+      <div class="grid grid-cols-1 gap-2" id="quickAccessList"></div>
+    </div>
+  </div>
+
+  <div class="text-center mt-6 text-slate-500 text-xs">
+    MCF LOS · Muthoot Pappachan Chits (India) Pvt Ltd · ProHorizon Digitech Pvt Ltd · Confidential Prototype
+  </div>
+</div>
+
+<script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script>
+const HINTS = {
+  'ADMIN': '<b>Admin Portal:</b> Full system access — user management, configuration, audit logs, all reports.',
+  'BI': '<b>Branch Initiator:</b> Create applications, security selection, document upload, CIBIL check, scorecard & submit.',
+  'BS': '<b>Branch Scrutinizer:</b> Physical document verification, discrepancy management, dispatch to credit hub.',
+  'HUB': '<b>Credit Hub Controller:</b> Inward cases, document verification, security assessment, FI assignment.',
+  'FI': '<b>Field Investigator:</b> Assigned cases, geo-tagged visit, photo evidence, FI report submission.',
+  'FC': '<b>Credit Final Checker:</b> CAM preparation, risk review, compliance check, forward to Recommending Authority.',
+  'DEV': '<b>Deviation Authority:</b> Policy deviation review, approve/reject deviations per deviation matrix.',
+  'RA': '<b>Recommending Authority:</b> Case risk review, credit recommendation, escalation to Credit Head.',
+  'CH': '<b>Credit Head:</b> Credit approval queue, in-principal approval, decline or escalate.',
+  'FA': '<b>Final Approval Authority:</b> High-value and deviation case final sign-off.',
+  'BA': '<b>Business Approver:</b> Final business sanction, approve for disbursement.',
+  'DISB': '<b>Disbursement Team:</b> UTR generation, fund transfer, disbursement tracking.',
+};
+const ICONS = { ADMIN:'⚙️', BI:'📝', BS:'🔍', HUB:'🏦', FI:'📍', FC:'✔️', DEV:'⚡', RA:'📋', CH:'💼', FA:'🏅', BA:'📊', DISB:'💸' };
+
+LOS_DB.init();
+
+(function renderRoleSelect(){
+  var sel = document.getElementById('roleSelect');
+  sel.innerHTML = Object.keys(LOS_CONFIG.workflowStates.roles).map(function(role){
+    var r = LOS_CONFIG.workflowStates.roles[role];
+    return '<option value="'+role+'">'+r.label+'</option>';
+  }).join('');
+})();
+
+(function renderQuickAccess(){
+  var list = document.getElementById('quickAccessList');
+  list.innerHTML = Object.keys(LOS_CONFIG.workflowStates.roles).map(function(role){
+    var r = LOS_CONFIG.workflowStates.roles[role];
+    return '<a href="#" onclick="quickLogin(\''+role+'\');return false;" class="flex items-center gap-3 p-3 bg-white/10 hover:bg-white/20 rounded-xl text-white text-sm font-medium transition-all"><span class="text-lg">'+(ICONS[role]||'👤')+'</span><span>'+r.label+'</span><span class="ml-auto text-white/50">→</span></a>';
+  }).join('');
+})();
+
+function updateLoginHint(){
+  var v = document.getElementById('roleSelect').value;
+  document.getElementById('loginHint').innerHTML = HINTS[v] || '';
+}
+updateLoginHint();
+
+function quickLogin(role){
+  Session.login(role);
+  window.location.href = LOS_CONFIG.workflowStates.roles[role].dashboard;
+}
+function doLogin(){
+  var role = document.getElementById('roleSelect').value;
+  var empId = document.getElementById('loginUser').value || 'EMP-1001';
+  Session.login(role, empId);
+  window.location.href = LOS_CONFIG.workflowStates.roles[role].dashboard;
+}
+</script>
+</body></html>

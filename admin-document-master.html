@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Document Master — MCF LOS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/common.css">
+</head><body class="bg-slate-100"><div class="flex h-screen overflow-hidden"><aside id="sidebar" class="w-64 bg-slate-900 flex flex-col h-screen sticky top-0 flex-shrink-0 -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="h-16 flex items-center px-6 border-b border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">M</div>
+      <div><div class="text-white font-semibold text-sm leading-none">MCF LOS</div><div class="text-slate-500 text-xs mt-0.5">Muthoot Pappachan</div></div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-slate-800 flex-shrink-0">
+    <div class="bg-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+      <span class="text-slate-500 text-sm">🔍</span>
+      <input type="text" placeholder="Search cases..." class="bg-transparent text-slate-300 text-xs placeholder-slate-500 flex-1 focus:outline-none">
+    </div>
+  </div>
+  <nav id="sidebarNav" class="flex-1 overflow-y-auto py-3 px-3 space-y-0.5"></nav>
+  <div class="px-4 py-4 border-t border-slate-800 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div id="profileInitials" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+      <div class="min-w-0"><div id="profileName" class="text-slate-200 text-xs font-semibold truncate">Arun Kumar S</div><div id="sidebarRoleLabel" class="text-slate-500 text-xs truncate">System Admin</div></div>
+      <a href="index.html" class="text-slate-500 hover:text-slate-300 text-sm ml-auto" title="Logout">⏻</a>
+    </div>
+  </div>
+</aside><div class="flex-1 flex flex-col min-w-0 overflow-hidden"><header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-40 flex-shrink-0">
+  <button id="menuToggle" class="md:hidden text-slate-500 hover:text-slate-700 text-xl">☰</button>
+  <div class="flex-1"><h1 class="text-slate-800 font-semibold text-base leading-none">Document Master</h1><nav class="text-xs text-slate-400 mt-0.5">Home › Admin › Document Master</nav></div>
+  <div class="flex items-center gap-3">
+    <div class="hidden sm:flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2">
+      <span class="text-slate-400 text-sm">🔍</span>
+      <input type="text" placeholder="Case ID / Customer..." class="bg-transparent text-slate-700 text-xs placeholder-slate-400 w-40 focus:outline-none">
+    </div>
+    <div class="relative">
+      <button id="notifBtn" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 relative">
+        <span>🔔</span><span id="notifBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
+          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
+        </div>
+        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button id="profileBtn" class="flex items-center gap-2 hover:bg-slate-100 rounded-lg px-2 py-1.5 transition-colors">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">AK</div>
+        <div class="hidden sm:block text-left"><div class="text-xs font-semibold text-slate-800">Arun Kumar S</div><div class="text-xs text-slate-400">EMP-1042</div></div>
+        <span class="text-slate-400 text-xs">▾</span>
+      </button>
+      <div id="profilePanel" class="hidden absolute right-0 top-11 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">👤 My Profile</a>
+        <a href="admin-settings.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">⚙️ Settings</a>
+        <div class="border-t border-slate-100 my-1"></div>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">⏻ Logout</a>
+      </div>
+    </div>
+  </div>
+</header><main class="flex-1 overflow-y-auto p-6"><div class="flex flex-wrap gap-2 mb-4"><button onclick="openDocModal(null)" class="btn-primary">+ Add Document</button><div class="flex flex-wrap gap-2 mb-4"><input type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="filterTable(this.value)"><select class="form-select text-xs w-36"><option>Type</option><option>All</option><option>Mandatory</option><option>Conditional</option><option>Optional</option></select><select class="form-select text-xs w-36"><option>Security</option><option>All</option><option>Gold</option><option>LIC</option><option>BG</option><option>FD</option><option>Mortgage</option><option>Chit</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="grid grid-cols-4 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">📋</div><div><div class="text-slate-500 text-xs font-medium">Total Docs</div><div class="text-slate-800 text-2xl font-bold mt-0.5">40+</div><div class="text-slate-400 text-xs mt-0.5">Across all form codes</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">🔍</div><div><div class="text-slate-500 text-xs font-medium">OCR Enabled</div><div class="text-slate-800 text-2xl font-bold mt-0.5">12</div><div class="text-slate-400 text-xs mt-0.5">Documents with auto-extraction</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">⚠️</div><div><div class="text-slate-500 text-xs font-medium">Mandatory</div><div class="text-slate-800 text-2xl font-bold mt-0.5">28</div><div class="text-slate-400 text-xs mt-0.5">Cannot skip these</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-yellow-50 text-yellow-700">📝</div><div><div class="text-slate-500 text-xs font-medium">Conditional</div><div class="text-slate-800 text-2xl font-bold mt-0.5">12+</div><div class="text-slate-400 text-xs mt-0.5">Security-type dependent</div></div></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Code</th><th>Document Name</th><th>Mandatory</th><th>Applicant Type</th><th>Security Type</th><th>Validity</th><th>OCR</th><th>Upload By</th><th>Actions</th></tr></thead><tbody id="docTableBody"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+  <span class="text-xs text-slate-400">Showing 10 of 40 records</span>
+  <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">2</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">3</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">4</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
+</div></div></main></div></div><div id="docModal" class="modal-overlay">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-screen overflow-y-auto">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <div class="font-semibold text-slate-800 text-base">Create / Edit Document</div>
+      <button data-modal-close="docModal" class="text-slate-400 hover:text-slate-600 text-xl">✕</button>
+    </div>
+    <div class="p-5"><div class="grid grid-cols-2 gap-3">
+  <div><label class="form-label">Document Code</label><input id="docCode" class="form-input" value="MD-1"></div>
+  <div><label class="form-label">Document Name</label><input id="docName" class="form-input" value="Membership Application Form"></div>
+  <div><label class="form-label">Mandatory / Conditional</label><select id="docMandatory" class="form-select"><option>Mandatory</option><option>Conditional</option><option>Optional</option></select></div>
+  <div><label class="form-label">Applicant Type</label><select id="docApplicantType" class="form-select"><option>All</option><option>Salaried</option><option>Business</option><option>Self-Employed</option></select></div>
+  <div><label class="form-label">Security Type</label><select id="docSecurityType" class="form-select"><option>All</option><option>Gold</option><option>LIC</option><option>Bank Guarantee</option><option>FD</option><option>Mortgage</option><option>Chit Passbook</option></select></div>
+  <div><label class="form-label">Validity Period</label><input id="docValidity" class="form-input" value="30 days"></div>
+  <div><label class="form-label">OCR Enabled</label><select id="docOcr" class="form-select"><option>Yes</option><option>No</option></select></div>
+  <div><label class="form-label">Upload Role</label><select id="docUploadRole" class="form-select"><option>Branch Initiator</option><option>Hub Controller</option><option>Field Investigator</option><option>Disbursement Team</option></select></div>
+  <div class="col-span-2"><label class="form-label">Description / Instructions</label><textarea id="docDescription" class="form-input" rows="2">Original document to be submitted. Photocopy not accepted.</textarea></div>
+</div></div>
+    <div class="px-5 pb-5 flex gap-3"><button data-modal-close="docModal" class="btn-outline flex-1">Cancel</button><button onclick="saveDocument()" class="btn-primary flex-1">Save Document</button></div>
+  </div>
+</div><script src="assets/js/config-data.js"></script>
+<script src="assets/js/seed-data.js"></script>
+<script src="assets/js/data-store.js"></script>
+<script src="assets/js/session.js"></script>
+<script src="assets/js/permissions.js"></script>
+<script src="assets/js/audit-notify.js"></script>
+<script src="assets/js/workflow-engine.js"></script>
+<script src="assets/js/cam-engine.js"></script>
+<script src="assets/js/nav-config.js"></script>
+<script src="assets/js/ui-common.js"></script>
+<script>
+var session = LOSApp.boot('ADMIN');
+
+var DOCUMENT_MASTER = LOS_DB.getConfigCollection('documentMaster');
+if (!DOCUMENT_MASTER.length) {
+  DOCUMENT_MASTER = [
+    {code:'MD-1', name:'Membership Application Form', mandatory:'Mandatory', applicantType:'All', securityType:'All', validity:'30 days', ocr:'Yes', uploadRole:'Branch Initiator', description:'Original document to be submitted. Photocopy not accepted.'},
+    {code:'MD-2', name:'KYC — Aadhaar', mandatory:'Mandatory', applicantType:'All', securityType:'All', validity:'Lifetime', ocr:'Yes', uploadRole:'Branch Initiator', description:'Original document to be submitted. Photocopy not accepted.'},
+    {code:'MD-3', name:'KYC — PAN Card', mandatory:'Mandatory', applicantType:'All', securityType:'All', validity:'Lifetime', ocr:'Yes', uploadRole:'Branch Initiator', description:'Original document to be submitted. Photocopy not accepted.'},
+    {code:'MD-4', name:'Income Proof — Salary Slip', mandatory:'Mandatory', applicantType:'Salaried', securityType:'All', validity:'3 months', ocr:'No', uploadRole:'Branch Initiator', description:'Latest 3 months salary slips required.'},
+    {code:'MD-5', name:'Income Proof — ITR', mandatory:'Mandatory', applicantType:'Business', securityType:'All', validity:'FY', ocr:'No', uploadRole:'Branch Initiator', description:'Latest financial year ITR required for loans above Rs. 5L.'},
+    {code:'MD-6', name:'Gold Valuation Certificate', mandatory:'Mandatory', applicantType:'All', securityType:'Gold', validity:'30 days', ocr:'No', uploadRole:'Hub Controller', description:'Certified valuation from empanelled valuer.'},
+    {code:'MD-7', name:'Gold Net Weight Report', mandatory:'Mandatory', applicantType:'All', securityType:'Gold', validity:'Same day', ocr:'No', uploadRole:'Hub Controller', description:'Weighing report generated at time of pledge.'},
+    {code:'MD-8 to MD-15', name:'Additional Gold Documents', mandatory:'Conditional', applicantType:'All', securityType:'Gold', validity:'30 days', ocr:'No', uploadRole:'Hub Controller', description:'Supplementary gold documentation as applicable.'},
+    {code:'LI-1', name:'LIC Policy Bond', mandatory:'Mandatory', applicantType:'All', securityType:'LIC', validity:'Lifetime', ocr:'No', uploadRole:'Branch Initiator', description:'Original policy bond required.'},
+    {code:'LI-2', name:'LIC Premium Receipt', mandatory:'Mandatory', applicantType:'All', securityType:'LIC', validity:'3 months', ocr:'No', uploadRole:'Branch Initiator', description:'Latest premium payment receipt required.'},
+    {code:'BG-1', name:'Bank Guarantee Letter', mandatory:'Mandatory', applicantType:'All', securityType:'Bank Guarantee', validity:'Per instrument', ocr:'No', uploadRole:'Hub Controller', description:'Original BG letter from issuing bank.'},
+    {code:'FD-1', name:'FD Receipt', mandatory:'Mandatory', applicantType:'All', securityType:'FD', validity:'Per instrument', ocr:'No', uploadRole:'Branch Initiator', description:'Original FD receipt with lien marking.'},
+    {code:'MP-1', name:'Sale Deed / Title Deed', mandatory:'Mandatory', applicantType:'All', securityType:'Mortgage', validity:'Lifetime', ocr:'No', uploadRole:'Hub Controller', description:'Registered sale/title deed required.'},
+    {code:'MP-2', name:'Encumbrance Certificate', mandatory:'Mandatory', applicantType:'All', securityType:'Mortgage', validity:'30 days', ocr:'No', uploadRole:'Hub Controller', description:'EC covering last 13 years required.'},
+    {code:'PB-1', name:'Chit Passbook (Original)', mandatory:'Mandatory', applicantType:'All', securityType:'Chit Passbook', validity:'Current month', ocr:'No', uploadRole:'Branch Initiator', description:'Original passbook to be submitted.'}
+  ];
+  LOS_DB.saveConfigCollection('documentMaster', DOCUMENT_MASTER);
+}
+var editingDocIndex = null;
+
+function renderDocTable(){
+  var tb = document.getElementById('docTableBody');
+  if(!tb) return;
+  tb.innerHTML = DOCUMENT_MASTER.map(function(d, idx){
+    var mandChip = d.mandatory === 'Mandatory' ? 'chip-red' : (d.mandatory === 'Conditional' ? 'chip-yellow' : 'chip-slate');
+    var ocrChip = d.ocr === 'Yes' ? 'chip-green' : 'chip-slate';
+    return '<tr>'+
+      '<td class="font-mono text-xs text-blue-700">'+(d.code||'')+'</td>'+
+      '<td class="font-medium text-xs">'+(d.name||'')+'</td>'+
+      '<td><span class="chip '+mandChip+'">'+(d.mandatory||'')+'</span></td>'+
+      '<td class="text-xs">'+(d.applicantType||'')+'</td>'+
+      '<td class="text-xs text-purple-700">'+(d.securityType||'')+'</td>'+
+      '<td class="text-xs">'+(d.validity||'')+'</td>'+
+      '<td><span class="chip '+ocrChip+'">'+(d.ocr||'')+'</span></td>'+
+      '<td class="text-xs">'+(d.uploadRole||'')+'</td>'+
+      '<td class="flex gap-1"><button onclick="openDocModal('+idx+')" class="btn-primary btn-sm">Edit</button></td>'+
+    '</tr>';
+  }).join('') || '<tr><td colspan="9" class="text-center text-slate-400 py-6">No documents configured</td></tr>';
+}
+
+function openDocModal(idx){
+  editingDocIndex = idx;
+  var row = (idx != null) ? DOCUMENT_MASTER[idx] : {code:'', name:'', mandatory:'Mandatory', applicantType:'All', securityType:'All', validity:'', ocr:'No', uploadRole:'Branch Initiator', description:''};
+  document.getElementById('docCode').value = row.code || '';
+  document.getElementById('docName').value = row.name || '';
+  document.getElementById('docMandatory').value = row.mandatory || 'Mandatory';
+  document.getElementById('docApplicantType').value = row.applicantType || 'All';
+  document.getElementById('docSecurityType').value = row.securityType || 'All';
+  document.getElementById('docValidity').value = row.validity || '';
+  document.getElementById('docOcr').value = row.ocr || 'No';
+  document.getElementById('docUploadRole').value = row.uploadRole || 'Branch Initiator';
+  document.getElementById('docDescription').value = row.description || '';
+  document.getElementById('docModal').classList.add('open');
+}
+
+function saveDocument(){
+  var data = {
+    code: document.getElementById('docCode').value,
+    name: document.getElementById('docName').value,
+    mandatory: document.getElementById('docMandatory').value,
+    applicantType: document.getElementById('docApplicantType').value,
+    securityType: document.getElementById('docSecurityType').value,
+    validity: document.getElementById('docValidity').value,
+    ocr: document.getElementById('docOcr').value,
+    uploadRole: document.getElementById('docUploadRole').value,
+    description: document.getElementById('docDescription').value
+  };
+  if(!data.code || !data.name){ alert('Document Code and Name are required'); return; }
+  if(editingDocIndex != null){
+    DOCUMENT_MASTER[editingDocIndex] = Object.assign({}, DOCUMENT_MASTER[editingDocIndex], data);
+  } else {
+    DOCUMENT_MASTER.push(data);
+  }
+  LOS_DB.saveConfigCollection('documentMaster', DOCUMENT_MASTER);
+  document.getElementById('docModal').classList.remove('open');
+  renderDocTable();
+}
+
+renderDocTable();
+</script></body></html>

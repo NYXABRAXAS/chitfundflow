@@ -155,7 +155,9 @@
       attachDeviations(c);
       if (c.status === 'FINAL_CHECK' || c.status === 'CREDIT_REVIEW' || c.status === 'IN_PRINCIPAL_APPROVED' ||
           c.status === 'FINAL_APPROVAL' || c.status === 'BUSINESS_APPROVED' || c.status === 'READY_DISBURSEMENT' || c.status === 'CLOSED') {
-        c.cam = null; // built lazily via CamEngine when the page loads if needed
+        // A case seeded at this stage or later has, by definition, already had its CAM
+        // generated in a real workflow - build it now so it's viewable/complete immediately.
+        if (global.CamEngine) c.cam = global.CamEngine.buildCAM(c);
       }
       c.scenarioTag = null;
       cases.push(c);
@@ -166,6 +168,9 @@
       return s ? s.stage : 0;
     }
 
+    var CAM_EXPECTED_STATUSES = ['FINAL_CHECK', 'DEVIATION_PENDING', 'CREDIT_REVIEW', 'IN_PRINCIPAL_APPROVED',
+      'FINAL_APPROVAL', 'BUSINESS_APPROVED', 'READY_DISBURSEMENT', 'CLOSED'];
+
     // Explicit scenario anchors - guarantee each of the 20 scenarios is reachable live
     function anchor(scenarioId, statusOverrides, amount, tenure, extra) {
       var cust = pick(customers);
@@ -175,6 +180,7 @@
       Object.assign(c, statusOverrides, extra || {});
       c.stage = WorkflowStageOf(c.status);
       c.scenarioTag = scenarioId;
+      if (global.CamEngine && CAM_EXPECTED_STATUSES.indexOf(c.status) !== -1) c.cam = global.CamEngine.buildCAM(c);
       return c;
     }
 

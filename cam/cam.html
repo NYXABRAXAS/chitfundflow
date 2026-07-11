@@ -144,18 +144,29 @@ function currency(n) { return n == null ? '—' : '₹' + Number(n).toLocaleStri
 function renderCam() {
   if (!c) { document.getElementById('camNotReady').style.display = ''; document.getElementById('camNotReady').textContent = 'No case selected. Open a case from Case Details and use "View CAM".'; return; }
 
-  var stageOk = ['FI_COMPLETED','FINAL_CHECK','DEVIATION_PENDING','CREDIT_REVIEW','IN_PRINCIPAL_APPROVED','FINAL_APPROVAL','BUSINESS_APPROVED','READY_DISBURSEMENT','CLOSED'].indexOf(c.status) !== -1;
-  if (!c.cam && c.status === 'FI_COMPLETED' && Permissions.canPerform(session.role, 'camGenerate')) {
+  var stageOk = ['FI_COMPLETED','HUB_VERIFICATION','FINAL_CHECK','DEVIATION_PENDING','CREDIT_REVIEW','IN_PRINCIPAL_APPROVED','FINAL_APPROVAL','BUSINESS_APPROVED','READY_DISBURSEMENT','CLOSED'].indexOf(c.status) !== -1;
+  if (!c.cam && stageOk && Permissions.canPerform(session.role, 'camGenerate')) {
     document.getElementById('genCamBtn').style.display = '';
     document.getElementById('genCamBtn').onclick = function () {
-      var res = WorkflowEngine.transition(c.id, 'generateCAM', { actorRole: session.role });
-      if (res.success) { c = res.case; renderCam(); } else { alert(res.error); }
+      if (c.status === 'FI_COMPLETED') {
+        // Normal path: generating the CAM is itself the FI_COMPLETED -> FINAL_CHECK transition.
+        var res = WorkflowEngine.transition(c.id, 'generateCAM', { actorRole: session.role });
+        if (res.success) { c = res.case; renderCam(); } else { alert(res.error); }
+      } else {
+        // Backfill path: case is already past FI_COMPLETED (e.g. seeded demo data) but has
+        // no CAM yet - build it in place without touching status.
+        c.cam = CamEngine.buildCAM(c);
+        LOS_DB.saveCase(c);
+        AuditNotify.logAudit(c.id, session.role, 'generateCAM', 'CAM generated (backfilled for case already past FI stage)');
+        renderCam();
+      }
     };
   }
   if (!c.cam) {
     document.getElementById('camNotReady').style.display = '';
     document.getElementById('camBody').style.display = 'none';
     if (!stageOk) document.getElementById('camNotReady').textContent = 'This case has not reached Field Investigation completion yet, so a CAM cannot be generated.';
+    else if (!Permissions.canPerform(session.role, 'camGenerate')) document.getElementById('camNotReady').textContent = 'CAM not generated yet for this case. Your role cannot generate it — log in as Credit Final Checker (or Admin) to generate it.';
     else document.getElementById('camNotReady').textContent = 'CAM not generated yet for this case. Click "Generate CAM" above.';
     return;
   }

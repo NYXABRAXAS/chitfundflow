@@ -193,6 +193,7 @@ function submitApplication(){
     newCase = { id: LOS_DB.nextCaseId(), status: 'NEW' };
   }
   Object.assign(newCase, v);
+  newCase.initiator = newCase.initiator || session.employeeName;
   LOS_DB.saveCase(newCase);
 
   var r1 = WorkflowEngine.transition(newCase.id, 'assign', { actorRole: 'BI' });

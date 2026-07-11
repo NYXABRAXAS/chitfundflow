@@ -85,8 +85,9 @@
         {"code":"DISPATCHED","stage":4,"owner":"BS","action":"Physical dispatch to hub","screen":"bs-dispatch.html","sla":24},
         {"code":"HUB_INWARD","stage":5,"owner":"HUB","action":"Inward scanning, acceptance","screen":"ch-inward.html","sla":8},
         {"code":"FI_INITIATED","stage":6,"owner":"FI","action":"Field visit assigned","screen":"fi-assigned-cases.html","sla":72},
+        {"code":"HUB_VERIFICATION","stage":6,"owner":"HUB","action":"Document/security verification (no FI required)","screen":"ch-doc-verification.html","sla":24},
         {"code":"FI_COMPLETED","stage":7,"owner":"FC","action":"FI report submitted, awaiting CAM","screen":"fc-verification-queue.html","sla":24},
-        {"code":"FINAL_CHECK","stage":8,"owner":"FC","action":"CAM generation, security verify","screen":"credit-final-checker.html","sla":24},
+        {"code":"FINAL_CHECK","stage":8,"owner":"FC","action":"CAM generation, security verify","screen":"credit-final-checker.html","sla":48},
         {"code":"DEVIATION_PENDING","stage":9,"owner":"DEV","action":"Deviation review","screen":"deviation-authority.html","sla":24},
         {"code":"CREDIT_REVIEW","stage":10,"owner":"RA","action":"Review and recommend","screen":"recommending-authority.html","sla":24},
         {"code":"IN_PRINCIPAL_APPROVED","stage":11,"owner":"CH","action":"Credit sanction decision","screen":"credit-head.html","sla":24},
@@ -104,7 +105,7 @@
       transitions: {
         "NEW":            [{"action":"assign","target":"ASSIGNED","role":"BI"}],
         "ASSIGNED":       [{"action":"startApplication","target":"BRANCH_WIP","role":"BI"}],
-        "BRANCH_WIP":     [{"action":"submitForScrutiny","target":"SCRUTINY_PENDING","role":"BI","guard":"documentsComplete"}],
+        "BRANCH_WIP":     [{"action":"submitForScrutiny","target":"SCRUTINY_PENDING","role":"BI","guard":["documentsComplete","securityCoversLiability","cibilComplete"]}],
         "SCRUTINY_PENDING": [
           {"action":"approveScrutiny","target":"DISPATCHED","role":"BS"},
           {"action":"returnToBI","target":"REVERTED","role":"BS"}
@@ -113,10 +114,13 @@
         "DISPATCHED":     [{"action":"inwardAtHub","target":"HUB_INWARD","role":"HUB"}],
         "HUB_INWARD": [
           {"action":"assignFI","target":"FI_INITIATED","role":"HUB","guard":"fiRequired"},
-          {"action":"skipFI","target":"FINAL_CHECK","role":"HUB","guard":"fiNotRequired"}
+          {"action":"skipFI","target":"HUB_VERIFICATION","role":"HUB","guard":"fiNotRequired"}
         ],
         "FI_INITIATED": [
           {"action":"submitFIReport","target":"FI_COMPLETED","role":"FI"}
+        ],
+        "HUB_VERIFICATION": [
+          {"action":"completeHubVerification","target":"FINAL_CHECK","role":"HUB"}
         ],
         "FI_COMPLETED": [
           {"action":"generateCAM","target":"FINAL_CHECK","role":"FC"},

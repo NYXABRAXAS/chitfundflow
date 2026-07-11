@@ -43,11 +43,7 @@
       </button>
       <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
         <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
-        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
-          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
-          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
-        </div>
-        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
       </div>
     </div>
     <div class="relative">
@@ -67,7 +63,7 @@
 </header><main class="flex-1 overflow-y-auto p-6">
 <div class="grid grid-cols-1 gap-6">
   <div class="card p-5">
-    <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Step 6: Scorecard & Final Submission — MCF-2024-001842</div>
+    <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Step 6: Scorecard & Final Submission — Case <span id="stepCaseIdLabel">--</span></div>
     <div class="grid grid-cols-2 gap-6">
       <!-- Case summary -->
       <div class="space-y-3">
@@ -87,36 +83,20 @@
       </div>
       <!-- Scorecard -->
       <div>
-        <div class="font-semibold text-slate-600 text-sm mb-3">Credit Scorecard</div>
-        <div class="space-y-2">
-          <div class="flex justify-between items-center p-2 bg-slate-50 rounded text-xs"><span>CIBIL Score (748)</span><span class="font-bold text-green-700">15/20</span></div>
-          <div class="flex justify-between items-center p-2 bg-slate-50 rounded text-xs"><span>Income — EMI Coverage</span><span class="font-bold text-green-700">18/20</span></div>
-          <div class="flex justify-between items-center p-2 bg-slate-50 rounded text-xs"><span>Security Coverage (LTV)</span><span class="font-bold text-green-700">12/15</span></div>
-          <div class="flex justify-between items-center p-2 bg-slate-50 rounded text-xs"><span>DPD History (Clean)</span><span class="font-bold text-green-700">20/20</span></div>
-          <div class="flex justify-between items-center p-2 bg-slate-50 rounded text-xs"><span>Enquiry Count (3)</span><span class="font-bold text-yellow-600">8/15</span></div>
-          <div class="flex justify-between items-center p-2 bg-slate-50 rounded text-xs"><span>Guarantor Quality</span><span class="font-bold text-blue-700">7/10</span></div>
-          <div class="flex justify-between items-center p-3 bg-blue-50 rounded text-sm border border-blue-200"><span class="font-semibold">Total Score</span><span class="font-black text-blue-700 text-lg">80/100</span></div>
-          <div class="p-2 bg-green-50 rounded text-xs text-green-800 text-center font-semibold">✅ Score above threshold (75). Eligible for approval.</div>
-        </div>
+        <div class="font-semibold text-slate-600 text-sm mb-3">Credit Scorecard <span class="text-xs font-normal text-slate-400" id="scorecardSegmentLabel"></span></div>
+        <div class="space-y-2" id="scorecardRows"></div>
       </div>
     </div>
   </div>
   <!-- Document checklist -->
   <div class="card p-4">
     <div class="font-semibold text-slate-700 mb-3">Pre-submission Checklist</div>
-    <div class="grid grid-cols-2 gap-2 text-xs">
-      <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="checkbox" class="accent-blue-600" checked> Applicant KYC verified</label>
-      <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="checkbox" class="accent-blue-600" checked> Income documents uploaded</label>
-      <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="checkbox" class="accent-blue-600" checked> Security selection done</label>
-      <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="checkbox" class="accent-blue-600" checked> CIBIL check completed</label>
-      <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="checkbox" class="accent-blue-600" checked> Guarantor details added</label>
-      <label class="flex gap-2 items-center p-2 bg-slate-50 rounded"><input type="checkbox" class="accent-blue-600"> Gold valuation cert pending</label>
-    </div>
+    <div class="grid grid-cols-2 gap-2 text-xs" id="checklistRows"></div>
   </div>
   <div class="flex gap-3">
     <a href="bi-cibil.html" class="btn-outline">← Back</a>
     <button onclick="saveDraft()" class="btn-outline">Save Draft</button>
-    <button onclick="goToMyCases()" id="scorecardSubmitBtn" class="btn-success">Submit for Scrutiny →</button>
+    <button onclick="submitForScrutiny()" id="scorecardSubmitBtn" class="btn-success">Submit for Scrutiny →</button>
   </div>
 </div></main></div></div><script src="assets/js/config-data.js"></script>
 <script src="assets/js/seed-data.js"></script>
@@ -180,6 +160,7 @@ function ensureSubscriber(c){
 
 function renderSummary(c){
   var set = function(id, val){ var el = document.getElementById(id); if(el) el.textContent = val; };
+  set('stepCaseIdLabel', c.id);
   set('sumCaseId', c.id);
   set('sumApplicant', c.applicant || '--');
   set('sumAmount', fmtCurr(c.amount));
@@ -187,9 +168,48 @@ function renderSummary(c){
   set('sumSecurity', c.security || '--');
   set('sumWeight', c.weight || '--');
   set('sumMktVal', fmtCurr(c.mktVal));
-  set('sumLtv', (c.ltv != null ? c.ltv + '%' : '--'));
+  set('sumLtv', (c.ltv != null ? Math.round(c.ltv * 100) + '%' : '--'));
   set('sumCibil', (c.cibil != null ? (c.cibil + ' (' + cibilLabel(c.cibil) + ')') : '--'));
   set('sumRepayCap', c.monthlyInstalment != null ? fmtCurr(c.monthlyInstalment) + '/month' : '--');
+}
+
+/* Preview-only scorecard: reuses CamEngine's exact Risk-Assessment-Annexure scoring so the
+   number shown here matches what the official CAM will compute later - but does NOT persist
+   to case.cam (real CAM generation only happens at FI_COMPLETED -> FINAL_CHECK). */
+function renderScorecard(c){
+  var preview = CamEngine.buildCAM(c);
+  document.getElementById('scorecardSegmentLabel').textContent = '(' + preview.sectionF.segment + ' — ' + preview.sectionF.scoringMethod + ' KYC)';
+
+  var rows = [
+    { label: 'Subscriber Score', value: preview.sectionF.sb.final + '/100' }
+  ];
+  (preview.sectionF.guarantors || []).forEach(function(g, i){
+    rows.push({ label: 'Guarantor ' + (i+1) + ' Score', value: g.final + '/100' });
+  });
+  rows.push({ label: 'Total Weighted Score', value: preview.sectionG.score + '/100', bold: true });
+
+  document.getElementById('scorecardRows').innerHTML = rows.map(function(r){
+    return r.bold
+      ? '<div class="flex justify-between items-center p-3 bg-blue-50 rounded text-sm border border-blue-200"><span class="font-semibold">'+r.label+'</span><span class="font-black text-blue-700 text-lg">'+r.value+'</span></div>'
+      : '<div class="flex justify-between items-center p-2 bg-slate-50 rounded text-xs"><span>'+r.label+'</span><span class="font-bold text-slate-700">'+r.value+'</span></div>';
+  }).join('') + '<div class="p-2 rounded text-xs text-center font-semibold '+(preview.sectionG.grade==='A'||preview.sectionG.grade==='B'?'bg-green-50 text-green-800':'bg-yellow-50 text-yellow-800')+'">'+
+    (preview.sectionG.grade==='A'||preview.sectionG.grade==='B' ? '✅' : '⚠️') + ' Grade ' + preview.sectionG.grade + ' (' + preview.sectionG.label + ') — ' + preview.sectionG.decision + '</div>';
+}
+
+function renderChecklist(c){
+  var liability = c.fl || c.amount || 0;
+  var securityTotal = (c.securities||[]).reduce(function(s,x){return s+(x.valueLoaded||0)},0);
+  var items = [
+    { label: 'Applicant KYC verified', ok: !!c.applicant && !!c.pan },
+    { label: 'Security selected (value >= liability)', ok: securityTotal >= liability && liability > 0 },
+    { label: 'Documents uploaded (incl. DPN)', ok: c.documentsComplete !== false },
+    { label: 'CIBIL check completed', ok: c.cibil != null },
+    { label: 'Guarantor CIBIL completed (if any)', ok: (c.guarantors||[]).every(function(g){return g.creditScore!=null}) },
+    { label: 'Guarantor details added (if opted)', ok: true }
+  ];
+  document.getElementById('checklistRows').innerHTML = items.map(function(it){
+    return '<label class="flex gap-2 items-center p-2 rounded '+(it.ok?'bg-slate-50':'bg-yellow-50')+'"><input type="checkbox" class="accent-blue-600" disabled '+(it.ok?'checked':'')+'> '+it.label+(it.ok?'':' — pending')+'</label>';
+  }).join('');
 }
 
 function saveDraft(){
@@ -197,9 +217,12 @@ function saveDraft(){
   alert('Draft saved!');
 }
 
-/* Status change (submitForScrutiny) happens on bi-my-cases.html, not here. */
-function goToMyCases(){
-  if(caseObj) LOS_DB.saveCase(caseObj);
+function submitForScrutiny(){
+  if(!caseObj) return;
+  LOS_DB.saveCase(caseObj);
+  var res = WorkflowEngine.transition(caseObj.id, 'submitForScrutiny', { actorRole: session.role });
+  if(!res.success){ alert(res.error); return; }
+  alert('Submitted for Branch Scrutiny. Case ' + caseObj.id + ' is now in the Scrutinizer queue.');
   location.href = 'bi-my-cases.html';
 }
 
@@ -208,6 +231,8 @@ if(!caseObj){
 } else {
   ensureSubscriber(caseObj);
   renderSummary(caseObj);
+  renderScorecard(caseObj);
+  renderChecklist(caseObj);
 }
 
 </script></body></html>

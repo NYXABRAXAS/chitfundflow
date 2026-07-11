@@ -14,11 +14,31 @@
     return Math.min.apply(null, caps);
   }
 
+  // FRD Section 10 "Key System Validations & Business Rules" - user-facing message per guard
+  var GUARD_MESSAGES = {
+    documentsComplete: 'Mandatory documents (incl. DPN) are still pending upload — complete the document checklist before submitting.',
+    securityCoversLiability: 'Accepted security value is below the Future Liability. Add or increase security before submitting for scrutiny.',
+    cibilComplete: 'CIBIL check is mandatory for the subscriber (and any guarantors) before submission.'
+  };
+
+  function totalSecurityValue(c) {
+    return (c.securities || []).reduce(function (sum, s) { return sum + (s.valueLoaded || 0); }, 0);
+  }
+
   function evaluateGuard(guardName, c, payload) {
     payload = payload || {};
     switch (guardName) {
       case 'documentsComplete':
         return c.documentsComplete !== false;
+      case 'securityCoversLiability': {
+        var liability = c.fl || c.amount || 0;
+        return totalSecurityValue(c) >= liability;
+      }
+      case 'cibilComplete': {
+        if (c.cibil == null) return false;
+        var guarantors = c.guarantors || [];
+        return guarantors.every(function (g) { return g.creditScore != null; });
+      }
       case 'fiRequired':
         return payload.fiRequired != null ? !!payload.fiRequired : (c.amount || 0) >= PC.fiRequiredThreshold;
       case 'fiNotRequired':
@@ -85,8 +105,13 @@
         return { success: false, error: anyMatch ? 'Not authorized for this action' : 'Invalid action for current status (' + c.status + ')' };
       }
       var entry = candidates[0];
-      if (entry.guard && !evaluateGuard(entry.guard, c, payload)) {
-        return { success: false, error: 'Guard condition not met: ' + entry.guard };
+      if (entry.guard) {
+        var guardNames = Array.isArray(entry.guard) ? entry.guard : [entry.guard];
+        for (var i = 0; i < guardNames.length; i++) {
+          if (!evaluateGuard(guardNames[i], c, payload)) {
+            return { success: false, error: GUARD_MESSAGES[guardNames[i]] || ('Guard condition not met: ' + guardNames[i]) };
+          }
+        }
       }
 
       // merge payload fields (everything except reserved keys) onto the case
@@ -116,7 +141,7 @@
       if (entry.recompute && global.CamEngine) {
         global.CamEngine.recompute(c);
       }
-      if (action === 'generateCAM' && global.CamEngine) {
+      if ((action === 'generateCAM' || action === 'completeHubVerification') && global.CamEngine) {
         c.cam = global.CamEngine.buildCAM(c);
       }
 

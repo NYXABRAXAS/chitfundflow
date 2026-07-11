@@ -43,11 +43,7 @@
       </button>
       <div id="notifPanel" class="hidden absolute right-0 top-11 w-72 bg-white rounded-xl shadow-xl border border-slate-200 z-50">
         <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between"><span class="font-semibold text-slate-800 text-sm">Notifications</span><span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">5 new</span></div>
-        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="text-xs text-slate-400 mt-0.5">12 hours remaining for scrutiny</div></div>
-          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">FI Assigned — MCF-2024-004523</div><div class="text-xs text-slate-400 mt-0.5">FI Agent Ramesh K assigned</div></div>
-          <div class="px-4 py-3 hover:bg-slate-50"><div class="text-xs font-semibold text-slate-800">Deviation Raised — MCF-2024-004525</div><div class="text-xs text-slate-400 mt-0.5">CIBIL score 648, below threshold</div></div>
-        </div>
-        <div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
+        <div id="notifList" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></div><div class="px-4 py-2 border-t text-center"><a href="reports.html" class="text-blue-600 text-xs font-medium">View all</a></div>
       </div>
     </div>
     <div class="relative">
@@ -153,6 +149,12 @@
         <div><label class="form-label">Valuer Name</label><input class="form-input" id="goldValuerName" value="M/s. Sundaram Jewellers"></div>
       </div>
     </div>
+    <!-- Other security types' value inputs (per FRD Section 6.1 Security Type Matrix) -->
+    <div id="otherSecurityPanels" class="space-y-3 mb-4"></div>
+    <div class="p-3 bg-slate-50 rounded-xl mb-4 flex items-center justify-between text-sm">
+      <div><span class="text-slate-500">Future Liability:</span> <span class="font-semibold" id="secFlVal">--</span> &nbsp;|&nbsp; <span class="text-slate-500">Total Accepted Value:</span> <span class="font-semibold text-blue-700" id="secTotalVal">--</span></div>
+      <div id="secCoverageChip" class="chip chip-slate">--</div>
+    </div>
   </div>
   <div class="flex gap-3">
     <a href="bi-create-application.html" class="btn-outline">← Back</a>
@@ -202,6 +204,25 @@ var SECURITY_LABELS = {
 var TYPE_TO_CODE = {};
 Object.keys(SECURITY_LABELS).forEach(function(k){ TYPE_TO_CODE[SECURITY_LABELS[k]] = k; });
 
+// FRD Section 6.1 "Security Type Matrix" - input field(s) and Accepted Value formula per type.
+var OTHER_TYPE_CONFIG = {
+  LIC:      { label: 'Surrender Value (₹)', formula: function(v){ return v; } },                              // 100% of Surrender Value
+  BG:       { label: 'Face Value (₹)', formula: function(v){ return v; } },                                    // 100% of Face Value
+  FD:       { label: 'Face Value (₹)', formula: function(v){ return v; } },                                    // 100% of Face Value
+  'Sub-Debt': { label: 'Deposit Value (₹)', formula: function(v){ return v; } },                                // As per API - manual entry here
+  Mortgage: { label: 'Forced Sale Value (₹)', formula: function(v){ return Math.round((v / 150) * 100); } },   // (FSV / 150) * 100
+  Chit:     { label: 'Paid-up Subscription Value (₹)', formula: function(v){ return v; } },                    // As per API - manual entry here
+  NCD:      { label: 'Face Value (₹)', formula: function(v){ return v; } },                                    // 100% of Face Value
+  Equity: {
+    label: '6-Month Avg Market Value (₹)',
+    formula: function(v, liability){
+      liability = liability || 0;
+      var half = 0.5 * v;
+      return liability < 200000 ? Math.round(half) : Math.round(Math.min(half, 0.4 * liability));
+    }
+  }
+};
+
 var selectedCodes = [];
 if(caseObj && caseObj.securities && caseObj.securities.length){
   selectedCodes = caseObj.securities.map(function(s){ return TYPE_TO_CODE[s.type]; }).filter(Boolean);
@@ -225,6 +246,23 @@ function refreshCardStyles(){
   });
   var goldPanel = document.getElementById('goldPanel');
   if(goldPanel) goldPanel.style.display = selectedCodes.indexOf('Gold') >= 0 ? '' : 'none';
+  renderOtherSecurityPanels();
+}
+
+function renderOtherSecurityPanels(){
+  var container = document.getElementById('otherSecurityPanels');
+  var otherCodes = selectedCodes.filter(function(c){ return c !== 'Gold'; });
+  container.innerHTML = otherCodes.map(function(code){
+    var cfg = OTHER_TYPE_CONFIG[code];
+    var existing = (caseObj && caseObj.securities || []).find(function(s){ return s.type === SECURITY_LABELS[code]; });
+    var startVal = existing ? existing.inputValue : '';
+    return '<div class="p-4 bg-blue-50 border border-blue-200 rounded-xl"><div class="font-semibold text-blue-800 mb-2">'+SECURITY_LABELS[code]+' Details</div>'+
+      '<div class="grid grid-cols-3 gap-3">'+
+      '<div><label class="form-label">'+cfg.label+'</label><input class="form-input" data-sec-input="'+code+'" value="'+(startVal||'')+'" oninput="saveSecurity()" placeholder="0"></div>'+
+      '<div><label class="form-label">Accepted Value</label><div class="form-input bg-slate-50 font-bold text-green-700" id="acceptedVal_'+code+'">--</div></div>'+
+      '<div><label class="form-label">Holder / Reference</label><input class="form-input" data-sec-name="'+code+'" value="'+(existing?existing.name:'')+'" placeholder="Name / USN"></div>'+
+      '</div></div>';
+  }).join('') || '';
 }
 
 function calcLTV(){
@@ -249,6 +287,7 @@ function selectSecurity(el, code){
 }
 
 function buildSecuritiesList(){
+  var liability = caseObj ? (caseObj.fl || caseObj.amount || 0) : 0;
   var ltv = calcLTVValuesOnly();
   return selectedCodes.map(function(code, i){
     var type = SECURITY_LABELS[code];
@@ -257,15 +296,22 @@ function buildSecuritiesList(){
         slNo: i+1, type: type,
         name: (document.getElementById('goldValuerName')||{}).value || (caseObj ? caseObj.applicant : ''),
         loyaltyUsn: (caseObj && caseObj.loyalty) || '',
-        freeValue: ltv.mktVal, valueLoaded: ltv.ltvVal
+        freeValue: ltv.mktVal, valueLoaded: ltv.mktVal
       };
     }
+    var cfg = OTHER_TYPE_CONFIG[code];
+    var inputEl = document.querySelector('[data-sec-input="'+code+'"]');
+    var nameEl = document.querySelector('[data-sec-name="'+code+'"]');
+    var inputVal = inputEl ? (parseFloat(inputEl.value) || 0) : 0;
+    var accepted = cfg ? cfg.formula(inputVal, liability) : inputVal;
+    var acceptedEl = document.getElementById('acceptedVal_'+code);
+    if(acceptedEl) acceptedEl.textContent = 'Rs. ' + accepted.toLocaleString('en-IN');
     return {
       slNo: i+1, type: type,
-      name: caseObj ? caseObj.applicant : '',
+      name: (nameEl ? nameEl.value : '') || (caseObj ? caseObj.applicant : ''),
       loyaltyUsn: (caseObj && caseObj.loyalty) || '',
-      freeValue: caseObj ? (caseObj.amount||0) : 0,
-      valueLoaded: caseObj ? (caseObj.amount||0) : 0
+      inputValue: inputVal,
+      freeValue: accepted, valueLoaded: accepted
     };
   });
 }
@@ -273,11 +319,8 @@ function buildSecuritiesList(){
 function calcLTVValuesOnly(){
   var netWt = parseFloat((document.getElementById('goldNetWt')||{}).value) || 0;
   var rate = parseFloat((document.getElementById('goldRate')||{}).value) || 0;
-  var goldCfg = (LOS_CONFIG.securityTypes||[]).find(function(s){ return s.type === 'Gold Ornaments'; });
-  var ltvCap = goldCfg && goldCfg.ltvCap != null ? goldCfg.ltvCap : 0.75;
   var mktVal = Math.round(netWt * rate);
-  var ltvVal = Math.round(mktVal * ltvCap);
-  return { mktVal: mktVal, ltvVal: ltvVal };
+  return { mktVal: mktVal, ltvVal: mktVal };
 }
 
 function saveSecurity(){
@@ -285,7 +328,27 @@ function saveSecurity(){
   var securities = buildSecuritiesList();
   caseObj.securities = securities;
   if(securities.length) caseObj.security = securities.map(function(s){ return s.type; }).join(' + ');
+  if(selectedCodes.indexOf('Gold') >= 0){
+    var netWt = parseFloat((document.getElementById('goldNetWt')||{}).value) || 0;
+    var purity = (document.getElementById('goldPurity')||{}).value || '22K';
+    caseObj.weight = netWt + 'g @ ' + purity;
+    caseObj.mktVal = calcLTVValuesOnly().mktVal;
+    var goldCfg = (LOS_CONFIG.securityTypes||[]).find(function(s){ return s.type === 'Gold Ornaments'; });
+    caseObj.ltv = (goldCfg && goldCfg.ltvCap != null ? goldCfg.ltvCap : 0.75);
+  }
+  var totalVal = securities.reduce(function(s,x){ return s + (x.valueLoaded||0); }, 0);
+  var liability = caseObj.fl || caseObj.amount || 0;
+  caseObj.monthlyInstalment = caseObj.tenure ? Math.round((caseObj.chitAmount || caseObj.amount || 0) / caseObj.tenure) : caseObj.monthlyInstalment;
   LOS_DB.saveCase(caseObj);
+
+  var flEl = document.getElementById('secFlVal'); if(flEl) flEl.textContent = 'Rs. ' + liability.toLocaleString('en-IN');
+  var totalEl = document.getElementById('secTotalVal'); if(totalEl) totalEl.textContent = 'Rs. ' + totalVal.toLocaleString('en-IN');
+  var chipEl = document.getElementById('secCoverageChip');
+  if(chipEl){
+    var covered = totalVal >= liability && liability > 0;
+    chipEl.className = 'chip ' + (covered ? 'chip-green' : 'chip-red');
+    chipEl.textContent = covered ? 'Covered ✓' : 'Shortfall: Rs. ' + Math.max(0, liability - totalVal).toLocaleString('en-IN');
+  }
 }
 
 if(!caseObj){

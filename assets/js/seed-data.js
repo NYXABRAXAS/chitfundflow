@@ -100,7 +100,7 @@
       monthlyInstalment: Math.round(amount * 1.35 / tenure), instalmentsPaid: int(2, 20), instalmentsRemaining: tenure - int(2, 20),
       tenure: tenure, security: guarantors.length ? pick(SECURITY_TYPES) + ' + Personal Surety' : pick(SECURITY_TYPES),
       securities: buildSecurities(Math.round(amount * 1.1)),
-      ltv: int(55, 95), mktVal: Math.round(amount * (1 + rand())), weight: pick(['58g @ 22K', '98g @ 22K', '165g @ 22K', 'FD Value', 'Surrender Value']),
+      ltv: Math.round(int(55, 95)) / 100, mktVal: Math.round(amount * (1 + rand())), weight: pick(['58g @ 22K', '98g @ 22K', '165g @ 22K', 'FD Value', 'Surrender Value']),
       guarantor: guarantors.length ? guarantors[0].name : 'N/A',
       initiator: pick(FIRST) + ' ' + pick(LAST), assignedTo: pick(FIRST) + ' ' + pick(LAST),
       cibil: cust.cibil,

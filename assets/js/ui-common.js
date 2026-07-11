@@ -139,7 +139,27 @@
       renderNotifications(session.role);
     },
     renderSidebar: renderSidebar,
-    renderNotifications: renderNotifications
+    renderNotifications: renderNotifications,
+    // Builds a clear "what just happened / who's next" message for a successful
+    // WorkflowEngine.transition() result, so every action tells the demo story.
+    describeOutcome: function (caseId, actionLabel, updatedCase) {
+      var st = LOS_CONFIG.workflowStates.states.find(function (s) { return s.code === updatedCase.status; });
+      var ownerLabel = st && st.owner && st.owner !== 'SYSTEM' && LOS_CONFIG.workflowStates.roles[st.owner]
+        ? LOS_CONFIG.workflowStates.roles[st.owner].label : null;
+      var statusLabel = updatedCase.status.replace(/_/g, ' ');
+      var lines = ['✅ ' + actionLabel + ' — Case ' + caseId + ' updated.', 'New status: ' + statusLabel + (st && st.action ? ' (' + st.action + ')' : '')];
+      if (st && st.terminal) {
+        lines.push(updatedCase.status === 'CLOSED' ? 'Case is now CLOSED — journey complete.' : 'Case is now closed out (' + statusLabel + ').');
+      } else if (ownerLabel) {
+        lines.push('Now pending with: ' + ownerLabel + (st.screen ? ' (' + st.screen + ')' : '') + '. Log in as that role to continue.');
+      }
+      return lines.join('\n');
+    },
+    notifyOutcome: function (caseId, actionLabel, result) {
+      if (!result.success) { alert('⚠️ ' + result.error); return false; }
+      alert(this.describeOutcome(caseId, actionLabel, result.case));
+      return true;
+    }
   };
 
   global.LOSApp = LOSApp;

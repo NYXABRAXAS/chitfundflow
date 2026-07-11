@@ -102,9 +102,13 @@ function curr(n){return n==null?'--':'₹'+Number(n).toLocaleString('en-IN')}
 function slaColor(s){return s&&s.includes('day')?'text-orange-600':'text-slate-500'}
 function cibilColor(n){return n>=750?'text-green-600':n>=700?'text-yellow-600':'text-red-600'}
 
+function actionLabel(action){
+  return action.replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase();});
+}
+
 function doAction(caseId, action, payload){
   var res = WorkflowEngine.transition(caseId, action, {actorRole: session.role, payload: payload||{}});
-  if(!res.success){ alert(res.error); return; }
+  LOSApp.notifyOutcome(caseId, actionLabel(action), res);
   renderQueues();
 }
 

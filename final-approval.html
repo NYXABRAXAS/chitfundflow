@@ -138,7 +138,7 @@ function doApprove(){
   if(!window.faSelectedCase){ alert('Select a case to approve.'); return; }
   var remarks = document.getElementById('faRemarks').value;
   var result = WorkflowEngine.transition(window.faSelectedCase,'finalApprove',{actorRole:'FA',payload:{comment:remarks}});
-  if(!result.success){ alert(result.error); return; }
+  if(!LOSApp.notifyOutcome(window.faSelectedCase, 'Final approval granted', result)) return;
   document.getElementById('faRemarks').value='';
   LOSApp.refreshChrome();
   renderQueue();
@@ -147,7 +147,7 @@ function doReject(){
   if(!window.faSelectedCase){ alert('Select a case to reject.'); return; }
   var remarks = document.getElementById('faRemarks').value;
   var result = WorkflowEngine.transition(window.faSelectedCase,'finalReject',{actorRole:'FA',payload:{comment:remarks}});
-  if(!result.success){ alert(result.error); return; }
+  if(!LOSApp.notifyOutcome(window.faSelectedCase, 'Final rejection recorded', result)) return;
   document.getElementById('faRemarks').value='';
   LOSApp.refreshChrome();
   renderQueue();

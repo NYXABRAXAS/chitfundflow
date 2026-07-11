@@ -188,13 +188,10 @@ function openInwardModal(caseId){
 function confirmInward(){
   if(!currentInwardCaseId){ alert('No case selected'); return; }
   var result = WorkflowEngine.transition(currentInwardCaseId, 'inwardAtHub', {actorRole: session.role});
-  if(result.success){
-    alert('Case inwarded! Status updated to HUB_INWARD.');
+  if(LOSApp.notifyOutcome(currentInwardCaseId, 'Case acknowledged at Credit Hub', result)){
     document.getElementById('inwardModal').classList.remove('open');
     renderInwardQueue();
     LOSApp.refreshChrome();
-  } else {
-    alert(result.error);
   }
 }
 

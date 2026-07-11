@@ -221,8 +221,7 @@ function submitForScrutiny(){
   if(!caseObj) return;
   LOS_DB.saveCase(caseObj);
   var res = WorkflowEngine.transition(caseObj.id, 'submitForScrutiny', { actorRole: session.role });
-  if(!res.success){ alert(res.error); return; }
-  alert('Submitted for Branch Scrutiny. Case ' + caseObj.id + ' is now in the Scrutinizer queue.');
+  if(!LOSApp.notifyOutcome(caseObj.id, 'Submitted for Branch Scrutiny', res)) return;
   location.href = 'bi-my-cases.html';
 }
 

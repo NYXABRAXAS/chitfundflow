@@ -212,14 +212,13 @@ function submitFIReportModal(){
       }
     }
   });
-  if (result.success) {
-    delete recommendationMap[currentModalCaseId];
+  var submittedCaseId = currentModalCaseId;
+  if (LOSApp.notifyOutcome(submittedCaseId, 'FI report submitted (' + rec.replace(/_/g,' ') + ')', result)) {
+    delete recommendationMap[submittedCaseId];
     currentModalCaseId = null;
     document.getElementById('fiReportModal').classList.remove('open');
     renderCases();
     LOSApp.refreshChrome();
-  } else {
-    alert(result.error);
   }
 }
 

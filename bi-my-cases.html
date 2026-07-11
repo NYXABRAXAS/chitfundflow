@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-</header><main class="flex-1 overflow-y-auto p-6"><div class="grid grid-cols-4 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">📁</div><div><div class="text-slate-500 text-xs font-medium">My Active Cases</div><div id="kpiActive" class="text-slate-800 text-2xl font-bold mt-0.5">7</div><div class="text-slate-400 text-xs mt-0.5">Assigned to me</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">⚠️</div><div><div class="text-slate-500 text-xs font-medium">SLA Overdue</div><div id="kpiOverdue" class="text-slate-800 text-2xl font-bold mt-0.5">1</div><div class="text-slate-400 text-xs mt-0.5">Needs immediate action</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-purple-50 text-purple-600">📦</div><div><div class="text-slate-500 text-xs font-medium">Returned</div><div id="kpiReturned" class="text-slate-800 text-2xl font-bold mt-0.5">1</div><div class="text-slate-400 text-xs mt-0.5">Needs correction</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">✅</div><div><div class="text-slate-500 text-xs font-medium">Closed This Month</div><div id="kpiClosed" class="text-slate-800 text-2xl font-bold mt-0.5">3</div><div class="text-slate-400 text-xs mt-0.5">Successfully disbursed</div></div></div></div><div class="flex flex-wrap gap-2 mb-4"><a href="bi-create-application.html" class="btn-primary">+ New Application</a><div class="flex flex-wrap gap-2 mb-4"><input id="searchBox" type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="renderMyCases()"><select id="statusFilter" class="form-select text-xs w-36" onchange="renderMyCases()"><option value="">All Status</option><option value="BRANCH_WIP">BRANCH_WIP</option><option value="REVERTED">REVERTED</option><option value="ADDITIONAL_SECURITY_REQUIRED">ADDITIONAL_SECURITY_REQUIRED</option></select><select class="form-select text-xs w-36"><option>Month</option><option>Jan 2024</option><option>Dec 2023</option><option>Nov 2023</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Case ID</th><th>Applicant</th><th>Security</th><th>Loan Amount</th><th>Status</th><th>Branch</th><th>Applied On</th><th>SLA</th><th>Actions</th></tr></thead><tbody id="myCasesTable"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
+</header><main class="flex-1 overflow-y-auto p-6"><div class="grid grid-cols-4 gap-4 mb-4"><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-blue-50 text-blue-600">📁</div><div><div class="text-slate-500 text-xs font-medium">My Active Cases</div><div id="kpiActive" class="text-slate-800 text-2xl font-bold mt-0.5">7</div><div class="text-slate-400 text-xs mt-0.5">Assigned to me</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-red-50 text-red-600">⚠️</div><div><div class="text-slate-500 text-xs font-medium">SLA Overdue</div><div id="kpiOverdue" class="text-slate-800 text-2xl font-bold mt-0.5">1</div><div class="text-slate-400 text-xs mt-0.5">Needs immediate action</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-purple-50 text-purple-600">📦</div><div><div class="text-slate-500 text-xs font-medium">Returned</div><div id="kpiReturned" class="text-slate-800 text-2xl font-bold mt-0.5">1</div><div class="text-slate-400 text-xs mt-0.5">Needs correction</div></div></div><div class="stat-card p-4 flex items-start gap-3"><div class="kpi-icon bg-green-50 text-green-600">✅</div><div><div class="text-slate-500 text-xs font-medium">Closed This Month</div><div id="kpiClosed" class="text-slate-800 text-2xl font-bold mt-0.5">3</div><div class="text-slate-400 text-xs mt-0.5">Successfully disbursed</div></div></div></div><div class="flex flex-wrap gap-2 mb-4"><a href="bi-create-application.html" class="btn-primary">+ New Application</a><div class="flex flex-wrap gap-2 mb-4"><input id="searchBox" type="text" placeholder="🔍 Search..." class="form-input text-xs w-44" oninput="renderMyCases()"><select id="statusFilter" class="form-select text-xs w-36" onchange="renderMyCases()"><option value="">All My Cases (incl. submitted)</option><option value="ACTIVE">Needs My Action</option><option value="BRANCH_WIP">Working (Draft)</option><option value="REVERTED">Returned to Me</option><option value="ADDITIONAL_SECURITY_REQUIRED">Additional Security Required</option><option value="SUBMITTED">Submitted — In Progress Elsewhere</option><option value="CLOSED">Closed / Disbursed</option><option value="DECLINED">Declined</option></select><select class="form-select text-xs w-36"><option>Month</option><option>Jan 2024</option><option>Dec 2023</option><option>Nov 2023</option></select><button onclick="alert('Exported to Excel!')" class="btn-outline text-xs px-3 py-2">📥 Export</button><button onclick="alert('Exported to PDF!')" class="btn-outline text-xs px-3 py-2">📄 PDF</button></div></div><div class="card"><div class="overflow-x-auto"><table class="los-table w-full"><thead><tr><th>Case ID</th><th>Applicant</th><th>Security</th><th>Loan Amount</th><th>Status</th><th>Branch</th><th>Applied On</th><th>SLA</th><th>Actions</th></tr></thead><tbody id="myCasesTable"></tbody></table></div><div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between flex-shrink-0">
   <span id="myCasesCount" class="text-xs text-slate-400">Showing 0 of 0 records</span>
   <div class="flex gap-1"><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">← Prev</button><button class="px-3 py-1 text-xs bg-blue-600 rounded-lg text-white">1</button><button class="px-3 py-1 text-xs border border-slate-200 rounded-lg text-slate-600">Next →</button></div>
 </div></div></main></div></div><script>
@@ -97,18 +97,38 @@ function actionCellFor(c){
   if(c.status==='ADDITIONAL_SECURITY_REQUIRED'){
     return `<button onclick="event.stopPropagation();collateralProvided('${c.id}')" class="btn-outline btn-sm text-xs">Collateral Provided</button>`;
   }
-  return '';
+  return '<span class="text-xs text-slate-400">No action — with next role</span>';
+}
+
+function stageStatusCell(c){
+  if(MY_CASES_STATUSES.indexOf(c.status)!==-1){
+    return `<span class="chip ${c.status==='REVERTED'?'chip-red':c.status==='ADDITIONAL_SECURITY_REQUIRED'?'chip-orange':'chip-yellow'}">${c.status.replace(/_/g,' ')}</span>`;
+  }
+  if(c.status==='NEW'||c.status==='ASSIGNED'){
+    return `<span class="chip chip-slate">Not Yet Started</span> <span class="text-xs text-slate-500 block mt-0.5">Open "My Cases" action to begin</span>`;
+  }
+  var st=LOS_CONFIG.workflowStates.states.find(s=>s.code===c.status);
+  var ownerLabel=st&&st.owner&&LOS_CONFIG.workflowStates.roles[st.owner]?LOS_CONFIG.workflowStates.roles[st.owner].label:(c.status==='CLOSED'?'Completed':c.status==='DECLINED'?'Declined':'System');
+  var chipCls=c.status==='CLOSED'?'chip-green':c.status==='DECLINED'?'chip-red':'chip-blue';
+  return `<span class="chip ${chipCls}">Submitted</span> <span class="text-xs text-slate-500 block mt-0.5">→ with ${ownerLabel}</span>`;
 }
 
 function renderMyCases(){
   var q=(document.getElementById('searchBox')||{}).value||'';
   var statusF=(document.getElementById('statusFilter')||{}).value||'';
-  var cases=LOS_DB.getCases().filter(c=>MY_CASES_STATUSES.indexOf(c.status)!==-1);
-  if(statusF) cases=cases.filter(c=>c.status===statusF);
+  var cases=LOS_DB.getCases();
+  if(statusF==='ACTIVE'){
+    cases=cases.filter(c=>MY_CASES_STATUSES.indexOf(c.status)!==-1);
+  } else if(statusF==='SUBMITTED'){
+    cases=cases.filter(c=>MY_CASES_STATUSES.indexOf(c.status)===-1 && c.status!=='CLOSED' && c.status!=='DECLINED');
+  } else if(statusF){
+    cases=cases.filter(c=>c.status===statusF);
+  }
   if(q){
     var ql=q.toLowerCase();
     cases=cases.filter(c=>(c.id||'').toLowerCase().includes(ql)||(c.applicant||'').toLowerCase().includes(ql));
   }
+  cases=cases.sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
   var tb=document.getElementById('myCasesTable');
   tb.innerHTML=cases.map(c=>{
     var rem=slaRemainingHours(c);
@@ -118,7 +138,7 @@ function renderMyCases(){
       <td class="font-semibold text-xs">${c.applicant||''}</td>
       <td><span class="chip chip-purple">${c.security||''}</span></td>
       <td class="font-semibold text-emerald-700 text-xs">${curr(c.amount)}</td>
-      <td><span class="chip ${c.status==='REVERTED'?'chip-red':c.status==='ADDITIONAL_SECURITY_REQUIRED'?'chip-orange':'chip-yellow'}">${c.status}</span></td>
+      <td>${stageStatusCell(c)}</td>
       <td class="text-xs">${c.branch||''}</td>
       <td class="text-xs text-slate-500">${fmtDate(c.applied)}</td>
       <td class="text-xs font-medium ${rem!=null&&rem<=12?'text-red-600':'text-orange-600'}">${slaTxt}</td>
@@ -142,20 +162,17 @@ function renderMyCasesKpis(){
 
 function submitForScrutiny(caseId){
   var r=WorkflowEngine.transition(caseId,'submitForScrutiny',{actorRole:'BI'});
-  if(!r.success){
-    alert(r.error+' — please complete document upload before submitting.');
-    return;
-  }
+  LOSApp.notifyOutcome(caseId, 'Submitted for Branch Scrutiny', r);
   renderMyCases();
 }
 function resubmitCase(caseId){
   var r=WorkflowEngine.transition(caseId,'resubmit',{actorRole:'BI'});
-  if(!r.success){ alert(r.error); return; }
+  LOSApp.notifyOutcome(caseId, 'Case reopened for correction', r);
   renderMyCases();
 }
 function collateralProvided(caseId){
   var r=WorkflowEngine.transition(caseId,'collateralProvided',{actorRole:'BI'});
-  if(!r.success){ alert(r.error); return; }
+  LOSApp.notifyOutcome(caseId, 'Additional collateral submitted', r);
   renderMyCases();
 }
 

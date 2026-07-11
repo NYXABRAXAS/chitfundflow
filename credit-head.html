@@ -106,18 +106,22 @@ function curr(n){return n==null?'--':'₹'+Number(n).toLocaleString('en-IN')}
 function slaColor(s){return s&&s.includes('day')?'text-orange-600':'text-slate-500'}
 function cibilColor(n){return n>=750?'text-green-600':n>=700?'text-yellow-600':'text-red-600'}
 
+function actionLabel(action){
+  return action.replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase();});
+}
+
 function doApprove(caseId){
   var res = WorkflowEngine.transition(caseId, 'creditHeadApprove', {actorRole: session.role});
-  if(res.success){ renderQueue(); return; }
+  if(res.success){ LOSApp.notifyOutcome(caseId, 'Credit approved', res); renderQueue(); return; }
   var esc = WorkflowEngine.transition(caseId, 'escalateFinal', {actorRole: session.role});
-  if(!esc.success){ alert(esc.error); return; }
+  if(!LOSApp.notifyOutcome(caseId, 'Escalated to Final Approval Authority (high value / deviation)', esc)) return;
   renderQueue();
   setEscalationNote(caseId+' escalated to Final Approval Authority (high value / deviation).');
 }
 
 function doAction(caseId, action){
   var res = WorkflowEngine.transition(caseId, action, {actorRole: session.role});
-  if(!res.success){ alert(res.error); return; }
+  LOSApp.notifyOutcome(caseId, actionLabel(action), res);
   renderQueue();
 }
 
@@ -129,7 +133,7 @@ function doModify(caseId, field){
   var action = field==='amount' ? 'modifyLoanAmount' : field==='roi' ? 'modifyROI' : 'modifyTenure';
   var payload = {}; payload[field] = val;
   var res = WorkflowEngine.transition(caseId, action, {actorRole: session.role, payload: payload});
-  if(!res.success){ alert(res.error); return; }
+  LOSApp.notifyOutcome(caseId, actionLabel(field) + ' updated, CAM recomputed', res);
   renderQueue();
 }
 

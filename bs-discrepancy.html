@@ -130,8 +130,7 @@ function escalateCase(caseId){
   var reason = prompt('Escalation / discrepancy reason for '+caseId+':', 'Escalated to Branch Manager for review');
   if(reason===null) return;
   var res = WorkflowEngine.transition(caseId, 'returnToBI', {actorRole: session.role, payload:{comment: reason}});
-  if(!res.success){alert(res.error);return}
-  alert('Escalated to Branch Manager!');
+  LOSApp.notifyOutcome(caseId, 'Escalated, returned to Branch Initiator', res);
   renderDiscrepancies();
 }
 

@@ -117,7 +117,7 @@ function renderQueue(){
 
 function doApprove(caseId){
   var res = WorkflowEngine.transition(caseId, 'approveScrutiny', {actorRole: session.role});
-  if(!res.success){alert(res.error);return}
+  LOSApp.notifyOutcome(caseId, 'Scrutiny approved, dispatched to Credit Hub', res);
   renderQueue();
 }
 
@@ -131,7 +131,7 @@ document.getElementById('flagDiscrepBtn').addEventListener('click', function(){
   if(!discrepCaseId) return;
   var reason = document.getElementById('discrepType').value + ' — ' + document.getElementById('discrepDesc').value;
   var res = WorkflowEngine.transition(discrepCaseId, 'returnToBI', {actorRole: session.role, payload:{comment: reason}});
-  if(!res.success){alert(res.error);return}
+  if(!LOSApp.notifyOutcome(discrepCaseId, 'Discrepancy flagged, returned to Branch Initiator', res)) return;
   document.getElementById('discrepModal').classList.remove('open');
   document.getElementById('discrepDesc').value='';
   renderQueue();

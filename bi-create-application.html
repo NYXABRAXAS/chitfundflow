@@ -98,27 +98,27 @@
   <div class="card p-5">
     <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Step 1: Applicant Information</div>
     <div class="grid grid-cols-3 gap-4">
-      <div><label class="form-label">Full Name (as per ID)</label><input id="fApplicant" class="form-input" placeholder="e.g. Ramesh Gopalakrishnan"></div>
+      <div><label class="form-label">Full Name (as per ID)</label><input id="fApplicant" class="form-input" value="Ramesh Gopalakrishnan" placeholder="e.g. Ramesh Gopalakrishnan"></div>
       <div><label class="form-label">Date of Birth</label><input id="fDob" class="form-input" type="date" value="1980-05-15"></div>
       <div><label class="form-label">Gender</label><select id="fGender" class="form-select"><option>Male</option><option>Female</option><option>Other</option></select></div>
-      <div><label class="form-label">Aadhaar Number</label><input id="fAadhaar" class="form-input" placeholder="XXXX XXXX XXXX" maxlength="14"></div>
-      <div><label class="form-label">PAN Number</label><input id="fPan" class="form-input" placeholder="ABCDE1234F" maxlength="10"></div>
-      <div><label class="form-label">Mobile Number</label><input id="fMobile" class="form-input" placeholder="98XXXXXXXX" maxlength="10"></div>
+      <div><label class="form-label">Aadhaar Number</label><input id="fAadhaar" class="form-input" value="4321 8765 1234" placeholder="XXXX XXXX XXXX" maxlength="14"></div>
+      <div><label class="form-label">PAN Number</label><input id="fPan" class="form-input" value="RXXXG5678K" placeholder="ABCDE1234F" maxlength="10"></div>
+      <div><label class="form-label">Mobile Number</label><input id="fMobile" class="form-input" value="9840111111" placeholder="98XXXXXXXX" maxlength="10"></div>
       <div><label class="form-label">Applicant Type</label><select id="fApplicantType" class="form-select"><option>Salaried</option><option>Business</option><option>Self-Employed</option><option>Agricultural</option></select></div>
-      <div><label class="form-label">Monthly Income (INR)</label><input id="fIncome" class="form-input" type="number" placeholder="35000" oninput="calcRC()"></div>
-      <div><label class="form-label">Existing Obligations (INR/month)</label><input id="fObligations" class="form-input" type="number" placeholder="5000" oninput="calcRC()"></div>
-      <div class="col-span-3"><label class="form-label">Residential Address</label><textarea id="fAddress" class="form-input" rows="2" placeholder="Door No., Street, City, Pincode"></textarea></div>
-      <div><label class="form-label">City</label><input id="fCity" class="form-input" placeholder="Chennai"></div>
+      <div><label class="form-label">Monthly Income (INR)</label><input id="fIncome" class="form-input" type="number" value="45000" placeholder="35000" oninput="calcRC()"></div>
+      <div><label class="form-label">Existing Obligations (INR/month)</label><input id="fObligations" class="form-input" type="number" value="8000" placeholder="5000" oninput="calcRC()"></div>
+      <div class="col-span-3"><label class="form-label">Residential Address</label><textarea id="fAddress" class="form-input" rows="2" placeholder="Door No., Street, City, Pincode">14, Anna Nagar 4th St, Chennai</textarea></div>
+      <div><label class="form-label">City</label><input id="fCity" class="form-input" value="Chennai" placeholder="Chennai"></div>
       <div><label class="form-label">State</label><select id="fState" class="form-select"><option>Tamil Nadu</option><option>Kerala</option><option>Karnataka</option><option>Puducherry</option></select></div>
-      <div><label class="form-label">Pincode</label><input id="fPincode" class="form-input" placeholder="600001" maxlength="6"></div>
+      <div><label class="form-label">Pincode</label><input id="fPincode" class="form-input" value="600040" placeholder="600001" maxlength="6"></div>
     </div>
   </div>
   <!-- Loan Details -->
   <div class="card p-5">
     <div class="font-semibold text-slate-700 mb-4 border-b border-slate-100 pb-2">Loan Request Details</div>
     <div class="grid grid-cols-3 gap-4">
-      <div><label class="form-label">Loan Amount Requested (INR)</label><input id="fAmount" class="form-input" type="number" placeholder="850000" oninput="calcRC()"></div>
-      <div><label class="form-label">Loan Tenure (months)</label><input id="fTenure" class="form-input" type="number" placeholder="36" min="1" max="120"></div>
+      <div><label class="form-label">Loan Amount Requested (INR)</label><input id="fAmount" class="form-input" type="number" value="850000" placeholder="850000" oninput="calcRC()"></div>
+      <div><label class="form-label">Loan Tenure (months)</label><input id="fTenure" class="form-input" type="number" value="36" placeholder="36" min="1" max="120"></div>
       <div><label class="form-label">Purpose of Loan</label><select id="fPurpose" class="form-select"><option>Business Expansion</option><option>Working Capital</option><option>Personal</option><option>Education</option><option>Medical</option><option>Asset Purchase</option></select></div>
       <div class="col-span-3 p-4 bg-blue-50 rounded-lg">
         <div class="font-semibold text-blue-800 text-sm mb-2">Repayment Capacity Calculator</div>
@@ -146,6 +146,7 @@ function calcRC(){
   document.getElementById('oblig').textContent='Rs. '+o.toLocaleString('en-IN');
   document.getElementById('repay').textContent='Rs. '+Math.round(g*0.7-o).toLocaleString('en-IN');
 }
+calcRC();
 
 function collectFormValues(){
   return {

@@ -140,9 +140,13 @@ function riskChip(level){
   return '<span class="px-1.5 py-0.5 rounded text-xs font-semibold '+(m[level]||'bg-slate-100 text-slate-700')+'">'+level+'</span>';
 }
 
+function actionLabel(action){
+  return action.replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase();});
+}
+
 function doAction(caseId, action){
   var res = WorkflowEngine.transition(caseId, action, {actorRole: session.role});
-  if(!res.success){ alert(res.error); return; }
+  LOSApp.notifyOutcome(caseId, actionLabel(action), res);
   renderQueue();
 }
 

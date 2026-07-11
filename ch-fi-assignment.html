@@ -129,7 +129,7 @@ function openFiModal(caseId){
 
 function doSkipFI(caseId){
   var res = WorkflowEngine.transition(caseId, 'skipFI', {actorRole: session.role, payload:{fiRequired:false}});
-  if(!res.success){alert(res.error);return}
+  LOSApp.notifyOutcome(caseId, 'FI skipped (below threshold) — routed to Hub Verification', res);
   renderQueue();
 }
 
@@ -142,7 +142,7 @@ document.getElementById('assignFiBtn').addEventListener('click', function(){
     fiRequired: true,
     fiAssigned: {investigator: agent, type: type, notes: notes, assignedDate: new Date().toISOString()}
   }});
-  if(!res.success){alert(res.error);return}
+  if(!LOSApp.notifyOutcome(fiModalCaseId, 'Field Investigation assigned to ' + agent, res)) return;
   document.getElementById('fiModal').classList.remove('open');
   renderQueue();
 });

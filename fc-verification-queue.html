@@ -126,9 +126,13 @@ function actionsForCase(c){
   return btns.join('');
 }
 
+function actionLabel(action){
+  return action.replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase();});
+}
+
 function doAction(caseId, action) {
   var result = WorkflowEngine.transition(caseId, action, { actorRole: session.role });
-  if (!result.success) { alert(result.error); return; }
+  LOSApp.notifyOutcome(caseId, actionLabel(action), result);
   renderQueue();
   LOSApp.refreshChrome();
 }

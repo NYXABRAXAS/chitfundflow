@@ -136,7 +136,7 @@ function renderHubVerificationQueue(){
 
 function completeHubVerification(caseId){
   var res = WorkflowEngine.transition(caseId, 'completeHubVerification', {actorRole: session.role});
-  if(!res.success){ alert(res.error); return; }
+  LOSApp.notifyOutcome(caseId, 'Hub verification complete, CAM generated', res);
   renderHubVerificationQueue();
 }
 

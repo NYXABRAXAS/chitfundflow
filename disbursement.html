@@ -174,7 +174,7 @@ function doDisburse(){
   var c = LOS_DB.getCase(window.disbSelectedCase);
   if(!c){ alert('Case not found.'); return; }
   var result = WorkflowEngine.transition(window.disbSelectedCase,'disburse',{actorRole:'DISB',payload:{disbursement:{utr:'UTR'+Date.now(),amount:c.amount,date:new Date().toISOString(),status:'SUCCESS'}}});
-  if(!result.success){ alert(result.error); return; }
+  if(!LOSApp.notifyOutcome(window.disbSelectedCase, 'Funds disbursed', result)) return;
   document.getElementById('disbUtrNumber').textContent = result.case.disbursement.utr;
   document.getElementById('disbUtrDate').textContent = new Date(result.case.disbursement.date).toLocaleString();
   document.getElementById('disbUtrAmount').textContent = curr(result.case.disbursement.amount);
@@ -186,8 +186,8 @@ function doDisburse(){
 function doRetry(){
   if(!window.disbSelectedCase){ alert('Select a case to mark failed.'); return; }
   var result = WorkflowEngine.transition(window.disbSelectedCase,'retryDisbursement',{actorRole:'DISB'});
-  if(!result.success){ alert(result.error); return; }
-  alert('Disbursement failed logged. Case queued for retry (attempt '+result.case.disbursement.retryCount+').');
+  if(!result.success){ alert('⚠️ '+result.error); return; }
+  alert('⚠️ Disbursement attempt failed — logged. Case ' + window.disbSelectedCase + ' queued for retry (attempt '+result.case.disbursement.retryCount+'). Click Disburse again to retry.');
   LOSApp.refreshChrome();
   renderQueue();
 }

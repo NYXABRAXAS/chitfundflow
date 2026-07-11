@@ -91,6 +91,7 @@
   </div>
   <div class="flex gap-3">
     <a href="bi-security-selection.html" class="btn-outline">← Back</a>
+    <button onclick="uploadAllPending()" class="btn-success">📤 Upload All Pending</button>
     <button onclick="saveDraft()" class="btn-outline">Save Draft</button>
     <a href="bi-guarantor.html" id="docsNextBtn" class="btn-primary">Next: Guarantor →</a>
   </div>
@@ -145,6 +146,13 @@ function setRowPending(btn){
   row.children[6].textContent = '—';
   row.children[7].innerHTML = '<button onclick="setRowUploaded(this)" class="btn-primary btn-sm text-xs">Upload</button>';
   recomputeDocs();
+}
+
+function uploadAllPending(){
+  document.querySelectorAll('#docChecklist tr').forEach(function(row){
+    var uploadBtn = row.querySelector('button[onclick^="setRowUploaded"]');
+    if(uploadBtn) setRowUploaded(uploadBtn);
+  });
 }
 
 function recomputeDocs(){

@@ -178,7 +178,7 @@ function doApprove(){
   if(!window.baSelectedCase){ alert('Select a case to approve.'); return; }
   var remarks = document.getElementById('baRemarks').value;
   var result = WorkflowEngine.transition(window.baSelectedCase,'businessApprove',{actorRole:'BA',payload:{comment:remarks}});
-  if(!result.success){ alert(result.error); return; }
+  if(!LOSApp.notifyOutcome(window.baSelectedCase, 'Business approved — ready for disbursement', result)) return;
   document.getElementById('baRemarks').value='';
   LOSApp.refreshChrome();
   renderQueue();
@@ -187,7 +187,7 @@ function doReject(){
   if(!window.baSelectedCase){ alert('Select a case to reject.'); return; }
   var remarks = document.getElementById('baRemarks').value;
   var result = WorkflowEngine.transition(window.baSelectedCase,'businessReject',{actorRole:'BA',payload:{comment:remarks}});
-  if(!result.success){ alert(result.error); return; }
+  if(!LOSApp.notifyOutcome(window.baSelectedCase, 'Business rejected', result)) return;
   document.getElementById('baRemarks').value='';
   LOSApp.refreshChrome();
   renderQueue();
@@ -196,14 +196,14 @@ function doHold(){
   if(!window.baSelectedCase){ alert('Select a case to hold.'); return; }
   var remarks = document.getElementById('baRemarks').value;
   var result = WorkflowEngine.transition(window.baSelectedCase,'businessHold',{actorRole:'BA',payload:{comment:remarks}});
-  if(!result.success){ alert(result.error); return; }
+  if(!LOSApp.notifyOutcome(window.baSelectedCase, 'Case put on hold', result)) return;
   document.getElementById('baRemarks').value='';
   LOSApp.refreshChrome();
   renderQueue();
 }
 function doResume(caseId){
   var result = WorkflowEngine.transition(caseId,'resumeBusiness',{actorRole:'BA'});
-  if(!result.success){ alert(result.error); return; }
+  if(!LOSApp.notifyOutcome(caseId, 'Case resumed', result)) return;
   LOSApp.refreshChrome();
   renderQueue();
 }

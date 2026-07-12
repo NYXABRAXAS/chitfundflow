@@ -113,7 +113,11 @@
       // The auction is the event that creates the prize-money entitlement (and the "draw" field
       // above records which month's auction the subscriber won) - so every case has one.
       auctionDate: '2024-' + pad(int(1, 6), 2) + '-' + pad(int(1, 28), 2),
-      employeeNo: 'EMP' + int(1000, 9999)
+      employeeNo: 'EMP' + int(1000, 9999),
+      // SLA countdown is measured from when a case entered its current stage, not from the
+      // (fixed, increasingly-stale) original application date - otherwise the SLA clock keeps
+      // counting for years and shows huge negative "hours left" values.
+      updatedAt: new Date(Date.now() - int(1, 90) * 3600000).toISOString()
     };
   }
 

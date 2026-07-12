@@ -157,7 +157,7 @@ function renderInitCaseTable(){
   var cases=LOS_DB.getCases().filter(function(c){return BI_QUEUE_STATUSES.indexOf(c.status)!==-1});
   tb.innerHTML=cases.slice(0,25).map(function(c){
     var rem=slaRemainingHours(c);
-    var slaTxt=rem==null?'—':(rem+'h left');
+    var slaTxt=rem==null?'—':(rem<0?('Overdue '+(-rem)+'h'):(rem+'h left'));
     return '<tr onclick="location.href=\'case-details.html?caseId='+c.id+'\'">'
       +'<td class="font-mono text-xs text-blue-700">'+c.id+'</td>'
       +'<td class="text-xs font-medium">'+(c.applicant||'')+'</td>'
